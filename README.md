@@ -1,2 +1,3 @@
 **Project Overview**
+
 The goal of this project is to develop an autonomous robotic car equipped with sensors, actuators, as well as wireless communication to perform line following, barcode encoding, obstacle avoidance, and telemetry reporting. The robotic car will integrate a motor control system which includes PID controllers for precise wheel movements, an IR sensor array for line following and barcode recognition, an IMU module for accurate orientation and navigation, and an ultrasonic sensor with a servo for obstacle detection and avoidance.
