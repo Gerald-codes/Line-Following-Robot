@@ -2034,6 +2034,30 @@ motor.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/motor.c.s
 .PHONY : motor.c.s
 
+pid.o: pid.c.o
+.PHONY : pid.o
+
+# target to build an object file
+pid.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/pid.c.o
+.PHONY : pid.c.o
+
+pid.i: pid.c.i
+.PHONY : pid.i
+
+# target to preprocess a source file
+pid.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/pid.c.i
+.PHONY : pid.c.i
+
+pid.s: pid.c.s
+.PHONY : pid.s
+
+# target to generate assembly for a file
+pid.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/pid.c.s
+.PHONY : pid.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -2278,6 +2302,9 @@ help:
 	@echo "... motor.o"
 	@echo "... motor.i"
 	@echo "... motor.s"
+	@echo "... pid.o"
+	@echo "... pid.i"
+	@echo "... pid.s"
 .PHONY : help
 
 

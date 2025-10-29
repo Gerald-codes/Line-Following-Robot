@@ -37,6 +37,7 @@ add_executable(robo_pico
     main.c
     motor.c
     encoder.c
+    pid.c
 )
 
 # Pull in common dependencies

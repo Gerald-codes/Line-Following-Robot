@@ -156,6 +156,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/robo_pico.dir/main.c.o.d"
   "CMakeFiles/robo_pico.dir/motor.c.o"
   "CMakeFiles/robo_pico.dir/motor.c.o.d"
+  "CMakeFiles/robo_pico.dir/pid.c.o"
+  "CMakeFiles/robo_pico.dir/pid.c.o.d"
   "robo_pico.bin"
   "robo_pico.dis"
   "robo_pico.elf"
