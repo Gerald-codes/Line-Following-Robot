@@ -20,13 +20,11 @@
 #define SERVO_MAX_PULSE 2500  // 2.5ms = 180 degrees
 #define SERVO_FREQ 50         // 50Hz = 20ms period
 #define SERVO_OFFSET 0        // Adjust this to set your physical center position
-                              // If mounted at different angle, adjust here
-                              // Try: -10, -5, 0, 5, 10 degrees
 
 // Scanning parameters
 #define ANGLE_CENTER 75      // Center position of servo
-#define MIN_ANGLE ANGLE_CENTER - 30          // 30° left from center
-#define MAX_ANGLE ANGLE_CENTER + 30         // 30° right from center
+#define MIN_ANGLE (ANGLE_CENTER - 30)  // 30° left from center
+#define MAX_ANGLE (ANGLE_CENTER + 30)  // 30° right from center
 #define SCAN_STEP 3           // Degrees per step
 #define OBSTACLE_THRESHOLD_MIN 5   // cm
 #define OBSTACLE_THRESHOLD_MAX 100 // cm
@@ -42,7 +40,7 @@
 // Servo control variables
 uint servo_slice;
 uint servo_channel;
-uint32_t servo_wrap;  // Store wrap value for later use
+uint32_t servo_wrap;
 
 void setupUltrasonicPins(uint trigPin, uint echoPin) {
     gpio_init(trigPin);
@@ -56,8 +54,6 @@ void setupServo(uint servoPin) {
     servo_slice = pwm_gpio_to_slice_num(servoPin);
     servo_channel = pwm_gpio_to_channel(servoPin);
     
-    // Calculate PWM parameters for 50Hz
-    // Clock = 125MHz, need 50Hz (20ms period)
     uint32_t clock_freq = 125000000;
     uint32_t divider = 64;
     servo_wrap = (clock_freq / divider / SERVO_FREQ) - 1;
@@ -68,18 +64,14 @@ void setupServo(uint servoPin) {
 }
 
 void setServoAngle(int angle) {
-    // Apply offset to all angles
     int adjusted_angle = angle + SERVO_OFFSET;
     
     if (adjusted_angle < 0) adjusted_angle = 0;
     if (adjusted_angle > 180) adjusted_angle = 180;
     
-    // Calculate pulse width for angle
     uint32_t pulse_width = SERVO_MIN_PULSE + 
                           ((SERVO_MAX_PULSE - SERVO_MIN_PULSE) * adjusted_angle / 180);
     
-    // Convert to PWM level
-    // Period is 20ms = 20000us
     uint32_t level = (servo_wrap * pulse_width) / 20000;
     
     pwm_set_chan_level(servo_slice, servo_channel, level);
@@ -92,7 +84,6 @@ int getPulse(uint trigPin, uint echoPin, uint64_t *pulse_width) {
 
     uint64_t width = 0;
 
-    // Wait for echo
     while (gpio_get(echoPin) == 0) {
         width++;
         sleep_us(1);
@@ -104,7 +95,6 @@ int getPulse(uint trigPin, uint echoPin, uint64_t *pulse_width) {
     absolute_time_t startTime = get_absolute_time();
     width = 0;
     
-    // Measure echo pulse
     while (gpio_get(echoPin) == 1) {
         width++;
         sleep_us(1);
@@ -144,7 +134,9 @@ int getCm(uint trigPin, uint echoPin, uint64_t *distance) {
     return SUCCESS;
 }
 
-float calculateObstacleWidth(int angle_start, int angle_end, uint64_t distance) {
+// Calculate width using the actual span angle and minimum distance
+// The minimum distance point is where the obstacle is closest (perpendicular)
+float calculateObstacleWidth(int angle_start, int angle_end, uint64_t min_distance) {
     int angle_diff = angle_end - angle_start;
     
     if (angle_diff <= 0) {
@@ -153,10 +145,10 @@ float calculateObstacleWidth(int angle_start, int angle_end, uint64_t distance) 
     
     // Convert angle difference to radians
     float angle_radians = (angle_diff * 3.14159265359f) / 180.0f;
-    float sin_value = sinf(angle_radians / 2.0f);
     
-    // Chord length formula: width = 2 * r * sin(θ/2)
-    float width = 2.0f * (float)distance * sin_value;
+    // Width = 2 * min_distance * sin(angle_span / 2)
+    // This measures the perpendicular chord at the minimum distance point
+    float width = 2.0f * (float)min_distance * sinf(angle_radians / 2.0f);
     
     return width;
 }
@@ -167,20 +159,20 @@ void scanForObstacles() {
     bool in_obstacle = false;
     int obstacle_start_angle = 0;
     int obstacle_count = 0;
-    uint64_t obstacle_distance = 0;
-    uint64_t last_valid_distance = 0;
+    uint64_t obstacle_min_distance = 999;
     int timeout_count = 0;
     
-    // Scan from left to right
+    static float last_width = 0.0f;  // Store last width for smoothing
+    
     for (int angle = MIN_ANGLE; angle <= MAX_ANGLE; angle += SCAN_STEP) {
         setServoAngle(angle);
-        sleep_ms(100); // Wait for servo to move and stabilize
+        sleep_ms(100);
         
         uint64_t distance;
         int status = getCm(TRIG_PIN, ECHO_PIN, &distance);
         
         if (status == SUCCESS) {
-            timeout_count = 0;  // Reset timeout counter
+            timeout_count = 0;
             
             bool obstacle_detected = (distance >= OBSTACLE_THRESHOLD_MIN && 
                                      distance <= OBSTACLE_THRESHOLD_MAX);
@@ -191,49 +183,31 @@ void scanForObstacles() {
                 // Start of new obstacle
                 in_obstacle = true;
                 obstacle_start_angle = angle;
-                obstacle_distance = distance;
-                last_valid_distance = distance;
+                obstacle_min_distance = distance;
                 obstacle_count++;
                 printf(" >>> START\n");
             }
             else if (obstacle_detected && in_obstacle) {
-                // Check if distance changed significantly (new object)
-                uint64_t distance_diff = (obstacle_distance > distance) ? 
-                                        (obstacle_distance - distance) : 
-                                        (distance - obstacle_distance);
+                // Check if distance is decreasing (moving toward obstacle) - this is normal
+                // Only ignore if distance INCREASES dramatically (outlier at edge)
+                bool is_getting_closer = (distance <= obstacle_min_distance);
                 
-                if (distance_diff > DISTANCE_CHANGE_THRESHOLD) {
-                    // Large distance change - this is a different object
-                    printf(" >>> DISTANCE JUMP (end of previous, start of new)\n");
-                    
-                    // End previous obstacle
-                    int obstacle_end_angle = angle - SCAN_STEP;
-                    int angle_span = obstacle_end_angle - obstacle_start_angle;
-                    
-                    if (angle_span >= MIN_OBSTACLE_SPAN) {
-                        float width = calculateObstacleWidth(obstacle_start_angle, 
-                                                            obstacle_end_angle, 
-                                                            obstacle_distance);
-                        printf("\n*** OBSTACLE #%d ***\n", obstacle_count);
-                        printf("  Angle: %d° to %d° (span: %d°)\n", 
-                               obstacle_start_angle, obstacle_end_angle, angle_span);
-                        printf("  Distance: %llu cm\n", obstacle_distance);
-                        printf("  Width: %.2f cm\n\n", width);
-                    } else {
-                        obstacle_count--;
+                uint64_t distance_diff = (obstacle_min_distance > distance) ? 
+                                        (obstacle_min_distance - distance) : 
+                                        (distance - obstacle_min_distance);
+                
+                // If distance is getting closer, always track it
+                // If distance is increasing, only if within threshold
+                if (is_getting_closer || distance_diff <= DISTANCE_CHANGE_THRESHOLD) {
+                    // Track minimum distance (closest point)
+                    if (distance < obstacle_min_distance) {
+                        obstacle_min_distance = distance;
                     }
-                    
-                    // Start new obstacle
-                    obstacle_start_angle = angle;
-                    obstacle_distance = distance;
-                    obstacle_count++;
-                } else {
-                    // Continue tracking same obstacle
                     printf(" >>> IN OBSTACLE\n");
-                    // Average the distance for more stable readings
-                    obstacle_distance = (obstacle_distance * 3 + distance) / 4;
+                } else {
+                    // Large increase - likely an outlier at scan edge
+                    printf(" >>> IN OBSTACLE (outlier, ignoring)\n");
                 }
-                last_valid_distance = distance;
             }
             else if (!obstacle_detected && in_obstacle) {
                 // End of obstacle
@@ -246,12 +220,17 @@ void scanForObstacles() {
                 if (angle_span >= MIN_OBSTACLE_SPAN) {
                     float width = calculateObstacleWidth(obstacle_start_angle, 
                                                         obstacle_end_angle, 
-                                                        obstacle_distance);
+                                                        obstacle_min_distance);
+                    
+                    // Apply exponential moving average (70% new, 30% old)
+                    float smoothed_width = (width * 0.7f) + (last_width * 0.3f);
+                    last_width = smoothed_width;
+                    
                     printf("\n*** OBSTACLE #%d ***\n", obstacle_count);
                     printf("  Angle: %d° to %d° (span: %d°)\n", 
                            obstacle_start_angle, obstacle_end_angle, angle_span);
-                    printf("  Distance: %llu cm\n", obstacle_distance);
-                    printf("  Width: %.2f cm\n\n", width);
+                    printf("  Min Distance: %llu cm\n", obstacle_min_distance);
+                    printf("  Width: %.2f cm (smoothed: %.2f cm)\n\n", width, smoothed_width);
                 } else {
                     obstacle_count--;
                 }
@@ -261,11 +240,10 @@ void scanForObstacles() {
             }
         }
         else {
-            // Timeout - skip but don't end obstacle immediately
             timeout_count++;
             printf("Angle: %3d° | Timeout (%d)\n", angle, timeout_count);
             
-            // If too many timeouts in a row, end the obstacle
+            // End obstacle if too many timeouts
             if (timeout_count > 2 && in_obstacle) {
                 in_obstacle = false;
                 int obstacle_end_angle = angle - (SCAN_STEP * 2);
@@ -276,12 +254,17 @@ void scanForObstacles() {
                 if (angle_span >= MIN_OBSTACLE_SPAN) {
                     float width = calculateObstacleWidth(obstacle_start_angle, 
                                                         obstacle_end_angle, 
-                                                        obstacle_distance);
+                                                        obstacle_min_distance);
+                    
+                    // Apply exponential moving average
+                    float smoothed_width = (width * 0.7f) + (last_width * 0.3f);
+                    last_width = smoothed_width;
+                    
                     printf("\n*** OBSTACLE #%d ***\n", obstacle_count);
                     printf("  Angle: %d° to %d° (span: %d°)\n", 
                            obstacle_start_angle, obstacle_end_angle, angle_span);
-                    printf("  Distance: %llu cm\n", obstacle_distance);
-                    printf("  Width: %.2f cm\n\n", width);
+                    printf("  Min Distance: %llu cm\n", obstacle_min_distance);
+                    printf("  Width: %.2f cm (smoothed: %.2f cm)\n\n", width, smoothed_width);
                 } else {
                     obstacle_count--;
                 }
@@ -296,12 +279,17 @@ void scanForObstacles() {
         if (angle_span >= MIN_OBSTACLE_SPAN) {
             float width = calculateObstacleWidth(obstacle_start_angle, 
                                                 MAX_ANGLE, 
-                                                obstacle_distance);
+                                                obstacle_min_distance);
+            
+            // Apply exponential moving average
+            float smoothed_width = (width * 0.7f) + (last_width * 0.3f);
+            last_width = smoothed_width;
+            
             printf("\n*** OBSTACLE #%d ***\n", obstacle_count);
             printf("  Angle: %d° to %d° (span: %d°)\n", 
                    obstacle_start_angle, MAX_ANGLE, angle_span);
-            printf("  Distance: %llu cm\n", obstacle_distance);
-            printf("  Width: %.2f cm\n\n", width);
+            printf("  Min Distance: %llu cm\n", obstacle_min_distance);
+            printf("  Width: %.2f cm (smoothed: %.2f cm)\n\n", width, smoothed_width);
         } else {
             obstacle_count--;
         }
@@ -337,7 +325,7 @@ int main() {
     setupServo(SERVO_PIN);
     
     // Center the servo initially
-    setServoAngle(90);
+    setServoAngle(ANGLE_CENTER);
     sleep_ms(500);
     
     printf("System ready!\n");
