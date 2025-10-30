@@ -53,6 +53,7 @@ float pid_compute(PIDController *pid, float measured_value, float dt) {
     // Save error for next iteration
     pid->previous_error = error;
     
+    printf("PID OUTPUT: %.2f\n", output);
     return output;
 }
 

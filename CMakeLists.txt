@@ -32,7 +32,7 @@ project(robo_pico C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-# Add executable
+# Add executable for main robot (simplified for now)
 add_executable(robo_pico
     main.c
     motor.c
@@ -40,16 +40,39 @@ add_executable(robo_pico
     pid.c
 )
 
-# Pull in common dependencies
+# Add executable for testing (Week 9)
+add_executable(robo_pico_test
+    main_test.c
+    motor.c
+    encoder.c
+    pid.c
+    test_motor_pid.c
+)
+
+# Pull in common dependencies for main robot
 target_link_libraries(robo_pico
     pico_stdlib
     hardware_pwm
     hardware_gpio
 )
 
-# Enable USB output, disable UART output
+# Pull in common dependencies for test
+target_link_libraries(robo_pico_test
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+)
+
+# Enable USB output for main robot
 pico_enable_stdio_usb(robo_pico 1)
 pico_enable_stdio_uart(robo_pico 0)
 
-# Create map/bin/hex/uf2 files
+# Enable USB output for test
+pico_enable_stdio_usb(robo_pico_test 1)
+pico_enable_stdio_uart(robo_pico_test 0)
+
+# Create map/bin/hex/uf2 files for main robot
 pico_add_extra_outputs(robo_pico)
+
+# Create map/bin/hex/uf2 files for test
+pico_add_extra_outputs(robo_pico_test)

@@ -1,4 +1,5 @@
 /Users/gerald/Desktop/Line-Following-Robot/build/CMakeFiles/robo_pico.dir
+/Users/gerald/Desktop/Line-Following-Robot/build/CMakeFiles/robo_pico_test.dir
 /Users/gerald/Desktop/Line-Following-Robot/build/CMakeFiles/edit_cache.dir
 /Users/gerald/Desktop/Line-Following-Robot/build/CMakeFiles/rebuild_cache.dir
 /Users/gerald/Desktop/Line-Following-Robot/build/pico-sdk/CMakeFiles/edit_cache.dir

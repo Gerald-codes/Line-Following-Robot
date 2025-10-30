@@ -130,6 +130,19 @@ robo_pico/fast:
 .PHONY : robo_pico/fast
 
 #=============================================================================
+# Target rules for targets named robo_pico_test
+
+# Build rule for target.
+robo_pico_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 robo_pico_test
+.PHONY : robo_pico_test
+
+# fast build rule for target.
+robo_pico_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/build
+.PHONY : robo_pico_test/fast
+
+#=============================================================================
 # Target rules for targets named bs2_default
 
 # Build rule for target.
@@ -200,6 +213,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.o: Use
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.i
@@ -208,6 +222,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.i: Use
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.s
@@ -216,6 +231,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.s: Use
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.o
@@ -224,6 +240,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.o: Users/g
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.i
@@ -232,6 +249,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.i: Users/g
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.s
@@ -240,6 +258,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.s: Users/g
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.o
@@ -248,6 +267,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.o: Users/g
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.i
@@ -256,6 +276,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.i: Users/g
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.s
@@ -264,6 +285,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.s: Users/g
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.o
@@ -272,6 +294,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.o: User
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.i
@@ -280,6 +303,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.i: User
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.s
@@ -288,6 +312,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.s: User
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.o
@@ -296,6 +321,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.o: Users/g
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.i
@@ -304,6 +330,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.i: Users/g
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.s
@@ -312,6 +339,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.s: Users/g
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.o
@@ -320,6 +348,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.o: Users
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.i
@@ -328,6 +357,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.i: Users
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.s
@@ -336,6 +366,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.s: Users
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.o
@@ -344,6 +375,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.o: Users/g
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.i
@@ -352,6 +384,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.i: Users/g
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.s
@@ -360,6 +393,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.s: Users/g
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.o
@@ -368,6 +402,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.o: U
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.i
@@ -376,6 +411,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.i: U
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.s
@@ -384,6 +420,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.s: U
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.o
@@ -392,6 +429,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.o: Users/g
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.i
@@ -400,6 +438,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.i: Users/g
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.s
@@ -408,6 +447,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.s: Users/g
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ncm_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.o
@@ -416,6 +456,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.o: U
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.i
@@ -424,6 +465,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.i: U
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.s
@@ -432,6 +474,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.s: U
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.o
@@ -440,6 +483,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.o: U
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.i
@@ -448,6 +492,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.i: U
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.s
@@ -456,6 +501,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.s: U
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.o
@@ -464,6 +510,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.o: Use
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.i
@@ -472,6 +519,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.i: Use
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.s
@@ -480,6 +528,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.s: Use
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.o
@@ -488,6 +537,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.o: Users/geral
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.i
@@ -496,6 +546,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.i: Users/geral
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.s
@@ -504,6 +555,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.s: Users/geral
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.o
@@ -512,6 +564,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.o: Users/gerald/.pi
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.i
@@ -520,6 +573,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.i: Users/gerald/.pi
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.s
@@ -528,6 +582,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.s: Users/gerald/.pi
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.o
@@ -536,6 +591,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.i
@@ -544,6 +600,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.s
@@ -552,6 +609,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
@@ -560,6 +618,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.i
@@ -568,6 +627,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.s
@@ -576,6 +636,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
@@ -584,6 +645,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.i
@@ -592,6 +654,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.s
@@ -600,6 +663,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.o: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.o
@@ -608,6 +672,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.o: Users/gerald/.pico-sdk/
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.i: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.i
@@ -616,6 +681,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.i: Users/gerald/.pico-sdk/
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.s: Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.s
@@ -624,6 +690,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.s: Users/gerald/.pico-sdk/
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.o
@@ -632,6 +699,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.o: Users/gerald
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.i
@@ -640,6 +708,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.i: Users/gerald
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.s
@@ -648,6 +717,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.s: Users/gerald
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.o
@@ -656,6 +726,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.o: Users/
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.i
@@ -664,6 +735,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.i: Users/
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.s
@@ -672,6 +744,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.s: Users/
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.o
@@ -680,6 +753,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.o: Users/gerald/
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.i
@@ -688,6 +762,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.i: Users/gerald/
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.s
@@ -696,6 +771,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.s: Users/gerald/
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.o
@@ -704,6 +780,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.o: Users/gerald/.pic
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.i
@@ -712,6 +789,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.i: Users/gerald/.pic
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.s
@@ -720,6 +798,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.s: Users/gerald/.pic
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.o
@@ -728,6 +807,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.o: Users/gerald/.pico-
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.i
@@ -736,6 +816,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.i: Users/gerald/.pico-
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.s
@@ -744,6 +825,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.s: Users/gerald/.pico-
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.o
@@ -752,6 +834,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.o: Users/gerald/.pico
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.i
@@ -760,6 +843,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.i: Users/gerald/.pico
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.s
@@ -768,6 +852,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.s: Users/gerald/.pico
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.o
@@ -776,6 +861,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.i
@@ -784,6 +870,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.s
@@ -792,6 +879,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.o
@@ -800,6 +888,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.o: Users/gerald/.
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.i
@@ -808,6 +897,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.i: Users/gerald/.
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.s
@@ -816,6 +906,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.s: Users/gerald/.
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.o
@@ -824,6 +915,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.o: Users/gerald/.pic
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.i
@@ -832,6 +924,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.i: Users/gerald/.pic
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.s
@@ -840,6 +933,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.s: Users/gerald/.pic
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.o
@@ -848,6 +942,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.o: Users/gerald/.pic
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.i
@@ -856,6 +951,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.i: Users/gerald/.pic
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.s
@@ -864,6 +960,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.s: Users/gerald/.pic
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.o
@@ -872,6 +969,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.i
@@ -880,6 +978,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.s
@@ -888,6 +987,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.o
@@ -896,6 +996,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.o: 
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.i
@@ -904,6 +1005,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.i: 
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.s
@@ -912,6 +1014,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.s: 
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.o
@@ -920,6 +1023,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.o: Users/
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.i
@@ -928,6 +1032,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.i: Users/
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.s
@@ -936,6 +1041,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.s: Users/
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.S.o
@@ -944,6 +1050,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.o: User
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.o
@@ -952,6 +1059,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.i
@@ -960,6 +1068,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.s
@@ -968,6 +1077,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.o
@@ -976,6 +1086,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.i
@@ -984,6 +1095,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.s
@@ -992,6 +1104,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.o
@@ -1000,6 +1113,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.o: Users/gerald
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.i
@@ -1008,6 +1122,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.i: Users/gerald
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.s
@@ -1016,6 +1131,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.s: Users/gerald
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.S.o
@@ -1024,6 +1140,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.o
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.o
@@ -1032,6 +1149,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.o: Users/gerald
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.i
@@ -1040,6 +1158,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.i: Users/gerald
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.s
@@ -1048,6 +1167,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.s: Users/gerald
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.o
@@ -1056,6 +1176,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.i
@@ -1064,6 +1185,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.s
@@ -1072,6 +1194,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
@@ -1080,6 +1203,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spi
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.i
@@ -1088,6 +1212,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spi
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.s
@@ -1096,6 +1221,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spi
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.o
@@ -1104,6 +1230,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.i
@@ -1112,6 +1239,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.s
@@ -1120,6 +1248,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.o
@@ -1128,6 +1257,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.i
@@ -1136,6 +1266,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.s
@@ -1144,6 +1275,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.o
@@ -1152,6 +1284,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.i
@@ -1160,6 +1293,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.s
@@ -1168,6 +1302,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.o
@@ -1176,6 +1311,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.i
@@ -1184,6 +1320,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.s
@@ -1192,6 +1329,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.o
@@ -1200,6 +1338,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.o: Us
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.i
@@ -1208,6 +1347,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.i: Us
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.s
@@ -1216,6 +1356,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.s: Us
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.o
@@ -1224,6 +1365,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.o: 
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.i
@@ -1232,6 +1374,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.i: 
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.s
@@ -1240,6 +1383,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.s: 
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.o
@@ -1248,6 +1392,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.i
@@ -1256,6 +1401,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.s
@@ -1264,6 +1410,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.o
@@ -1272,6 +1419,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.i
@@ -1280,6 +1428,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.s
@@ -1288,6 +1437,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
@@ -1296,6 +1446,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.o: Us
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.o
@@ -1304,6 +1455,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.i
@@ -1312,6 +1464,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.s
@@ -1320,6 +1473,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.o
@@ -1328,6 +1482,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.o: Use
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.i
@@ -1336,6 +1491,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.i: Use
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.s
@@ -1344,6 +1500,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.s: Use
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.o
@@ -1352,6 +1509,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_inter
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.i
@@ -1360,6 +1518,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_inter
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.s
@@ -1368,6 +1527,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_inter
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S.o
@@ -1376,6 +1536,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.o: Users/gerald/.
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.o
@@ -1384,6 +1545,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.o: U
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.i
@@ -1392,6 +1554,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.i: U
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.s
@@ -1400,6 +1563,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.s: U
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.o
@@ -1408,6 +1572,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.o:
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
@@ -1416,6 +1581,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
@@ -1424,6 +1590,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp20
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.i
@@ -1432,6 +1599,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp20
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.s
@@ -1440,6 +1608,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp20
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.o
@@ -1448,6 +1617,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.o: Users
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.i
@@ -1456,6 +1626,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.i: Users
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.s
@@ -1464,6 +1635,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.s: Users
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
@@ -1472,6 +1644,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_r
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.o
@@ -1480,6 +1653,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enume
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.i
@@ -1488,6 +1662,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enume
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.s
@@ -1496,6 +1671,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enume
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.o
@@ -1504,6 +1680,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.o: Users/gerald
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.i
@@ -1512,6 +1689,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.i: Users/gerald
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.s
@@ -1520,6 +1698,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.s: Users/gerald
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
@@ -1528,6 +1707,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.o:
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
@@ -1536,6 +1716,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.i
@@ -1544,6 +1725,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.s
@@ -1552,6 +1734,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.o
@@ -1560,6 +1743,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.o: Users/g
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.i
@@ -1568,6 +1752,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.i: Users/g
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.s
@@ -1576,6 +1761,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.s: Users/g
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
@@ -1584,6 +1770,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
@@ -1592,6 +1779,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_ae
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.o
@@ -1600,6 +1788,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.i
@@ -1608,6 +1797,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.s
@@ -1616,6 +1806,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
@@ -1624,6 +1815,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.o: Us
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.o
@@ -1632,6 +1824,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.o: U
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.i
@@ -1640,6 +1833,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.i: U
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.s
@@ -1648,6 +1842,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.s: U
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.o
@@ -1656,6 +1851,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.o: Use
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.i
@@ -1664,6 +1860,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.i: Use
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.s
@@ -1672,6 +1869,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.s: Use
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.o
@@ -1680,6 +1878,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.i
@@ -1688,6 +1887,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.s
@@ -1696,6 +1896,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.o
@@ -1704,6 +1905,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.o: Users/ge
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.i
@@ -1712,6 +1914,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.i: Users/ge
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.s
@@ -1720,6 +1923,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.s: Users/ge
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.o
@@ -1728,6 +1932,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.o
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.i
@@ -1736,6 +1941,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.i
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.s
@@ -1744,6 +1950,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.s
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
@@ -1752,6 +1959,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_c
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.i
@@ -1760,6 +1968,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_c
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.s
@@ -1768,6 +1977,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_c
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.o
@@ -1776,6 +1986,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_s
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.i
@@ -1784,6 +1995,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_s
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.s
@@ -1792,6 +2004,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_s
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
@@ -1800,6 +2013,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standa
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.i
@@ -1808,6 +2022,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standa
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.s
@@ -1816,6 +2031,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standa
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.o
@@ -1824,6 +2040,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.o: Users/gerald
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.i
@@ -1832,6 +2049,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.i: Users/gerald
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.s
@@ -1840,6 +2058,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.s: Users/gerald
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.o
@@ -1848,6 +2067,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.o
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.i
@@ -1856,6 +2076,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.i
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.s
@@ -1864,6 +2085,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.s
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.o
@@ -1872,6 +2094,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.o: User
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.i
@@ -1880,6 +2103,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.i: User
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.s
@@ -1888,6 +2112,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.s: User
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.o
@@ -1896,6 +2121,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descrip
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.i
@@ -1904,6 +2130,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descrip
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.s
@@ -1912,6 +2139,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descrip
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.o
@@ -1920,6 +2148,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.o: Users/gera
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.i
@@ -1928,6 +2157,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.i: Users/gera
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.s
@@ -1936,6 +2166,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.s: Users/gera
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.s
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.o: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.o
@@ -1944,6 +2175,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.o: User
 # target to build an object file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.o
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.o
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.i: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.i
@@ -1952,6 +2184,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.i: User
 # target to preprocess a source file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.i
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.i
 
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.s: Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.s
@@ -1960,6 +2193,7 @@ Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.s: User
 # target to generate assembly for a file
 Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.s
 .PHONY : Users/gerald/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.s
 
 encoder.o: encoder.c.o
@@ -1968,6 +2202,7 @@ encoder.o: encoder.c.o
 # target to build an object file
 encoder.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/encoder.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/encoder.c.o
 .PHONY : encoder.c.o
 
 encoder.i: encoder.c.i
@@ -1976,6 +2211,7 @@ encoder.i: encoder.c.i
 # target to preprocess a source file
 encoder.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/encoder.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/encoder.c.i
 .PHONY : encoder.c.i
 
 encoder.s: encoder.c.s
@@ -1984,6 +2220,7 @@ encoder.s: encoder.c.s
 # target to generate assembly for a file
 encoder.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/encoder.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/encoder.c.s
 .PHONY : encoder.c.s
 
 main.o: main.c.o
@@ -2010,12 +2247,37 @@ main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/main.c.s
 .PHONY : main.c.s
 
+main_test.o: main_test.c.o
+.PHONY : main_test.o
+
+# target to build an object file
+main_test.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/main_test.c.o
+.PHONY : main_test.c.o
+
+main_test.i: main_test.c.i
+.PHONY : main_test.i
+
+# target to preprocess a source file
+main_test.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/main_test.c.i
+.PHONY : main_test.c.i
+
+main_test.s: main_test.c.s
+.PHONY : main_test.s
+
+# target to generate assembly for a file
+main_test.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/main_test.c.s
+.PHONY : main_test.c.s
+
 motor.o: motor.c.o
 .PHONY : motor.o
 
 # target to build an object file
 motor.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/motor.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/motor.c.o
 .PHONY : motor.c.o
 
 motor.i: motor.c.i
@@ -2024,6 +2286,7 @@ motor.i: motor.c.i
 # target to preprocess a source file
 motor.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/motor.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/motor.c.i
 .PHONY : motor.c.i
 
 motor.s: motor.c.s
@@ -2032,6 +2295,7 @@ motor.s: motor.c.s
 # target to generate assembly for a file
 motor.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/motor.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/motor.c.s
 .PHONY : motor.c.s
 
 pid.o: pid.c.o
@@ -2040,6 +2304,7 @@ pid.o: pid.c.o
 # target to build an object file
 pid.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/pid.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/pid.c.o
 .PHONY : pid.c.o
 
 pid.i: pid.c.i
@@ -2048,6 +2313,7 @@ pid.i: pid.c.i
 # target to preprocess a source file
 pid.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/pid.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/pid.c.i
 .PHONY : pid.c.i
 
 pid.s: pid.c.s
@@ -2056,7 +2322,32 @@ pid.s: pid.c.s
 # target to generate assembly for a file
 pid.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico.dir/build.make CMakeFiles/robo_pico.dir/pid.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/pid.c.s
 .PHONY : pid.c.s
+
+test_motor_pid.o: test_motor_pid.c.o
+.PHONY : test_motor_pid.o
+
+# target to build an object file
+test_motor_pid.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/test_motor_pid.c.o
+.PHONY : test_motor_pid.c.o
+
+test_motor_pid.i: test_motor_pid.c.i
+.PHONY : test_motor_pid.i
+
+# target to preprocess a source file
+test_motor_pid.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/test_motor_pid.c.i
+.PHONY : test_motor_pid.c.i
+
+test_motor_pid.s: test_motor_pid.c.s
+.PHONY : test_motor_pid.s
+
+# target to generate assembly for a file
+test_motor_pid.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/robo_pico_test.dir/build.make CMakeFiles/robo_pico_test.dir/test_motor_pid.c.s
+.PHONY : test_motor_pid.c.s
 
 # Help Target
 help:
@@ -2072,6 +2363,7 @@ help:
 	@echo "... bs2_default"
 	@echo "... bs2_default_library"
 	@echo "... robo_pico"
+	@echo "... robo_pico_test"
 	@echo "... Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.o"
 	@echo "... Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.i"
 	@echo "... Users/gerald/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.s"
@@ -2299,12 +2591,18 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... main_test.o"
+	@echo "... main_test.i"
+	@echo "... main_test.s"
 	@echo "... motor.o"
 	@echo "... motor.i"
 	@echo "... motor.s"
 	@echo "... pid.o"
 	@echo "... pid.i"
 	@echo "... pid.s"
+	@echo "... test_motor_pid.o"
+	@echo "... test_motor_pid.i"
+	@echo "... test_motor_pid.s"
 .PHONY : help
 
 
