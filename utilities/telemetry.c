@@ -1,18 +1,3 @@
-/**
- * telemetry.c
- * MQTT-Based Telemetry System with WiFi Support
- * 
- * This implementation provides both MQTT telemetry and serial fallback.
- * For Demo 1, it publishes real-time speed, distance, and heading data.
- * 
- * NOTE: This is a TEMPLATE implementation. You'll need to:
- * 1. Add appropriate Pico W WiFi libraries (pico_cyw43_arch, pico_lwip)
- * 2. Add MQTT library (e.g., paho-mqtt-embedded-c or lwip MQTT)
- * 3. Update CMakeLists.txt with required libraries
- * 
- * The structure is designed to work with the Pico W's WiFi capabilities.
- */
-
 #include "telemetry.h"
 #include "config.h"
 #include <stdio.h>

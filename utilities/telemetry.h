@@ -1,14 +1,3 @@
-/**
- * telemetry.h
- * MQTT-Based Telemetry over WiFi for Robotic Car Project
- * 
- * Demo 1 Requirements:
- * - Publish speed, distance, heading (raw & filtered) via MQTT
- * - Real-time data transmission to PC/mobile dashboard
- * - Connection status monitoring
- * - Error handling and reconnection logic
- */
-
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
