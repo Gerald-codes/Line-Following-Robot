@@ -1,4 +1,4 @@
-# CMakeLists.txt with motor test
+# CMakeLists.txt with Demo 1 and Demo 2
 
 cmake_minimum_required(VERSION 3.13)
 
@@ -35,47 +35,7 @@ include_directories(
 )
 
 # ============================================================================
-# MOTOR TEST (Run this first!)
-# ============================================================================
-
-add_executable(motor_test
-    main_program/motor_test.c
-    hardware_drivers/motor.c
-    hardware_drivers/encoder.c
-)
-
-target_link_libraries(motor_test
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-)
-
-pico_enable_stdio_usb(motor_test 1)
-pico_enable_stdio_uart(motor_test 0)
-pico_add_extra_outputs(motor_test)
-
-# ============================================================================
-# ENCODER TEST
-# ============================================================================
-
-add_executable(encoder_test
-    main_program/encoder_test_main.c
-    hardware_drivers/motor.c
-    hardware_drivers/encoder.c
-)
-
-target_link_libraries(encoder_test
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-)
-
-pico_enable_stdio_usb(encoder_test 1)
-pico_enable_stdio_uart(encoder_test 0)
-pico_add_extra_outputs(encoder_test)
-
-# ============================================================================
-# DEMO 1
+# DEMO 1: Basic Motion & Sensing Integration
 # ============================================================================
 
 add_executable(demo1
@@ -98,3 +58,68 @@ target_link_libraries(demo1
 pico_enable_stdio_usb(demo1 1)
 pico_enable_stdio_uart(demo1 0)
 pico_add_extra_outputs(demo1)
+
+# ============================================================================
+# DEMO 2: Line Following with Barcode Detection
+# ============================================================================
+
+add_executable(demo2
+    main_program/demo2_main.c
+    hardware_drivers/motor.c
+    hardware_drivers/encoder.c
+    hardware_drivers/imu.c
+    hardware_drivers/ir_sensor.c
+    hardware_drivers/barcode.c
+    control_algo/pid.c
+    control_algo/heading_control.c
+    control_algo/line_following.c
+    control_algo/filters.c
+    utilities/telemetry.c
+)
+
+target_link_libraries(demo2
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+    hardware_adc
+)
+
+pico_enable_stdio_usb(demo2 1)
+pico_enable_stdio_uart(demo2 0)
+pico_add_extra_outputs(demo2)
+
+# ============================================================================
+# TEST PROGRAMS
+# ============================================================================
+
+add_executable(encoder_test
+    main_program/encoder_test_main.c
+    hardware_drivers/motor.c
+    hardware_drivers/encoder.c
+)
+
+target_link_libraries(encoder_test
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+)
+
+pico_enable_stdio_usb(encoder_test 1)
+pico_enable_stdio_uart(encoder_test 0)
+pico_add_extra_outputs(encoder_test)
+
+add_executable(motor_test
+    main_program/motor_test_simple.c
+    hardware_drivers/motor.c
+    hardware_drivers/encoder.c
+)
+
+target_link_libraries(motor_test
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+)
+
+pico_enable_stdio_usb(motor_test 1)
+pico_enable_stdio_uart(motor_test 0)
+pico_add_extra_outputs(motor_test)
