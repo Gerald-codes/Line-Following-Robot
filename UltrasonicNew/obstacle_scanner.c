@@ -14,48 +14,6 @@ static float last_width = 0.0f;
 static uint64_t distance_history[DISTANCE_HISTORY_SIZE] = {0};
 static int distance_history_count = 0;
 
-// Outlier detection: track recent valid distances
-#define OUTLIER_HISTORY_SIZE 5
-static uint64_t outlier_history[OUTLIER_HISTORY_SIZE] = {0};
-static int outlier_history_count = 0;
-
-// Helper: Get median of recent valid distances for outlier detection
-static uint64_t get_median_distance(void) {
-    if (outlier_history_count == 0) return 0;
-    
-    uint64_t sum = 0;
-    for (int i = 0; i < outlier_history_count; i++) {
-        sum += outlier_history[i];
-    }
-    return sum / outlier_history_count;
-}
-
-// Helper: Add distance to outlier history
-static void add_to_outlier_history(uint64_t distance) {
-    // Shift history
-    for (int i = OUTLIER_HISTORY_SIZE - 1; i > 0; i--) {
-        outlier_history[i] = outlier_history[i-1];
-    }
-    outlier_history[0] = distance;
-    
-    if (outlier_history_count < OUTLIER_HISTORY_SIZE) {
-        outlier_history_count++;
-    }
-}
-
-// Helper: Check if distance is an outlier (>40% deviation from median)
-static bool is_outlier(uint64_t distance) {
-    if (outlier_history_count < 2) return false;  // Need at least 2 readings
-    
-    uint64_t median = get_median_distance();
-    if (median == 0) return false;
-    
-    uint64_t diff = (distance > median) ? (distance - median) : (median - distance);
-    uint64_t threshold = (median * 40) / 100;  // 40% threshold
-    
-    return diff > threshold;
-}
-
 // Helper: Get smoothed distance by averaging last readings
 static uint64_t get_smoothed_distance(uint64_t new_distance) {
     // Shift history
@@ -79,18 +37,16 @@ static uint64_t get_smoothed_distance(uint64_t new_distance) {
 }
 
 float scanner_calculate_width(int angle_start, int angle_end, uint64_t min_distance) {
-    int angle_diff = angle_end - angle_start;
     
-    if (angle_diff <= 0) {
-        return 0.0f;
-    }
+    // Convert to relative angles from center
+    float start_relative = (angle_start - ANGLE_CENTER) * 3.14159265359f / 180.0f;
+    float end_relative = (angle_end - ANGLE_CENTER) * 3.14159265359f / 180.0f;
     
-    // Convert angle difference to radians
-    float angle_radians = (angle_diff * 3.14159265359f) / 180.0f;
+    // Use min_distance for both points (approximation)
+    float x1 = (float)min_distance * sinf(start_relative);
+    float x2 = (float)min_distance * sinf(end_relative);
     
-    // Width = 2 * min_distance * sin(angle_span / 2)
-    // This measures the perpendicular chord at the minimum distance point
-    float width = 2.0f * (float)min_distance * sinf(angle_radians / 2.0f);
+    float width = fabsf(x2 - x1);
     
     return width;
 }
@@ -124,12 +80,6 @@ ScanResult scanner_perform_scan(void) {
         distance_history[i] = 0;
     }
     
-    // Reset outlier history for this scan
-    outlier_history_count = 0;
-    for (int i = 0; i < OUTLIER_HISTORY_SIZE; i++) {
-        outlier_history[i] = 0;
-    }
-    
     for (int angle = MIN_ANGLE; angle <= MAX_ANGLE; angle += SCAN_STEP) {
         servo_set_angle(angle);
         timer_wait_ms(100);
@@ -145,15 +95,6 @@ ScanResult scanner_perform_scan(void) {
         
         if (status == SUCCESS) {
             timeout_count = 0;
-            
-            // Check for outliers first
-            if (is_outlier(distance)) {
-                printf("Angle: %3d° | Distance: %3llu cm (OUTLIER - rejected)\n", angle, distance);
-                continue;  // Skip this reading entirely
-            }
-            
-            // Add to outlier history for future comparisons
-            add_to_outlier_history(distance);
             
             // Apply signal smoothing to filter noise
             uint64_t smoothed_distance = get_smoothed_distance(distance);
@@ -172,26 +113,11 @@ ScanResult scanner_perform_scan(void) {
                 printf(" >>> START\n");
             }
             else if (obstacle_detected && in_obstacle) {
-                // Check if distance is decreasing (moving toward obstacle) - this is normal
-                // Only ignore if distance INCREASES dramatically (outlier at edge)
-                bool is_getting_closer = (smoothed_distance <= obstacle_min_distance);
-                
-                uint64_t distance_diff = (obstacle_min_distance > smoothed_distance) ? 
-                                        (obstacle_min_distance - smoothed_distance) : 
-                                        (smoothed_distance - obstacle_min_distance);
-                
-                // If distance is getting closer, always track it
-                // If distance is increasing, only if within threshold
-                if (is_getting_closer || distance_diff <= DISTANCE_CHANGE_THRESHOLD) {
-                    // Track minimum distance (closest point)
-                    if (smoothed_distance < obstacle_min_distance) {
-                        obstacle_min_distance = smoothed_distance;
-                    }
-                    printf(" >>> IN OBSTACLE\n");
-                } else {
-                    // Large increase - likely an outlier at scan edge
-                    printf(" >>> IN OBSTACLE (outlier, ignoring)\n");
+                // Track minimum distance (closest point)
+                if (smoothed_distance < obstacle_min_distance) {
+                    obstacle_min_distance = smoothed_distance;
                 }
+                printf(" >>> IN OBSTACLE\n");
             }
             else if (!obstacle_detected && in_obstacle) {
                 // End of obstacle

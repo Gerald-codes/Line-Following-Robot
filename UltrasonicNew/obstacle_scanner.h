@@ -8,11 +8,11 @@
 
 // Scanning parameters
 #define ANGLE_CENTER 75      // Center position of servo
-#define MIN_ANGLE (ANGLE_CENTER - 30)  // 30° left from center
-#define MAX_ANGLE (ANGLE_CENTER + 30)  // 30° right from center
+#define MIN_ANGLE (ANGLE_CENTER - 60)  // 60° left from center
+#define MAX_ANGLE (ANGLE_CENTER + 60)  // 60° right from center
 #define SCAN_STEP 3           // Degrees per step
-#define OBSTACLE_THRESHOLD_MIN 5   // cm
-#define OBSTACLE_THRESHOLD_MAX 100 // cm
+#define OBSTACLE_THRESHOLD_MIN 2   // cm
+#define OBSTACLE_THRESHOLD_MAX 30 // cm
 #define MIN_OBSTACLE_SPAN 10   // Minimum angle span to count as obstacle
 #define DISTANCE_CHANGE_THRESHOLD 25  // cm
 
