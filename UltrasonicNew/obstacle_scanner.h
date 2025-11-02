@@ -26,7 +26,7 @@ typedef struct {
 } Obstacle;
 
 typedef struct {
-    Obstacle obstacles[20];
+    Obstacle obstacles[10];
     int obstacle_count;
     bool is_scanning;
     uint64_t distances[21];  // 21 readings from 45-105 deg in 3 deg steps
