@@ -87,8 +87,8 @@ ScanResult scanner_perform_scan(void) {
         uint64_t distance;
         int status = ultrasonic_get_distance(TRIG_PIN, ECHO_PIN, &distance);
         
-        // Store the raw distance reading
-        if (distance_index < 21) {
+        // Store the raw distance reading (all 41 readings)
+        if (distance_index < 41) {
             result.distances[distance_index] = (status == SUCCESS) ? distance : 0;
             distance_index++;
         }
