@@ -27,36 +27,36 @@
 // MQTT TOPICS - Structured Hierarchy
 // ============================================================================
 // Speed telemetry
-#define TOPIC_SPEED_LEFT "robot/demo1/speed/left"
-#define TOPIC_SPEED_RIGHT "robot/demo1/speed/right"
-#define TOPIC_SPEED_AVG "robot/demo1/speed/average"
+#define TOPIC_SPEED_LEFT "robot/robotic_car1/speed/left"
+#define TOPIC_SPEED_RIGHT "robot/robotic_car1/speed/right"
+#define TOPIC_SPEED_AVG "robot/robotic_car1/speed/average"
 
 // Distance telemetry
-#define TOPIC_DISTANCE_LEFT "robot/demo1/distance/left"
-#define TOPIC_DISTANCE_RIGHT "robot/demo1/distance/right"
-#define TOPIC_DISTANCE_TOTAL "robot/demo1/distance/total"
+#define TOPIC_DISTANCE_LEFT "robot/robotic_car1/distance/left"
+#define TOPIC_DISTANCE_RIGHT "robot/robotic_car1/distance/right"
+#define TOPIC_DISTANCE_TOTAL "robot/robotic_car1/distance/total"
 
 // Heading telemetry (IMU)
-#define TOPIC_HEADING_FILTERED "robot/demo1/heading/filtered"
-#define TOPIC_HEADING_RAW "robot/demo1/heading/raw"
-#define TOPIC_HEADING_ERROR "robot/demo1/heading/error"
+#define TOPIC_HEADING_FILTERED "robot/robotic_car1/heading/filtered"
+#define TOPIC_HEADING_RAW "robot/robotic_car1/heading/raw"
+#define TOPIC_HEADING_ERROR "robot/robotic_car1/heading/error"
 
 // IMU data (raw and filtered)
-#define TOPIC_IMU_GYRO_Z "robot/demo1/imu/gyro_z"
-#define TOPIC_IMU_ACCEL_X "robot/demo1/imu/accel_x"
-#define TOPIC_IMU_ACCEL_Y "robot/demo1/imu/accel_y"
+#define TOPIC_IMU_GYRO_Z "robot/robotic_car1/imu/gyro_z"
+#define TOPIC_IMU_ACCEL_X "robot/robotic_car1/imu/accel_x"
+#define TOPIC_IMU_ACCEL_Y "robot/robotic_car1/imu/accel_y"
 
 // Motor control
-#define TOPIC_MOTOR_LEFT_PWM "robot/demo1/motor/left/pwm"
-#define TOPIC_MOTOR_RIGHT_PWM "robot/demo1/motor/right/pwm"
+#define TOPIC_MOTOR_LEFT_PWM "robot/robotic_car1/motor/left/pwm"
+#define TOPIC_MOTOR_RIGHT_PWM "robot/robotic_car1/motor/right/pwm"
 
 // System status
-#define TOPIC_STATUS "robot/demo1/status"
-#define TOPIC_ERROR "robot/demo1/error"
-#define TOPIC_CONNECTION "robot/demo1/connection"
+#define TOPIC_STATUS "robot/robotic_car1/status"
+#define TOPIC_ERROR "robot/robotic_car1/error"
+#define TOPIC_CONNECTION "robot/robotic_car1/connection"
 
 // Command topic (subscribe) - for receiving commands
-#define TOPIC_COMMAND "robot/demo1/command"
+#define TOPIC_COMMAND "robot/robotic_car1/command"
 
 // ============================================================================
 // MQTT QoS LEVELS
