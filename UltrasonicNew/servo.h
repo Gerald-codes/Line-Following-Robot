@@ -5,7 +5,7 @@
 #include <sys/types.h>
 
 // Servo pin
-#define SERVO_PIN 17
+#define SERVO_PIN 15
 
 // Servo parameters (SG90 standard servo)
 #define SERVO_MIN_PULSE 500   // 0.5ms = 0 degrees
