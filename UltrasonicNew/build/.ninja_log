@@ -71,7 +71,7 @@
 289	738	7835183824474303	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.obj	20e2c80206ad159e
 61	251	7835186455097521	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.obj	e0fca26919364b4e
 101	342	7835186455496485	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.obj	c4ee88a3281558b5
-56	252	7835277369710179	CMakeFiles/Ultrasonic.dir/servo.c.obj	a60f9c573bf2d9db
+153	435	7838573247304713	CMakeFiles/Ultrasonic.dir/servo.c.obj	a60f9c573bf2d9db
 127	404	7835186455756881	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.obj	be8af86a3c5509e0
 118	410	7835186455661771	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.obj	7c9c451346bb148c
 135	419	7835186455839082	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.obj	6e3093c35a44796
@@ -91,128 +91,8 @@
 252	710	7835186457004332	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.obj	cda3bf7ad8c147ff
 64	150	7835186614121697	pico-sdk/src/rp2040/boot_stage2/CMakeFiles/bs2_default_library.dir/bs2_default_padded_checksummed.S.obj	4be2b0ccb1702c65
 49	234	7835186613971344	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.obj	52b6af58dc6f0923
-47	247	7836871411128821	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-38	260	7836871411044006	CMakeFiles/Ultrasonic.dir/ultrasonic.c.obj	dfa7371e894cd5c7
-27	225	7836871410934536	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-260	679	7836871417338379	Ultrasonic.elf	73f14abfaa698611
-260	679	7836871417338379	Ultrasonic.dis	73f14abfaa698611
-260	679	7836871417338379	Ultrasonic.hex	73f14abfaa698611
-260	679	7836871417338379	Ultrasonic.bin	73f14abfaa698611
-260	679	7836871417338379	Ultrasonic.uf2	73f14abfaa698611
-260	679	7836871417338379	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-260	679	7836871417338379	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-260	679	7836871417338379	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-260	679	7836871417338379	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-38	208	7836875528594336	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-209	598	7836875534079310	Ultrasonic.elf	73f14abfaa698611
-209	598	7836875534079310	Ultrasonic.dis	73f14abfaa698611
-209	598	7836875534079310	Ultrasonic.hex	73f14abfaa698611
-209	598	7836875534079310	Ultrasonic.bin	73f14abfaa698611
-209	598	7836875534079310	Ultrasonic.uf2	73f14abfaa698611
-209	598	7836875534079310	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-209	598	7836875534079310	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-209	598	7836875534079310	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-209	598	7836875534079310	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-80	340	7836915753278642	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-342	755	7836915759917010	Ultrasonic.elf	73f14abfaa698611
-342	755	7836915759917010	Ultrasonic.dis	73f14abfaa698611
-342	755	7836915759917010	Ultrasonic.hex	73f14abfaa698611
-342	755	7836915759917010	Ultrasonic.bin	73f14abfaa698611
-342	755	7836915759917010	Ultrasonic.uf2	73f14abfaa698611
-342	755	7836915759917010	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-342	755	7836915759917010	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-342	755	7836915759917010	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-342	755	7836915759917010	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-56	259	7836918429168030	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-45	261	7836918429047260	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-261	659	7836918435084045	Ultrasonic.elf	73f14abfaa698611
-261	659	7836918435084045	Ultrasonic.dis	73f14abfaa698611
-261	659	7836918435084045	Ultrasonic.hex	73f14abfaa698611
-261	659	7836918435084045	Ultrasonic.bin	73f14abfaa698611
-261	659	7836918435084045	Ultrasonic.uf2	73f14abfaa698611
-261	659	7836918435084045	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-261	659	7836918435084045	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-261	659	7836918435084045	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-261	659	7836918435084045	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-28	190	7836919511187047	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-36	200	7836919511273457	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-201	552	7836919516333974	Ultrasonic.elf	73f14abfaa698611
-201	552	7836919516333974	Ultrasonic.dis	73f14abfaa698611
-201	552	7836919516333974	Ultrasonic.hex	73f14abfaa698611
-201	552	7836919516333974	Ultrasonic.bin	73f14abfaa698611
-201	552	7836919516333974	Ultrasonic.uf2	73f14abfaa698611
-201	552	7836919516333974	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-201	552	7836919516333974	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-201	552	7836919516333974	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-201	552	7836919516333974	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-24	182	7836919899670024	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-34	194	7836919899775231	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-194	520	7836919904504375	Ultrasonic.elf	73f14abfaa698611
-194	520	7836919904504375	Ultrasonic.dis	73f14abfaa698611
-194	520	7836919904504375	Ultrasonic.hex	73f14abfaa698611
-194	520	7836919904504375	Ultrasonic.bin	73f14abfaa698611
-194	520	7836919904504375	Ultrasonic.uf2	73f14abfaa698611
-194	520	7836919904504375	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-194	520	7836919904504375	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-194	520	7836919904504375	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-194	520	7836919904504375	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-39	206	7836924739678336	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-206	599	7836924745159871	Ultrasonic.elf	73f14abfaa698611
-206	599	7836924745159871	Ultrasonic.dis	73f14abfaa698611
-206	599	7836924745159871	Ultrasonic.hex	73f14abfaa698611
-206	599	7836924745159871	Ultrasonic.bin	73f14abfaa698611
-206	599	7836924745159871	Ultrasonic.uf2	73f14abfaa698611
-206	599	7836924745159871	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-206	599	7836924745159871	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-206	599	7836924745159871	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-206	599	7836924745159871	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-143	433	7838573247197418	CMakeFiles/Ultrasonic.dir/ultrasonic.c.obj	dfa7371e894cd5c7
-162	434	7838573247384848	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-153	435	7838573247304713	CMakeFiles/Ultrasonic.dir/servo.c.obj	a60f9c573bf2d9db
-131	436	7838573247078002	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-436	849	7838573254161985	Ultrasonic.elf	73f14abfaa698611
-436	849	7838573254161985	Ultrasonic.dis	73f14abfaa698611
-436	849	7838573254161985	Ultrasonic.hex	73f14abfaa698611
-436	849	7838573254161985	Ultrasonic.bin	73f14abfaa698611
-436	849	7838573254161985	Ultrasonic.uf2	73f14abfaa698611
-436	849	7838573254161985	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-436	849	7838573254161985	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-436	849	7838573254161985	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-436	849	7838573254161985	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-40	237	7838576418245935	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-32	238	7838576418160777	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-238	636	7838576424084960	Ultrasonic.elf	73f14abfaa698611
-238	636	7838576424084960	Ultrasonic.dis	73f14abfaa698611
-238	636	7838576424084960	Ultrasonic.hex	73f14abfaa698611
-238	636	7838576424084960	Ultrasonic.bin	73f14abfaa698611
-238	636	7838576424084960	Ultrasonic.uf2	73f14abfaa698611
-238	636	7838576424084960	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-238	636	7838576424084960	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-238	636	7838576424084960	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-238	636	7838576424084960	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-23	236	7838577545728184	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-30	245	7838577545799330	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-245	590	7838577551270223	Ultrasonic.elf	73f14abfaa698611
-245	590	7838577551270223	Ultrasonic.dis	73f14abfaa698611
-245	590	7838577551270223	Ultrasonic.hex	73f14abfaa698611
-245	590	7838577551270223	Ultrasonic.bin	73f14abfaa698611
-245	590	7838577551270223	Ultrasonic.uf2	73f14abfaa698611
-245	590	7838577551270223	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-245	590	7838577551270223	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-245	590	7838577551270223	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-245	590	7838577551270223	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
-36	261	7838578052806910	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
-47	275	7838578052922108	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
-275	712	7838578059373821	Ultrasonic.elf	73f14abfaa698611
-275	712	7838578059373821	Ultrasonic.dis	73f14abfaa698611
-275	712	7838578059373821	Ultrasonic.hex	73f14abfaa698611
-275	712	7838578059373821	Ultrasonic.bin	73f14abfaa698611
-275	712	7838578059373821	Ultrasonic.uf2	73f14abfaa698611
-275	712	7838578059373821	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	73f14abfaa698611
-275	712	7838578059373821	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
-275	712	7838578059373821	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
-275	712	7838578059373821	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
 36	245	7838578096488221	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	b075229a76718327
+143	433	7838573247197418	CMakeFiles/Ultrasonic.dir/ultrasonic.c.obj	dfa7371e894cd5c7
 27	246	7838578096399561	CMakeFiles/Ultrasonic.dir/main.c.obj	8c5be839cd1d2851
 246	704	7838578103055496	Ultrasonic.elf	73f14abfaa698611
 246	704	7838578103055496	Ultrasonic.dis	73f14abfaa698611
@@ -223,3 +103,4 @@
 246	704	7838578103055496	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	73f14abfaa698611
 246	704	7838578103055496	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	73f14abfaa698611
 246	704	7838578103055496	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	73f14abfaa698611
+70	7108	7838616396691814	build.ninja	afc11490162fc68c
