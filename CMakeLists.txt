@@ -70,6 +70,7 @@ add_executable(demo2
     hardware_drivers/imu.c
     hardware_drivers/ir_sensor.c
     hardware_drivers/barcode.c
+    hardware_drivers/calibration.c
     control_algo/pid.c
     control_algo/heading_control.c
     control_algo/line_following.c
@@ -109,7 +110,7 @@ pico_enable_stdio_uart(encoder_test 0)
 pico_add_extra_outputs(encoder_test)
 
 add_executable(motor_test
-    main_program/motor_test_simple.c
+    main_program/motor_test.c
     hardware_drivers/motor.c
     hardware_drivers/encoder.c
 )

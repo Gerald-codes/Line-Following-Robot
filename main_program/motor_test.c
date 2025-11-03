@@ -1,153 +1,168 @@
 /**
- * motor_test_simple.c
- * Test motors at fixed power - NO PID, NO control
- * Just drives both motors at same power to verify basic operation
+ * motor_test.c
+ * Simple motor test to verify wiring and orientation
  */
 
 #include "pico/stdlib.h"
 #include "motor.h"
-#include "encoder.h"
+#include "pin_definitions.h"
 #include <stdio.h>
 
 int main() {
     stdio_init_all();
     sleep_ms(2000);
     
-    printf("\n╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║                  SIMPLE MOTOR TEST                            ║\n");
-    printf("║              No PID - Just Fixed Power                        ║\n");
-    printf("╚═══════════════════════════════════════════════════════════════╝\n\n");
+    printf("\n");
+    printf("╔══════════════════════════════════════════════════════════════╗\n");
+    printf("║              MOTOR ORIENTATION TEST                          ║\n");
+    printf("╚══════════════════════════════════════════════════════════════╝\n\n");
     
+    // Initialize motors
     motor_init(M1A, M1B);
     motor_init(M2A, M2B);
-    encoder_init();
+    printf("✓ Motors initialized\n");
+    printf("  Left motor: GP%d, GP%d\n", M1A, M1B);
+    printf("  Right motor: GP%d, GP%d\n\n", M2A, M2B);
     
-    printf("Motors and encoders initialized\n\n");
-    
-    // Test 1: Forward at 30% power
-    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-    printf("TEST 1: Both motors at +30 power (should go FORWARD)\n");
-    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
-    
-    encoder_reset();
-    motor_drive(M1A, M1B, 30);
-    motor_drive(M2A, M2B, 30);
-    
-    printf("Running for 3 seconds...\n");
-    for (int i = 0; i < 30; i++) {
-        sleep_ms(100);
-        printf("L: %5d | R: %5d\n", get_left_encoder(), get_right_encoder());
-    }
-    
-    motor_stop(M1A, M1B);
-    motor_stop(M2A, M2B);
-    
-    int left_total = get_left_encoder();
-    int right_total = get_right_encoder();
-    
-    printf("\n✓ Test 1 Complete\n");
-    printf("Left encoder:  %d pulses\n", left_total);
-    printf("Right encoder: %d pulses\n", right_total);
-    
-    if (left_total > 0 && right_total > 0) {
-        printf("✓ Both wheels moved FORWARD\n");
-    } else if (left_total < 0 && right_total < 0) {
-        printf("✗ Both wheels moved BACKWARD (power sign is inverted!)\n");
-    } else {
-        printf("✗ Wheels moved in different directions (wiring problem!)\n");
-    }
+    printf("INSTRUCTIONS:\n");
+    printf("  Watch the robot and verify each movement\n");
+    printf("  Robot should be on the ground/track\n\n");
     
     sleep_ms(2000);
     
-    // Test 2: Backward at -30% power
-    printf("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-    printf("TEST 2: Both motors at -30 power (should go BACKWARD)\n");
-    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
-    
-    encoder_reset();
-    motor_drive(M1A, M1B, -30);
-    motor_drive(M2A, M2B, -30);
-    
-    printf("Running for 3 seconds...\n");
-    for (int i = 0; i < 30; i++) {
-        sleep_ms(100);
-        printf("L: %5d | R: %5d\n", get_left_encoder(), get_right_encoder());
-    }
-    
-    motor_stop(M1A, M1B);
-    motor_stop(M2A, M2B);
-    
-    left_total = get_left_encoder();
-    right_total = get_right_encoder();
-    
-    printf("\n✓ Test 2 Complete\n");
-    printf("Left encoder:  %d pulses\n", left_total);
-    printf("Right encoder: %d pulses\n", right_total);
-    
-    if (left_total < 0 && right_total < 0) {
-        printf("✓ Both wheels moved BACKWARD\n");
-    } else if (left_total > 0 && right_total > 0) {
-        printf("✗ Both wheels moved FORWARD (power sign is inverted!)\n");
-    } else {
-        printf("✗ Wheels moved in different directions (wiring problem!)\n");
-    }
-    
+    // Test 1: Both motors forward
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("TEST 1: STRAIGHT FORWARD\n");
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("Both motors at +50 power\n");
+    printf("Expected: Robot moves STRAIGHT FORWARD\n");
+    printf("Starting in 2 seconds...\n\n");
     sleep_ms(2000);
     
-    // Test 3: Different speeds
-    printf("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-    printf("TEST 3: Left=50, Right=30 (should turn right slightly)\n");
-    printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
-    
-    encoder_reset();
-    motor_drive(M1A, M1B, 50);
-    motor_drive(M2A, M2B, 30);
-    
-    printf("Running for 3 seconds...\n");
-    for (int i = 0; i < 30; i++) {
-        sleep_ms(100);
-        printf("L: %5d | R: %5d\n", get_left_encoder(), get_right_encoder());
-    }
+    motor_drive(M1A, M1B,-50);
+    motor_drive(M2A, M2B, -52);
+    printf("▶ RUNNING (3 seconds)...\n");
+    sleep_ms(3000);
     
     motor_stop(M1A, M1B);
     motor_stop(M2A, M2B);
-    
-    left_total = get_left_encoder();
-    right_total = get_right_encoder();
-    
-    printf("\n✓ Test 3 Complete\n");
-    printf("Left encoder:  %d pulses (should be higher)\n", left_total);
-    printf("Right encoder: %d pulses (should be lower)\n", right_total);
-    
-    if (left_total > right_total) {
-        printf("✓ Left wheel moved more (correct!)\n");
-    } else {
-        printf("✗ Right wheel moved more (motors might be swapped!)\n");
-    }
-    
+    printf("■ STOPPED\n\n");
+    printf("Did robot move STRAIGHT FORWARD? (y/n): ");
+    sleep_ms(3000);
     printf("\n\n");
-    printf("╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║                    DIAGNOSIS SUMMARY                          ║\n");
-    printf("╚═══════════════════════════════════════════════════════════════╝\n\n");
     
-    printf("Based on results above:\n\n");
-    printf("1. If positive power goes BACKWARD:\n");
-    printf("   → Use: motor_drive(M1A, M1B, -(int)output)\n\n");
+    // Test 2: Turn left
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("TEST 2: TURN LEFT\n");
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("Left motor: +30, Right motor: +70\n");
+    printf("Expected: Robot turns LEFT (counterclockwise)\n");
+    printf("Starting in 2 seconds...\n\n");
+    sleep_ms(2000);
     
-    printf("2. If positive power goes FORWARD:\n");
-    printf("   → Use: motor_drive(M1A, M1B, (int)output)\n\n");
+    motor_drive(M1A, M1B, -70);   // right faster
+    motor_drive(M2A, M2B, -30);   // left slower
+    printf("▶ RUNNING (3 seconds)...\n");
+    sleep_ms(3000);
     
-    printf("3. If wheels go different directions:\n");
-    printf("   → Check motor wiring!\n\n");
+    motor_stop(M1A, M1B);
+    motor_stop(M2A, M2B);
+    printf("■ STOPPED\n\n");
+    printf("Did robot turn LEFT? (y/n): ");
+    sleep_ms(3000);
+    printf("\n\n");
     
-    printf("4. If one wheel doesn't move:\n");
-    printf("   → Check that motor connections!\n\n");
+    // Test 3: Turn right
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("TEST 3: TURN RIGHT\n");
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("Left motor: +70, Right motor: +30\n");
+    printf("Expected: Robot turns RIGHT (clockwise)\n");
+    printf("Starting in 2 seconds...\n\n");
+    sleep_ms(2000);
     
-    printf("Press Ctrl+C to exit\n");
+    motor_drive(M1A, M1B, -30);   // right slower
+    motor_drive(M2A, M2B, -70);   // left faster
+    printf("▶ RUNNING (3 seconds)...\n");
+    sleep_ms(3000);
     
-    while (true) {
-        tight_loop_contents();
-    }
+    motor_stop(M1A, M1B);
+    motor_stop(M2A, M2B);
+    printf("■ STOPPED\n\n");
+    printf("Did robot turn RIGHT? (y/n): ");
+    sleep_ms(3000);
+    printf("\n\n");
+    
+    // Test 4: Spin left (in place)
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("TEST 4: SPIN LEFT (in place)\n");
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("Left motor: -50, Right motor: +50\n");
+    printf("Expected: Robot spins LEFT in place\n");
+    printf("Starting in 2 seconds...\n\n");
+    sleep_ms(2000);
+    
+    motor_drive(M1A, M1B, -50);  // right forward
+    motor_drive(M2A, M2B, 50);   // left backward
+    printf("▶ RUNNING (2 seconds)...\n");
+    sleep_ms(2000);
+    
+    motor_stop(M1A, M1B);
+    motor_stop(M2A, M2B);
+    printf("■ STOPPED\n\n");
+    printf("Did robot spin LEFT? (y/n): ");
+    sleep_ms(3000);
+    printf("\n\n");
+    
+    // Test 5: Spin right (in place)
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("TEST 5: SPIN RIGHT (in place)\n");
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("Left motor: +50, Right motor: -50\n");
+    printf("Expected: Robot spins RIGHT in place\n");
+    printf("Starting in 2 seconds...\n\n");
+    sleep_ms(2000);
+    
+    motor_drive(M1A, M1B, 50);   // right backwards
+    motor_drive(M2A, M2B, -50);  // left forwards
+    printf("▶ RUNNING (2 seconds)...\n");
+    sleep_ms(2000);
+    
+    motor_stop(M1A, M1B);
+    motor_stop(M2A, M2B);
+    printf("■ STOPPED\n\n");
+    printf("Did robot spin RIGHT? (y/n): ");
+    sleep_ms(3000);
+    printf("\n\n");
+    
+    // Summary
+    printf("═══════════════════════════════════════════════════════════════\n");
+    printf("  TEST COMPLETE - DIAGNOSIS\n");
+    printf("═══════════════════════════════════════════════════════════════\n\n");
+    
+    printf("POSSIBLE ISSUES:\n\n");
+    
+    printf("1. If robot moved BACKWARD instead of forward:\n");
+    printf("   → BOTH motors wired backwards\n");
+    printf("   → Fix: Swap motor wires OR add minus signs in code\n\n");
+    
+    printf("2. If robot turned RIGHT when expecting LEFT:\n");
+    printf("   → Motors are swapped (left/right reversed)\n");
+    printf("   → Fix: Swap M1 ↔ M2 in code OR physically swap motors\n\n");
+    
+    printf("3. If robot turned LEFT when expecting LEFT but wobbled:\n");
+    printf("   → One motor stronger than other\n");
+    printf("   → Fix: Tune LEFT_MOTOR_CORRECTION / RIGHT_MOTOR_CORRECTION\n\n");
+    
+    printf("4. If one motor didn't move:\n");
+    printf("   → Motor disconnected or driver issue\n");
+    printf("   → Fix: Check wiring and motor driver\n\n");
+    
+    printf("5. If everything worked correctly:\n");
+    printf("   → Motors are wired correctly! ✓\n");
+    printf("   → Problem is in PID/sensor logic\n\n");
+    
+    printf("═══════════════════════════════════════════════════════════════\n\n");
     
     return 0;
 }
