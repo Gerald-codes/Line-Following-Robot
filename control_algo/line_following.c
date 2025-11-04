@@ -85,7 +85,8 @@ float line_following_update(float dt) {
     
     // Compute PID - target is 0 (on the edge)
     pid_set_target(&line_pid, 0);
-    float steering = pid_compute(&line_pid, -filtered_position, dt);
+   // float steering = pid_compute(&line_pid, -filtered_position, dt);
+    float steering = pid_compute(&line_pid, -(float)raw_position, dt);
     
     // Clamp steering to max limit
     if (steering > LINE_STEERING_MAX) steering = LINE_STEERING_MAX;

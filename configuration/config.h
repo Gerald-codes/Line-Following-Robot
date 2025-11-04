@@ -38,10 +38,33 @@
 // LINE FOLLOWING PID PARAMETERS (Demo 2)
 // ============================================================================
 
-#define LINE_PID_KP 0.80f
-#define LINE_PID_KI 0.00f
-#define LINE_PID_KD 0.10f
-#define LINE_STEERING_MAX 100
+#define LINE_PID_KP 0.035f            // 🔧 Main tuning knob
+                                      // Position +1000 → Steering = 5 mm/s
+                                      // 
+                                      // Too jerky? → DECREASE to 0.003
+                                      // Too slow to correct? → INCREASE to 0.008
+                                      //
+                                      // Range: 0.003 - 0.010
+
+#define LINE_PID_KI 0.00f            // 🔧 Leave at 0 unless steady drift
+                                      // Only increase if robot consistently pulls one direction
+
+#define LINE_PID_KD 0.020f            // 🔧 Damping - prevents overshoot
+                                      // Kd/Kp ratio: 0.015/0.005 = 3.0 (good damping)
+                                      //
+                                      // Still oscillates? → INCREASE to 0.020
+                                      // Too sluggish? → DECREASE to 0.010
+                                      //
+                                      // Range: 0.010 - 0.025
+
+#define LINE_STEERING_MAX 40         // 🔧 Maximum steering correction (mm/s)
+                                      // With base speed 55: motors range 35-75 mm/s
+                                      // Ratio: 75/35 = 2.1:1 (moderate turning)
+                                      //
+                                      // Too violent? → DECREASE to 15
+                                      // Can't make corners? → INCREASE to 25
+                                      //
+                                      // Range: 15 - 30
 
 #define LINE_POSITION_MIN -2000
 #define LINE_POSITION_CENTER 0
@@ -85,9 +108,7 @@
 // IR SENSOR CONFIGURATION (Demo 2, 3)
 // ============================================================================
 
-#define NUM_IR_SENSORS 5
-#define IR_THRESHOLD_WHITE 2000
-#define IR_THRESHOLD_BLACK 500
+
 #define IR_LINE_LOST_THRESHOLD 100
 
 #define IR_WEIGHT_0 -2000
@@ -198,8 +219,7 @@ typedef enum {
 // ============================================================================
 // MOTOR CALIBRATION - NO LONGER NEEDED WITH CORRECT ENCODER VALUES
 // ============================================================================
-
-
+#define LEFT_MOTOR_OFFSET 2  
 #define LEFT_MOTOR_CORRECTION 1.00f       
 #define RIGHT_MOTOR_CORRECTION 1.00f      
 
