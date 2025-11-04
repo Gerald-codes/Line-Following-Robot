@@ -38,7 +38,7 @@
 // LINE FOLLOWING PID PARAMETERS (Demo 2)
 // ============================================================================
 
-#define LINE_PID_KP 0.01f            // 🔧 Main tuning knob
+#define LINE_PID_KP 0.035f            // 🔧 Main tuning knob
                                       // Position +1000 → Steering = 5 mm/s
                                       // 
                                       // Too jerky? → DECREASE to 0.003
@@ -49,7 +49,7 @@
 #define LINE_PID_KI 0.00f            // 🔧 Leave at 0 unless steady drift
                                       // Only increase if robot consistently pulls one direction
 
-#define LINE_PID_KD 0.03f            // 🔧 Damping - prevents overshoot
+#define LINE_PID_KD 0.020f            // 🔧 Damping - prevents overshoot
                                       // Kd/Kp ratio: 0.015/0.005 = 3.0 (good damping)
                                       //
                                       // Still oscillates? → INCREASE to 0.020
@@ -108,9 +108,7 @@
 // IR SENSOR CONFIGURATION (Demo 2, 3)
 // ============================================================================
 
-#define NUM_IR_SENSORS 5
-#define IR_THRESHOLD_WHITE 2000
-#define IR_THRESHOLD_BLACK 500
+
 #define IR_LINE_LOST_THRESHOLD 100
 
 #define IR_WEIGHT_0 -2000
@@ -221,7 +219,7 @@ typedef enum {
 // ============================================================================
 // MOTOR CALIBRATION - NO LONGER NEEDED WITH CORRECT ENCODER VALUES
 // ============================================================================
-
+#define LEFT_MOTOR_OFFSET 2  
 #define LEFT_MOTOR_CORRECTION 1.00f       
 #define RIGHT_MOTOR_CORRECTION 1.00f      
 

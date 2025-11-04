@@ -84,6 +84,7 @@ target_link_libraries(demo2
     hardware_pwm
     hardware_gpio
     hardware_adc
+    hardware_i2c
 )
 
 pico_enable_stdio_usb(demo2 1)
@@ -104,6 +105,7 @@ target_link_libraries(encoder_test
     pico_stdlib
     hardware_pwm
     hardware_gpio
+    hardware_i2c
 )
 
 pico_enable_stdio_usb(encoder_test 1)

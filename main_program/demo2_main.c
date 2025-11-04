@@ -125,7 +125,7 @@ int main() {
         update_motor_speed(&right_metrics, right_count, current_time);
         
         // PID update every 100ms
-        if (current_time - last_pid >= 50) {
+        if (current_time - last_pid >= 100) {
             float dt = (current_time - last_pid) / 1000.0f;
             
             // Get steering correction from line following PID
@@ -150,10 +150,9 @@ int main() {
             float right_motor_output = pid_compute(&right_motor_pid, 
                                                    right_metrics.speed_mm_per_sec, dt);
             
-
             int left_power = apply_deadband(left_motor_output);
             int right_power = apply_deadband(right_motor_output);
-                  
+            
             // Apply to motors (M1=RIGHT, M2=LEFT, negative=forward)
             motor_drive(M1A, M1B, -right_power);
             motor_drive(M2A, M2B, -(left_power + LEFT_MOTOR_OFFSET));
@@ -234,7 +233,9 @@ static void reset_metrics(void) {
 }
 
 static float pulses_to_distance_mm(int32_t pulses) {
-    return (pulses * MM_PER_PULSE) / 4.0f;
+    // Use average of left and right
+    float avg_mm_per_pulse = (LEFT_MM_PER_PULSE + RIGHT_MM_PER_PULSE) / 2.0f;
+    return (pulses * avg_mm_per_pulse) / 4.0f;
 }
 
 static int apply_deadband(float output) {
