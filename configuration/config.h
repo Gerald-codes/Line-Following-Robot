@@ -13,8 +13,8 @@
 // Wheel specifications - SEPARATE VALUES FOR EACH ENCODER!
 #define WHEEL_DIAMETER_MM 65.0f
 #define WHEEL_BASE_MM 130.0f
-#define LEFT_PULSES_PER_REV 41           // Calibrated left encoder value
-#define RIGHT_PULSES_PER_REV 45          // Calibrated right encoder value
+#define LEFT_PULSES_PER_REV 50.163           // Calibrated left encoder value
+#define RIGHT_PULSES_PER_REV 47.618          // Calibrated right encoder value
 #define WHEEL_CIRCUMFERENCE_MM (WHEEL_DIAMETER_MM * 3.14159f)
 #define LEFT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / LEFT_PULSES_PER_REV)
 #define RIGHT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / RIGHT_PULSES_PER_REV)
@@ -198,6 +198,7 @@ typedef enum {
 // ============================================================================
 // MOTOR CALIBRATION - NO LONGER NEEDED WITH CORRECT ENCODER VALUES
 // ============================================================================
+
 
 #define LEFT_MOTOR_CORRECTION 1.00f       
 #define RIGHT_MOTOR_CORRECTION 1.00f      

@@ -47,6 +47,7 @@ add_executable(demo1
     control_algo/heading_control.c
     control_algo/filters.c
     utilities/telemetry.c
+    hardware_drivers/calibration.c
 )
 
 target_link_libraries(demo1
