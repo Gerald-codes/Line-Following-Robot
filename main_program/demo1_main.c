@@ -79,8 +79,8 @@ int main() {
     printf("  Press Ctrl+C to stop\n");
     printf("═══════════════════════════════════════════════════════════════\n\n");
     
-    printf("Starting in 3 seconds...\n");
-    sleep_ms(3000);
+    printf("Starting in 5 seconds...\n");
+    sleep_ms(5000);
     
     reset_metrics();
     
@@ -128,7 +128,7 @@ static void init_controllers(void) {
                         HEADING_PID_KD_DEMO1,
                         HEADING_CORRECTION_MAX);
     
-    printf("  ✓ Heading PID: Kp=%.2f, Ki=%.3f, Kd=%.3f\n",
+    printf("Heading PID: Kp=%.2f, Ki=%.3f, Kd=%.3f\n",
            HEADING_PID_KP_DEMO1, HEADING_PID_KI_DEMO1, HEADING_PID_KD_DEMO1);
 }
 

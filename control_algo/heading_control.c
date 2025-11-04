@@ -2,6 +2,8 @@
  * heading_control.c
  * Heading/orientation control using IMU and PID
  * Maintains straight paths and executes accurate turns
+ * 
+ * NEW: Added heading deadband feature
  */
 
 #include "heading_control.h"
@@ -31,6 +33,7 @@ void heading_control_init(HeadingController *ctrl,
     ctrl->current_heading = 0.0f;
     ctrl->correction = 0.0f;
     ctrl->at_target = false;
+    ctrl->deadband = 0.0f;  // Default: no deadband
     ctrl->last_update_time = to_ms_since_boot(get_absolute_time());
     
     printf("Heading control initialized: Kp=%.2f, Ki=%.3f, Kd=%.3f\n", 
@@ -45,6 +48,11 @@ void heading_control_set_target(HeadingController *ctrl, float heading) {
     ctrl->at_target = false;
     
     printf("Heading target set: %.1f°\n", ctrl->target_heading);
+}
+
+void heading_control_set_deadband(HeadingController *ctrl, float deadband_degrees) {
+    ctrl->deadband = fabsf(deadband_degrees);
+    printf("Heading deadband set: ±%.1f°\n", ctrl->deadband);
 }
 
 float heading_control_update(HeadingController *ctrl, float current_heading) {
@@ -64,6 +72,22 @@ float heading_control_update(HeadingController *ctrl, float current_heading) {
     float error = ctrl->target_heading - ctrl->current_heading;
     error = normalize_angle(error);
     
+    // Apply deadband - no correction if error is small
+    float abs_error = fabsf(error);
+    if (abs_error < ctrl->deadband) {
+        // Within deadband - no correction needed
+        ctrl->correction = 0.0f;
+        ctrl->at_target = true;
+        
+        // Also reset PID integral to prevent windup
+        pid_reset(&ctrl->pid);
+        
+        return 0.0f;
+    }
+    
+    // Outside deadband - apply PID correction
+    ctrl->at_target = false;
+    
     // Update PID setpoint to target heading
     pid_set_target(&ctrl->pid, ctrl->target_heading);
     
@@ -71,10 +95,6 @@ float heading_control_update(HeadingController *ctrl, float current_heading) {
     // Note: We pass current_heading as the "measured value"
     // The PID will calculate error internally as (target - measured)
     ctrl->correction = pid_compute(&ctrl->pid, ctrl->current_heading, dt);
-    
-    // Check if at target (within tolerance)
-    float abs_error = fabsf(error);
-    ctrl->at_target = (abs_error < HEADING_TOLERANCE_DEGREES);
     
     return ctrl->correction;
 }
@@ -99,10 +119,20 @@ float heading_get_error(HeadingController *ctrl) {
 
 void heading_control_print_status(HeadingController *ctrl) {
     float error = heading_get_error(ctrl);
+    const char* status;
+    
+    if (fabsf(error) < ctrl->deadband) {
+        status = "[IN DEADBAND]";
+    } else if (ctrl->at_target) {
+        status = "[AT TARGET]";
+    } else {
+        status = "[CORRECTING]";
+    }
+    
     printf("Heading: Target=%.1f° Current=%.1f° Error=%.1f° Correction=%.1f %s\n",
            ctrl->target_heading,
            ctrl->current_heading,
            error,
            ctrl->correction,
-           ctrl->at_target ? "[AT TARGET]" : "");
+           status);
 }
