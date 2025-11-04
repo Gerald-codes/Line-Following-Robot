@@ -1,8 +1,3 @@
-/**
- * config.h - PROPERLY TUNED FOR 43 PPR ENCODERS
- * Uses correct encoder value + slower PID updates + gentler gains
- */
-
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -10,12 +5,14 @@
 // HARDWARE CONFIGURATION
 // ============================================================================
 
-// Wheel specifications - KEEP THE REAL CALIBRATED VALUE!
+// Wheel specifications - SEPARATE VALUES FOR EACH ENCODER!
 #define WHEEL_DIAMETER_MM 65.0f
 #define WHEEL_BASE_MM 130.0f
-#define PULSES_PER_REVOLUTION 43          // Real calibrated value - DON'T CHANGE!
+#define LEFT_PULSES_PER_REV 41           // Calibrated left encoder value
+#define RIGHT_PULSES_PER_REV 45          // Calibrated right encoder value
 #define WHEEL_CIRCUMFERENCE_MM (WHEEL_DIAMETER_MM * 3.14159f)
-#define MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / PULSES_PER_REVOLUTION)
+#define LEFT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / LEFT_PULSES_PER_REV)
+#define RIGHT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / RIGHT_PULSES_PER_REV)
 
 // Control loop timing - MUCH SLOWER for low resolution encoders
 #define PID_UPDATE_INTERVAL_MS 100        // 10Hz - gives time for multiple pulses
@@ -23,17 +20,12 @@
 #define SENSOR_READ_INTERVAL_MS 10        // 100Hz sensor reading
 
 // ============================================================================
-// MOTOR SPEED PID PARAMETERS - VERY GENTLE FOR 43 PPR
+// MOTOR SPEED PID PARAMETERS - TUNED FOR LOW RESOLUTION ENCODERS
 // ============================================================================
-
-// With 43 PPR and 100ms update rate:
-// - Each update can accumulate 1-3 pulses
-// - Speed resolution: ~50 mm/s per pulse at 100ms
-// - Need very gentle gains to avoid oscillation
 
 #define MOTOR_PID_KP 0.08f                // Very low - prevents overreaction
 #define MOTOR_PID_KI 0.01f                // Slow integral buildup
-#define MOTOR_PID_KD 0.00f                // No derivative - too noisy with 43 PPR
+#define MOTOR_PID_KD 0.00f                // No derivative - too noisy with low PPR
 #define MOTOR_PID_OUTPUT_MIN -100
 #define MOTOR_PID_OUTPUT_MAX 100
 
@@ -72,7 +64,7 @@
 // ============================================================================
 
 // Start moderate - low resolution encoders need lower speeds
-#define DEMO1_BASE_SPEED_MM_S 120.0f      // Moderate speed for 43 PPR
+#define DEMO1_BASE_SPEED_MM_S 200.0f      // Moderate speed
 
 #define DEMO2_BASE_SPEED_MM_S 100.0f
 #define DEMO2_TURN_SPEED_MM_S 80.0f
@@ -98,23 +90,6 @@
 #define IR_WEIGHT_2 0
 #define IR_WEIGHT_3 1000
 #define IR_WEIGHT_4 2000
-
-// ============================================================================
-// BARCODE DETECTION (Demo 2)
-// ============================================================================
-
-#define BARCODE_MIN_WIDTH_MS 100
-#define BARCODE_MAX_WIDTH_MS 500
-#define BARCODE_PATTERN_LENGTH 4
-#define BARCODE_DETECTION_THRESHOLD 3
-
-typedef enum {
-    BARCODE_NONE = 0,
-    BARCODE_LEFT,
-    BARCODE_RIGHT,
-    BARCODE_STOP,
-    BARCODE_UNKNOWN
-} BarcodeCommand;
 
 // ============================================================================
 // IMU CONFIGURATION (Demo 1, 2, 3)
@@ -216,11 +191,10 @@ typedef enum {
 #define DEBUG_ENABLE_SENSORS 0
 
 // ============================================================================
-// MOTOR CALIBRATION
+// MOTOR CALIBRATION - NO LONGER NEEDED WITH CORRECT ENCODER VALUES
 // ============================================================================
 
-// Compensate for encoder difference (left=41, right=45)
-#define LEFT_MOTOR_CORRECTION 1.00f       // Start with no correction
-#define RIGHT_MOTOR_CORRECTION 1.00f      // Tune after basic control works
+#define LEFT_MOTOR_CORRECTION 1.00f       
+#define RIGHT_MOTOR_CORRECTION 1.00f      
 
 #endif // CONFIG_H

@@ -53,6 +53,7 @@ target_link_libraries(demo1
     pico_stdlib
     hardware_pwm
     hardware_gpio
+    hardware_i2c
 )
 
 pico_enable_stdio_usb(demo1 1)
@@ -87,39 +88,3 @@ target_link_libraries(demo2
 pico_enable_stdio_usb(demo2 1)
 pico_enable_stdio_uart(demo2 0)
 pico_add_extra_outputs(demo2)
-
-# ============================================================================
-# TEST PROGRAMS
-# ============================================================================
-
-add_executable(encoder_test
-    main_program/encoder_test_main.c
-    hardware_drivers/motor.c
-    hardware_drivers/encoder.c
-)
-
-target_link_libraries(encoder_test
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-)
-
-pico_enable_stdio_usb(encoder_test 1)
-pico_enable_stdio_uart(encoder_test 0)
-pico_add_extra_outputs(encoder_test)
-
-add_executable(motor_test
-    main_program/motor_test_simple.c
-    hardware_drivers/motor.c
-    hardware_drivers/encoder.c
-)
-
-target_link_libraries(motor_test
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-)
-
-pico_enable_stdio_usb(motor_test 1)
-pico_enable_stdio_uart(motor_test 0)
-pico_add_extra_outputs(motor_test)

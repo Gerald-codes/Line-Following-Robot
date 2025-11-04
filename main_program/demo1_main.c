@@ -1,7 +1,3 @@
-/**
- * demo1_main.c - WITH MOTOR DEADBAND
- * Prevents beeping by enforcing minimum motor power
- */
 
 #include "pico/stdlib.h"
 #include "motor.h"
@@ -24,6 +20,7 @@ typedef struct {
     float distance_mm;
     float speed_mm_per_sec;
     uint32_t last_measurement_time;
+    float mm_per_pulse;  // ADDED: Each motor has its own conversion factor
 } MotorMetrics;
 
 static PIDController left_motor_pid;
@@ -37,7 +34,6 @@ static void init_hardware(void);
 static void init_controllers(void);
 static void update_motor_speed(MotorMetrics *metrics, int32_t new_count, uint32_t current_time);
 static void reset_metrics(void);
-static float pulses_to_distance_mm(int32_t pulses);
 static void print_status_line(void);
 static void control_loop(void);
 static int apply_deadband(float output);
@@ -47,10 +43,19 @@ int main() {
     sleep_ms(2000);
     
     printf("\n");
-    printf("╔══════════════════════════════════════════════════════════════╗\n");
+    printf("╔═══════════════════════════════════════════════════════════════╗\n");
     printf("║          DEMO 1: BASIC MOTION & SENSING INTEGRATION          ║\n");
-    printf("║              (With Motor Deadband - No Beeping)               ║\n");
-    printf("╚══════════════════════════════════════════════════════════════╝\n\n");
+    printf("║              (FIXED: Separate Encoder Values)                 ║\n");
+    printf("╚═══════════════════════════════════════════════════════════════╝\n\n");
+    
+    // IMPORTANT: Set conversion factors for each encoder
+    left_metrics.mm_per_pulse = LEFT_MM_PER_PULSE;
+    right_metrics.mm_per_pulse = RIGHT_MM_PER_PULSE;
+    
+    printf("Encoder Configuration:\n");
+    printf("  Left:  %d PPR → %.3f mm/pulse\n", LEFT_PULSES_PER_REV, LEFT_MM_PER_PULSE);
+    printf("  Right: %d PPR → %.3f mm/pulse\n", RIGHT_PULSES_PER_REV, RIGHT_MM_PER_PULSE);
+    printf("\n");
     
     init_hardware();
     init_controllers();
@@ -159,8 +164,9 @@ static void control_loop(void) {
             
             float heading_correction = heading_control_update(&heading_ctrl, current_heading);
             
-            float left_target_speed = DEMO1_BASE_SPEED_MM_S * LEFT_MOTOR_CORRECTION - heading_correction;
-            float right_target_speed = DEMO1_BASE_SPEED_MM_S * RIGHT_MOTOR_CORRECTION + heading_correction;
+            // REMOVED motor correction factors - now handled by correct encoder values
+            float left_target_speed = DEMO1_BASE_SPEED_MM_S - heading_correction;
+            float right_target_speed = DEMO1_BASE_SPEED_MM_S + heading_correction;
             
             pid_set_target(&left_motor_pid, left_target_speed);
             pid_set_target(&right_motor_pid, right_target_speed);
@@ -199,7 +205,10 @@ static void update_motor_speed(MotorMetrics *metrics, int32_t new_count, uint32_
     
     if (time_diff_ms >= PID_UPDATE_INTERVAL_MS) {
         int32_t pulse_diff = metrics->current_count - metrics->last_count;
-        float distance_interval = pulses_to_distance_mm(pulse_diff);
+        
+        // FIXED: Use the correct mm_per_pulse for THIS encoder
+        float distance_interval = pulse_diff * metrics->mm_per_pulse;
+        
         float time_diff_sec = time_diff_ms / 1000.0f;
         metrics->speed_mm_per_sec = distance_interval / time_diff_sec;
         metrics->distance_mm += distance_interval;
@@ -217,18 +226,16 @@ static void reset_metrics(void) {
     left_metrics.distance_mm = 0;
     left_metrics.speed_mm_per_sec = 0;
     left_metrics.last_measurement_time = current_time;
+    // mm_per_pulse already set in main()
     
     right_metrics.last_count = get_right_encoder();
     right_metrics.current_count = right_metrics.last_count;
     right_metrics.distance_mm = 0;
     right_metrics.speed_mm_per_sec = 0;
     right_metrics.last_measurement_time = current_time;
+    // mm_per_pulse already set in main()
     
     encoder_reset();
-}
-
-static float pulses_to_distance_mm(int32_t pulses) {
-    return pulses * MM_PER_PULSE;
 }
 
 static void print_status_line(void) {

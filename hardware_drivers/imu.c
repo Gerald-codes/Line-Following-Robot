@@ -1,148 +1,250 @@
-/**
- * imu.c - SIMULATED VERSION (No Hardware Needed)
- * Simulates IMU behavior for testing without actual MPU6050 sensor
- * Estimates heading from wheel encoder difference
- */
+// #include "imu.h"
+// #include "pico/stdlib.h"
+// #include "hardware/i2c.h"
+// #include <math.h>
+// #include <stdio.h>
+
+// #define I2C_PORT i2c0
+// #define SDA_PIN  16
+// #define SCL_PIN  17
+
+// #define ACC_ADDR 0x19
+// #define MAG_ADDR 0x1E
+// #define CTRL_REG1_A 0x20
+// #define OUT_X_L_A   0x28
+// #define CRA_REG_M   0x00
+// #define MR_REG_M    0x02
+// #define OUT_X_H_M   0x03
+
+// #define FILTER_SIZE 3
+// #define ALPHA       0.2f
+// #define RAD_TO_DEG  57.2957795f
+
+// // Calibration values
+// static float mx_offset = 20, my_offset = 9, mz_offset = -152;
+// static float mx_scale = 0.975, my_scale = 0.936, mz_scale = 1.105;
+
+// static int16_t acc_buf_x[FILTER_SIZE], acc_buf_y[FILTER_SIZE], acc_buf_z[FILTER_SIZE];
+// static int16_t mag_buf_x[FILTER_SIZE], mag_buf_y[FILTER_SIZE], mag_buf_z[FILTER_SIZE];
+// static int buf_index = 0;
+
+// static float ax_ema=0, ay_ema=0, az_ema=0;
+// static float mx_ema=0, my_ema=0, mz_ema=0;
+
+// static int16_t sma(int16_t *buf) {
+//     int32_t sum=0;
+//     for(int i=0;i<FILTER_SIZE;i++) sum+=buf[i];
+//     return sum / FILTER_SIZE;
+// }
+
+// static void read_accel(int16_t *ax,int16_t *ay,int16_t *az){
+//     uint8_t reg=OUT_X_L_A|0x80, buf[6];
+//     i2c_write_blocking(I2C_PORT,ACC_ADDR,&reg,1,true);
+//     i2c_read_blocking(I2C_PORT,ACC_ADDR,buf,6,false);
+//     *ax = (buf[1]<<8|buf[0]);
+//     *ay = (buf[3]<<8|buf[2]);
+//     *az = (buf[5]<<8|buf[4]);
+// }
+
+// static void read_mag(int16_t *mx,int16_t *my,int16_t *mz){
+//     uint8_t reg=OUT_X_H_M, buf[6];
+//     i2c_write_blocking(I2C_PORT,MAG_ADDR,&reg,1,true);
+//     i2c_read_blocking(I2C_PORT,MAG_ADDR,buf,6,false);
+//     *mx = (buf[0]<<8|buf[1]);
+//     *mz = (buf[2]<<8|buf[3]);
+//     *my = (buf[4]<<8|buf[5]);
+// }
+
+// void imu_init(IMU *imu) {
+//     i2c_init(I2C_PORT,100000);
+//     gpio_set_function(SDA_PIN,GPIO_FUNC_I2C);
+//     gpio_set_function(SCL_PIN,GPIO_FUNC_I2C);
+//     gpio_pull_up(SDA_PIN);
+//     gpio_pull_up(SCL_PIN);
+
+//     uint8_t init_acc[]={CTRL_REG1_A,0x27};
+//     i2c_write_blocking(I2C_PORT,ACC_ADDR,init_acc,2,false);
+//     uint8_t init_mag1[]={CRA_REG_M,0x14};
+//     i2c_write_blocking(I2C_PORT,MAG_ADDR,init_mag1,2,false);
+//     uint8_t init_mag2[]={MR_REG_M,0x00};
+//     i2c_write_blocking(I2C_PORT,MAG_ADDR,init_mag2,2,false);
+
+//     imu->heading_offset=0;
+//     imu->calibrated=false;
+// }
+
+// void imu_calibrate(IMU *imu){
+//     imu_update(imu);
+//     imu->heading_offset = imu->yaw;
+//     imu->calibrated = true;
+// }
+
+// void imu_update(IMU *imu){
+//     int16_t ax,ay,az,mx,my,mz;
+//     read_accel(&ax,&ay,&az);
+//     read_mag(&mx,&my,&mz);
+
+//     acc_buf_x[buf_index]=ax; acc_buf_y[buf_index]=ay; acc_buf_z[buf_index]=az;
+//     mag_buf_x[buf_index]=mx; mag_buf_y[buf_index]=my; mag_buf_z[buf_index]=mz;
+//     buf_index=(buf_index+1)%FILTER_SIZE;
+
+//     ax_ema = ALPHA*sma(acc_buf_x) + (1-ALPHA)*ax_ema;
+//     ay_ema = ALPHA*sma(acc_buf_y) + (1-ALPHA)*ay_ema;
+//     az_ema = ALPHA*sma(acc_buf_z) + (1-ALPHA)*az_ema;
+
+//     mx_ema = ALPHA*((sma(mag_buf_x)-mx_offset)*mx_scale)+(1-ALPHA)*mx_ema;
+//     my_ema = ALPHA*((sma(mag_buf_y)-my_offset)*my_scale)+(1-ALPHA)*my_ema;
+//     mz_ema = ALPHA*((sma(mag_buf_z)-mz_offset)*mz_scale)+(1-ALPHA)*mz_ema;
+
+//     float roll = atan2f(ay_ema,az_ema);
+//     float pitch = atan2f(-ax_ema,sqrtf(ay_ema*ay_ema+az_ema*az_ema));
+//     float Xh = mx_ema*cosf(pitch)+mz_ema*sinf(pitch);
+//     float Yh = mx_ema*sinf(roll)*sinf(pitch)+my_ema*cosf(roll)-mz_ema*sinf(roll)*cosf(pitch);
+
+//     imu->roll = roll*RAD_TO_DEG;
+//     imu->pitch= pitch*RAD_TO_DEG;
+//     imu->yaw = atan2f(-Yh,Xh)*RAD_TO_DEG;
+// }
+
+// float imu_get_heading(IMU *imu){
+//     float h = imu->yaw - imu->heading_offset;
+//     if(h>180)h-=360;
+//     if(h<-180)h+=360;
+//     printf("HEADING: %.1f",h);
+//     return h;
+// }
+
+// hardware_drivers/imu.c
+// FIXED: Added missing newline in printf
 
 #include "imu.h"
-#include "filters.h"
-#include "config.h"
-#include "encoder.h"
+#include "pico/stdlib.h"
+#include "hardware/i2c.h"
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 
-// Simulated sensor characteristics
-#define SIMULATED_GYRO_NOISE 0.5f
-#define SIMULATED_GYRO_DRIFT 0.02f
-#define SIMULATED_ACCEL_NOISE 0.02f
+#define I2C_PORT i2c0
+#define SDA_PIN  16
+#define SCL_PIN  17
 
-// Static variables for simulation
-static int32_t last_left_encoder = 0;
-static int32_t last_right_encoder = 0;
-static float accumulated_drift = 0.0f;
+#define ACC_ADDR 0x19
+#define MAG_ADDR 0x1E
+#define CTRL_REG1_A 0x20
+#define OUT_X_L_A   0x28
+#define CRA_REG_M   0x00
+#define MR_REG_M    0x02
+#define OUT_X_H_M   0x03
 
-// Helper function to generate random noise
-static float random_noise(float magnitude) {
-    return ((float)rand() / (float)RAND_MAX - 0.5f) * 2.0f * magnitude;
+#define FILTER_SIZE 3
+#define ALPHA       0.2f
+#define RAD_TO_DEG  57.2957795f
+
+// Calibration values
+static float mx_offset = 20, my_offset = 9, mz_offset = -152;
+static float mx_scale = 0.975, my_scale = 0.936, mz_scale = 1.105;
+
+static int16_t acc_buf_x[FILTER_SIZE], acc_buf_y[FILTER_SIZE], acc_buf_z[FILTER_SIZE];
+static int16_t mag_buf_x[FILTER_SIZE], mag_buf_y[FILTER_SIZE], mag_buf_z[FILTER_SIZE];
+static int buf_index = 0;
+
+static float ax_ema=0, ay_ema=0, az_ema=0;
+static float mx_ema=0, my_ema=0, mz_ema=0;
+
+static int16_t sma(int16_t *buf) {
+    int32_t sum=0;
+    for(int i=0;i<FILTER_SIZE;i++) sum+=buf[i];
+    return sum / FILTER_SIZE;
+}
+
+static void read_accel(int16_t *ax,int16_t *ay,int16_t *az){
+    uint8_t reg=OUT_X_L_A|0x80, buf[6];
+    i2c_write_blocking(I2C_PORT,ACC_ADDR,&reg,1,true);
+    i2c_read_blocking(I2C_PORT,ACC_ADDR,buf,6,false);
+    *ax = (buf[1]<<8|buf[0]);
+    *ay = (buf[3]<<8|buf[2]);
+    *az = (buf[5]<<8|buf[4]);
+}
+
+static void read_mag(int16_t *mx,int16_t *my,int16_t *mz){
+    uint8_t reg=OUT_X_H_M, buf[6];
+    i2c_write_blocking(I2C_PORT,MAG_ADDR,&reg,1,true);
+    i2c_read_blocking(I2C_PORT,MAG_ADDR,buf,6,false);
+    *mx = (buf[0]<<8|buf[1]);
+    *mz = (buf[2]<<8|buf[3]);
+    *my = (buf[4]<<8|buf[5]);
 }
 
 void imu_init(IMU *imu) {
-    printf("IMU SIMULATION MODE (No hardware sensor needed)\n");
-    printf("Heading estimated from wheel encoders\n\n");
+    i2c_init(I2C_PORT,100000);
+    gpio_set_function(SDA_PIN,GPIO_FUNC_I2C);
+    gpio_set_function(SCL_PIN,GPIO_FUNC_I2C);
+    gpio_pull_up(SDA_PIN);
+    gpio_pull_up(SCL_PIN);
+
+    uint8_t init_acc[]={CTRL_REG1_A,0x27};
+    i2c_write_blocking(I2C_PORT,ACC_ADDR,init_acc,2,false);
+    uint8_t init_mag1[]={CRA_REG_M,0x14};
+    i2c_write_blocking(I2C_PORT,MAG_ADDR,init_mag1,2,false);
+    uint8_t init_mag2[]={MR_REG_M,0x00};
+    i2c_write_blocking(I2C_PORT,MAG_ADDR,init_mag2,2,false);
+
+    imu->heading_offset=0;
+    imu->calibrated=false;
     
-    imu->heading = 0.0f;
-    imu->gyro_x = 0.0f;
-    imu->gyro_y = 0.0f;
-    imu->gyro_z = 0.0f;
-    imu->accel_x = 0.0f;
-    imu->accel_y = 0.0f;
-    imu->accel_z = 1.0f;
-    imu->gyro_bias_x = 0.0f;
-    imu->gyro_bias_y = 0.0f;
-    imu->gyro_bias_z = 0.0f;
-    imu->last_update_time = to_ms_since_boot(get_absolute_time());
-    
-    complementary_filter_init(&imu->filter, IMU_FILTER_ALPHA);
-    
-    last_left_encoder = get_left_encoder();
-    last_right_encoder = get_right_encoder();
-    
-    printf("✓ Simulated IMU initialized\n");
+    printf("IMU initialized on I2C0 (GP%d=SDA, GP%d=SCL)\n", SDA_PIN, SCL_PIN);
 }
 
-void imu_calibrate(IMU *imu) {
-    printf("Simulated IMU calibration...\n");
+void imu_calibrate(IMU *imu){
+    printf("Calibrating IMU...\n");
     
-    imu->gyro_bias_x = random_noise(0.3f);
-    imu->gyro_bias_y = random_noise(0.3f);
-    imu->gyro_bias_z = random_noise(0.3f);
+    // Take multiple samples for better calibration
+    float heading_sum = 0;
+    const int samples = 10;
     
-    printf("Calibration complete!\n");
-    printf("Simulated gyro bias: X=%.2f, Y=%.2f, Z=%.2f deg/s\n", 
-           imu->gyro_bias_x, imu->gyro_bias_y, imu->gyro_bias_z);
-    
-    sleep_ms(500);
-}
-
-void imu_update(IMU *imu) {
-    uint32_t current_time = to_ms_since_boot(get_absolute_time());
-    float dt = (current_time - imu->last_update_time) / 1000.0f;
-    imu->last_update_time = current_time;
-    
-    int32_t current_left = get_left_encoder();
-    int32_t current_right = get_right_encoder();
-    
-    int32_t left_diff = current_left - last_left_encoder;
-    int32_t right_diff = current_right - last_right_encoder;
-    
-    float left_distance_mm = left_diff * MM_PER_PULSE;
-    float right_distance_mm = right_diff * MM_PER_PULSE;
-    
-    float distance_diff = right_distance_mm - left_distance_mm;
-    float heading_change_from_wheels = (distance_diff / WHEEL_BASE_MM) * RAD_TO_DEG;
-    
-    if (dt > 0.001f) {
-        imu->gyro_z = (heading_change_from_wheels / dt) + random_noise(SIMULATED_GYRO_NOISE);
-    } else {
-        imu->gyro_z = 0.0f;
+    for (int i = 0; i < samples; i++) {
+        imu_update(imu);
+        heading_sum += imu->yaw;
+        sleep_ms(100);
     }
     
-    accumulated_drift += SIMULATED_GYRO_DRIFT * dt;
-    imu->gyro_z += accumulated_drift;
-    imu->gyro_z -= imu->gyro_bias_z;
+    imu->heading_offset = heading_sum / samples;
+    imu->calibrated = true;
     
-    imu->accel_x = random_noise(SIMULATED_ACCEL_NOISE);
-    imu->accel_y = random_noise(SIMULATED_ACCEL_NOISE);
-    imu->accel_z = 1.0f + random_noise(SIMULATED_ACCEL_NOISE * 0.5f);
-    
-    imu->gyro_x = random_noise(SIMULATED_GYRO_NOISE * 0.3f);
-    imu->gyro_y = random_noise(SIMULATED_GYRO_NOISE * 0.3f);
-    
-    float gyro_heading = imu->heading + (imu->gyro_z * dt);
-    float encoder_heading = imu->heading + heading_change_from_wheels;
-    
-    imu->heading = complementary_filter_update(&imu->filter, 
-                                               gyro_heading, 
-                                               encoder_heading);
-    
-    while (imu->heading > 180.0f) imu->heading -= 360.0f;
-    while (imu->heading < -180.0f) imu->heading += 360.0f;
-    
-    last_left_encoder = current_left;
-    last_right_encoder = current_right;
+    printf("IMU calibrated: offset = %.1f°\n", imu->heading_offset);
 }
 
-float imu_get_heading(IMU *imu) {
-    return imu->heading;
+void imu_update(IMU *imu){
+    int16_t ax,ay,az,mx,my,mz;
+    read_accel(&ax,&ay,&az);
+    read_mag(&mx,&my,&mz);
+
+    acc_buf_x[buf_index]=ax; acc_buf_y[buf_index]=ay; acc_buf_z[buf_index]=az;
+    mag_buf_x[buf_index]=mx; mag_buf_y[buf_index]=my; mag_buf_z[buf_index]=mz;
+    buf_index=(buf_index+1)%FILTER_SIZE;
+
+    ax_ema = ALPHA*sma(acc_buf_x) + (1-ALPHA)*ax_ema;
+    ay_ema = ALPHA*sma(acc_buf_y) + (1-ALPHA)*ay_ema;
+    az_ema = ALPHA*sma(acc_buf_z) + (1-ALPHA)*az_ema;
+
+    mx_ema = ALPHA*((sma(mag_buf_x)-mx_offset)*mx_scale)+(1-ALPHA)*mx_ema;
+    my_ema = ALPHA*((sma(mag_buf_y)-my_offset)*my_scale)+(1-ALPHA)*my_ema;
+    mz_ema = ALPHA*((sma(mag_buf_z)-mz_offset)*mz_scale)+(1-ALPHA)*mz_ema;
+
+    float roll = atan2f(ay_ema,az_ema);
+    float pitch = atan2f(-ax_ema,sqrtf(ay_ema*ay_ema+az_ema*az_ema));
+    float Xh = mx_ema*cosf(pitch)+mz_ema*sinf(pitch);
+    float Yh = mx_ema*sinf(roll)*sinf(pitch)+my_ema*cosf(roll)-mz_ema*sinf(roll)*cosf(pitch);
+
+    imu->roll = roll*RAD_TO_DEG;
+    imu->pitch= pitch*RAD_TO_DEG;
+    imu->yaw = atan2f(-Yh,Xh)*RAD_TO_DEG;
 }
 
-void imu_get_gyro(IMU *imu, float *gx, float *gy, float *gz) {
-    if (gx) *gx = imu->gyro_x;
-    if (gy) *gy = imu->gyro_y;
-    if (gz) *gz = imu->gyro_z;
-}
-
-void imu_get_accel(IMU *imu, float *ax, float *ay, float *az) {
-    if (ax) *ax = imu->accel_x;
-    if (ay) *ay = imu->accel_y;
-    if (az) *az = imu->accel_z;
-}
-
-void imu_reset_heading(IMU *imu) {
-    imu->heading = 0.0f;
-    accumulated_drift = 0.0f;
-    complementary_filter_reset(&imu->filter);
-    
-    last_left_encoder = get_left_encoder();
-    last_right_encoder = get_right_encoder();
-}
-
-void imu_set_heading(IMU *imu, float heading) {
-    imu->heading = heading;
-}
-
-void imu_print_data(IMU *imu) {
-    printf("[SIM IMU] Heading=%.1f° | Gyro Z=%.1f°/s | Accel: X=%.2fg Y=%.2fg Z=%.2fg\n",
-           imu->heading, imu->gyro_z, imu->accel_x, imu->accel_y, imu->accel_z);
+float imu_get_heading(IMU *imu){
+    float h = imu->yaw - imu->heading_offset;
+    if(h>180)h-=360;
+    if(h<-180)h+=360;
+    // FIXED: Added newline to prevent buffer issues
+    // printf("HEADING: %.1f\n", h);  // Uncomment for debugging
+    return h;
 }

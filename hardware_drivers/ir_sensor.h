@@ -14,9 +14,9 @@
 #define LINE_POSITION_MAX 2000
 
 // Typical ADC thresholds (12-bit ADC: 0-4095)
-#define IR_THRESHOLD_WHITE 3500      // White surface
-#define IR_THRESHOLD_BLACK 800       // Black line
-#define IR_EDGE_THRESHOLD 2000       // Edge (gray) - midpoint
+#define IR_THRESHOLD_WHITE 2600      // White surface
+#define IR_THRESHOLD_BLACK 150       // Black line
+#define IR_EDGE_THRESHOLD  1375     // Edge (gray) - midpoint
 
 // Initialize IR sensors
 void ir_sensor_init(void);
