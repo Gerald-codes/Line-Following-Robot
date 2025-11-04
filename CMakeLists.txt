@@ -19,7 +19,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD pico_w CACHE STRING "Board type")
 
 include(pico_sdk_import.cmake)
 
@@ -55,6 +55,14 @@ target_link_libraries(demo1
     hardware_pwm
     hardware_gpio
     hardware_i2c
+    pico_cyw43_arch_lwip_threadsafe_background
+    pico_lwip_mqtt
+)
+
+# Enable WiFi support for demo1
+target_compile_definitions(demo1 PRIVATE
+    PICO_CYW43_ARCH_THREADSAFE_BACKGROUND=1
+    CYW43_LWIP=1
 )
 
 pico_enable_stdio_usb(demo1 1)

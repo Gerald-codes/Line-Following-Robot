@@ -1,29 +1,45 @@
-/**
- * telemetry.h
- * Telemetry and data logging interface
- */
-
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
-#include "pico/stdlib.h"
 #include <stdbool.h>
 
-void telemetry_init(void);
-bool telemetry_should_publish(void);
-void telemetry_publish_speed(float left_speed, float right_speed);
-void telemetry_publish_heading(float heading, float raw_heading);
-void telemetry_publish_distance(float left_distance, float right_distance);
-void telemetry_publish_line_position(int32_t position);
-void telemetry_publish_barcode(const char *command);
-void telemetry_publish_obstacle(float distance, float width);
-void telemetry_publish_state(const char *state_name);
-void telemetry_publish_error(const char *error_message);
-void telemetry_publish_motor_output(float left_output, float right_output);
-void telemetry_publish_imu_data(float heading, float gyro_z, float accel_x, float accel_y);
-void telemetry_enable(bool enable);
-bool telemetry_is_enabled(void);
-void telemetry_print_separator(void);
-void telemetry_print_header(const char *title);
+// ===== Wi-Fi / MQTT configuration (edit these as needed) =====
+#define WIFI_SSID     "Javiersphone"
+#define WIFI_PASS     "imcool123"
+#define MQTT_BROKER   "10.194.254.160"  // set to your Mosquitto host (e.g., 10.132.221.160)
+#define MQTT_PORT     1883
+#define MQTT_CLIENTID "pico-demo1"
 
-#endif // TELEMETRY_H
+// ===== MQTT topics =====
+#define TOPIC_HEADING  "robot/heading"
+#define TOPIC_SPEED    "robot/speed"
+#define TOPIC_DISTANCE "robot/distance"
+
+// ===== Status codes =====
+typedef enum {
+    TELEMETRY_SUCCESS = 0,
+    TELEMETRY_ERROR_NOT_CONNECTED,
+    TELEMETRY_ERROR_PUBLISH,
+    TELEMETRY_ERROR_INVALID_PARAM
+} TelemetryStatus;
+
+// ===== Public API =====
+
+// Bring up Wi-Fi (Pico W) and connect to MQTT broker.
+// Safe to call once at startup; non-fatal if Wi-Fi/MQTT is temporarily down.
+TelemetryStatus telemetry_begin(void);
+
+// Quick check if MQTT session is live
+bool telemetry_is_connected(void);
+
+// Publishers (JSON payloads):
+//   robot/heading  -> {"raw_deg":..,"ema_deg":..}
+TelemetryStatus telemetry_publish_heading(float heading_raw_deg, float heading_ema_deg);
+
+//   robot/speed    -> {"left_mm_s":..,"right_mm_s":..}
+TelemetryStatus telemetry_publish_speed(float left_speed_mm_s, float right_speed_mm_s);
+
+//   robot/distance -> {"left_mm":..,"right_mm":..}
+TelemetryStatus telemetry_publish_distance(float left_distance_mm, float right_distance_mm);
+
+#endif

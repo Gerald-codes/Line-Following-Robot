@@ -1,109 +1,146 @@
-/**
- * telemetry.c
- * Simplified telemetry - Serial output only (no MQTT hardware needed)
- */
-
+// utilities/telemetry.c
 #include "telemetry.h"
-#include "config.h"
+
 #include <stdio.h>
+#include <string.h>
 
-static bool telemetry_enabled = true;
-static uint32_t last_publish_time = 0;
+// Only include WiFi headers if building for Pico W
 
-void telemetry_init(void) {
-    telemetry_enabled = true;
-    last_publish_time = to_ms_since_boot(get_absolute_time());
-    
-    printf("\n╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║              TELEMETRY SYSTEM INITIALIZED                     ║\n");
-    printf("║              (Serial Output Only - No MQTT)                   ║\n");
-    printf("╚═══════════════════════════════════════════════════════════════╝\n\n");
-}
+#include "pico/cyw43_arch.h"          // Pico W Wi-Fi
+#include "lwip/apps/mqtt.h"
+#include "lwip/dns.h"
+#include "lwip/ip_addr.h"
+#include "lwip/err.h"
 
-bool telemetry_should_publish(void) {
-    uint32_t current_time = to_ms_since_boot(get_absolute_time());
-    
-    if (current_time - last_publish_time >= TELEMETRY_INTERVAL_MS) {
-        last_publish_time = current_time;
-        return true;
-    }
-    
-    return false;
-}
+// ===== Tunables =====
+#ifndef TELEMETRY_KEEPALIVE_SEC
+#define TELEMETRY_KEEPALIVE_SEC 30
+#endif
+#ifndef TELEMETRY_QOS
+#define TELEMETRY_QOS 0
+#endif
+#ifndef TELEMETRY_RETAIN
+#define TELEMETRY_RETAIN 0
+#endif
 
-void telemetry_publish_speed(float left_speed, float right_speed) {
-    if (!telemetry_enabled) return;
-    printf("[SPEED] L: %6.1f mm/s | R: %6.1f mm/s\n", left_speed, right_speed);
-}
+static mqtt_client_t *g_client = NULL;
+static volatile bool g_mqtt_connected = false;
+static volatile bool g_wifi_ready = false;
 
-void telemetry_publish_heading(float heading, float raw_heading) {
-    if (!telemetry_enabled) return;
-    printf("[HEADING] Filtered: %6.1f° | Raw: %6.1f°\n", heading, raw_heading);
-}
-
-void telemetry_publish_distance(float left_distance, float right_distance) {
-    if (!telemetry_enabled) return;
-    float avg_distance = (left_distance + right_distance) / 2.0f;
-    printf("[DISTANCE] L: %7.1f mm | R: %7.1f mm | Avg: %7.1f mm\n", 
-           left_distance, right_distance, avg_distance);
-}
-
-void telemetry_publish_line_position(int32_t position) {
-    if (!telemetry_enabled) return;
-    printf("[LINE] Position: %ld\n", position);
-}
-
-void telemetry_publish_barcode(const char *command) {
-    if (!telemetry_enabled) return;
-    printf("[BARCODE] Command: %s\n", command);
-}
-
-void telemetry_publish_obstacle(float distance, float width) {
-    if (!telemetry_enabled) return;
-    printf("[OBSTACLE] Distance: %.1f mm | Width: %.1f mm\n", distance, width);
-}
-
-void telemetry_publish_state(const char *state_name) {
-    if (!telemetry_enabled) return;
-    printf("[STATE] %s\n", state_name);
-}
-
-void telemetry_publish_error(const char *error_message) {
-    if (!telemetry_enabled) return;
-    printf("[ERROR] %s\n", error_message);
-}
-
-void telemetry_publish_motor_output(float left_output, float right_output) {
-    if (!telemetry_enabled) return;
-    printf("[MOTOR PWM] L: %+6.1f%% | R: %+6.1f%%\n", left_output, right_output);
-}
-
-void telemetry_publish_imu_data(float heading, float gyro_z, 
-                                float accel_x, float accel_y) {
-    if (!telemetry_enabled) return;
-    printf("[IMU] Heading: %6.1f° | Gyro Z: %+6.1f°/s | Accel X: %+5.2fg Y: %+5.2fg\n",
-           heading, gyro_z, accel_x, accel_y);
-}
-
-void telemetry_enable(bool enable) {
-    telemetry_enabled = enable;
-    if (enable) {
-        printf("✓ Telemetry enabled\n");
+// ---------- MQTT callbacks ----------
+static void mqtt_conn_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status) {
+    (void)client; (void)arg;
+    g_mqtt_connected = (status == MQTT_CONNECT_ACCEPTED);
+    if (g_mqtt_connected) {
+        printf("[MQTT] Connected (status=%d)\n", status);
     } else {
-        printf("✗ Telemetry disabled\n");
+        printf("[MQTT] Disconnected (status=%d)\n", status);
     }
 }
 
-bool telemetry_is_enabled(void) {
-    return telemetry_enabled;
+static void mqtt_pub_cb(void *arg, err_t result) {
+    (void)arg;
+    if (result != ERR_OK) {
+        printf("[MQTT] Publish result=%d\n", result);
+    }
 }
 
-void telemetry_print_separator(void) {
-    printf("───────────────────────────────────────────────────────────────\n");
+// ---------- Internal helpers ----------
+static inline bool client_ready(void) {
+    return g_client && g_mqtt_connected && mqtt_client_is_connected(g_client);
 }
 
-void telemetry_print_header(const char *title) {
-    printf("\n╔═══════════════════════════════════════════════════════════╗\n");
-    printf("║ %-57s ║\n", title);
-    printf("╚═══════════════════════════════════════════════════════════╝\n\n");
+bool telemetry_is_connected(void) {
+    return client_ready();
 }
+
+static inline TelemetryStatus publish_json(const char *topic, const char *json) {
+    if (!client_ready()) return TELEMETRY_ERROR_NOT_CONNECTED;
+    err_t err = mqtt_publish(g_client, topic, json, (u16_t)strlen(json),
+                             TELEMETRY_QOS, TELEMETRY_RETAIN, mqtt_pub_cb, NULL);
+    return (err == ERR_OK) ? TELEMETRY_SUCCESS : TELEMETRY_ERROR_PUBLISH;
+}
+
+static TelemetryStatus mqtt_connect_now(void) {
+    if (!g_client) {
+        g_client = mqtt_client_new();
+        if (!g_client) {
+            printf("[MQTT] Out of memory creating client\n");
+            return TELEMETRY_ERROR_PUBLISH;
+        }
+    }
+
+    ip_addr_t ip;
+    if (!ipaddr_aton(MQTT_BROKER, &ip)) {
+        // If you need DNS: replace this with dns_gethostbyname()
+        printf("[MQTT] Invalid broker IP: %s\n", MQTT_BROKER);
+        return TELEMETRY_ERROR_INVALID_PARAM;
+    }
+
+    struct mqtt_connect_client_info_t ci = {0};
+    ci.client_id  = MQTT_CLIENTID;
+    ci.keep_alive = TELEMETRY_KEEPALIVE_SEC;
+
+    err_t err = mqtt_client_connect(g_client, &ip, MQTT_PORT, mqtt_conn_cb, NULL, &ci);
+    if (err != ERR_OK) {
+        printf("[MQTT] mqtt_client_connect err=%d\n", err);
+        return TELEMETRY_ERROR_PUBLISH;
+    }
+    return TELEMETRY_SUCCESS; // async; mqtt_conn_cb will flip g_mqtt_connected
+}
+
+// ---------- Public API ----------
+TelemetryStatus telemetry_begin(void) {
+    if (cyw43_arch_init()) {
+        printf("[WIFI] cyw43_arch_init failed\n");
+        return TELEMETRY_ERROR_PUBLISH;
+    }
+    cyw43_arch_enable_sta_mode();
+
+    printf("[WIFI] Connecting to SSID \"%s\" ...\n", WIFI_SSID);
+    int rc = cyw43_arch_wifi_connect_timeout_ms(
+        WIFI_SSID, WIFI_PASS, CYW43_AUTH_WPA2_AES_PSK, 15000);
+    if (rc) {
+        printf("[WIFI] Connect failed rc=%d\n", rc);
+        // We still return SUCCESS so the app can run; publishes will simply no-op.
+        // Call telemetry_begin() again later if you want a retry.
+        g_wifi_ready = false;
+    } else {
+        printf("[WIFI] Connected\n");
+        g_wifi_ready = true;
+    }
+
+    if (!g_wifi_ready) return TELEMETRY_ERROR_NOT_CONNECTED;
+
+    TelemetryStatus st = mqtt_connect_now();
+    if (st != TELEMETRY_SUCCESS) {
+        printf("[MQTT] Initial connect failed (%d); will keep running\n", st);
+        return st;
+    }
+    return TELEMETRY_SUCCESS;
+}
+
+TelemetryStatus telemetry_publish_heading(float heading_raw_deg, float heading_ema_deg) {
+    char payload[128];
+    snprintf(payload, sizeof(payload),
+             "{\"raw_deg\":%.2f,\"ema_deg\":%.2f}",
+             heading_raw_deg, heading_ema_deg);
+    return publish_json(TOPIC_HEADING, payload);
+}
+
+TelemetryStatus telemetry_publish_speed(float left_speed_mm_s, float right_speed_mm_s) {
+    char payload[128];
+    snprintf(payload, sizeof(payload),
+             "{\"left_mm_s\":%.2f,\"right_mm_s\":%.2f}",
+             left_speed_mm_s, right_speed_mm_s);
+    return publish_json(TOPIC_SPEED, payload);
+}
+
+TelemetryStatus telemetry_publish_distance(float left_distance_mm, float right_distance_mm) {
+    char payload[128];
+    snprintf(payload, sizeof(payload),
+             "{\"left_mm\":%.2f,\"right_mm\":%.2f}",
+             left_distance_mm, right_distance_mm);
+    return publish_json(TOPIC_DISTANCE, payload);
+}
+
