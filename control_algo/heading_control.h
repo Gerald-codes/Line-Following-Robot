@@ -1,6 +1,8 @@
 /**
  * heading_control.h
  * Heading/orientation control using IMU and PID
+ * 
+ * NEW: Added heading deadband feature
  */
 
 #ifndef HEADING_CONTROL_H
@@ -16,11 +18,13 @@ typedef struct {
     float current_heading;
     float correction;
     bool at_target;
+    float deadband;            // NEW: Deadband in degrees (no correction if error < deadband)
     uint32_t last_update_time;
 } HeadingController;
 
 void heading_control_init(HeadingController *ctrl, float Kp, float Ki, float Kd, float max_correction);
 void heading_control_set_target(HeadingController *ctrl, float heading);
+void heading_control_set_deadband(HeadingController *ctrl, float deadband_degrees);  // NEW
 float heading_control_update(HeadingController *ctrl, float current_heading);
 bool heading_is_at_target(HeadingController *ctrl, float tolerance);
 void heading_control_reset(HeadingController *ctrl);

@@ -53,6 +53,7 @@ target_link_libraries(demo1
     pico_stdlib
     hardware_pwm
     hardware_gpio
+    hardware_i2c
 )
 
 pico_enable_stdio_usb(demo1 1)
