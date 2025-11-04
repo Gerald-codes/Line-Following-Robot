@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "encoder.h": "c"
+        "encoder.h": "c",
+        "stdbool.h": "c",
+        "stdio.h": "c",
+        "locale": "c"
     }
 }

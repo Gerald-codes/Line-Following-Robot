@@ -71,6 +71,7 @@ add_executable(demo2
     hardware_drivers/imu.c
     hardware_drivers/ir_sensor.c
     hardware_drivers/barcode.c
+    hardware_drivers/calibration.c
     control_algo/pid.c
     control_algo/heading_control.c
     control_algo/line_following.c
@@ -88,3 +89,39 @@ target_link_libraries(demo2
 pico_enable_stdio_usb(demo2 1)
 pico_enable_stdio_uart(demo2 0)
 pico_add_extra_outputs(demo2)
+
+# ============================================================================
+# TEST PROGRAMS
+# ============================================================================
+
+add_executable(encoder_test
+    main_program/encoder_test_main.c
+    hardware_drivers/motor.c
+    hardware_drivers/encoder.c
+)
+
+target_link_libraries(encoder_test
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+)
+
+pico_enable_stdio_usb(encoder_test 1)
+pico_enable_stdio_uart(encoder_test 0)
+pico_add_extra_outputs(encoder_test)
+
+add_executable(motor_test
+    main_program/motor_test.c
+    hardware_drivers/motor.c
+    hardware_drivers/encoder.c
+)
+
+target_link_libraries(motor_test
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+)
+
+pico_enable_stdio_usb(motor_test 1)
+pico_enable_stdio_uart(motor_test 0)
+pico_add_extra_outputs(motor_test)

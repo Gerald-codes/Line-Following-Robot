@@ -1,6 +1,7 @@
 /**
  * ir_sensor.h
  * Single IR sensor interface for edge-detection line following
+ * ORIGINAL VERSION - No inversion functions
  */
 
 #ifndef IR_SENSOR_H
@@ -32,6 +33,7 @@ uint16_t ir_read_barcode_sensor(void);   // Barcode detection sensor
 //   Zero = on edge (perfect tracking)
 int32_t ir_get_line_position(void);
 
+void ir_set_max_deviation(uint16_t deviation);
 // Check if line is detected
 bool ir_line_detected(void);
 

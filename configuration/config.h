@@ -1,6 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "pico/stdlib.h"
+#include <stdbool.h>
+
 // ============================================================================
 // HARDWARE CONFIGURATION
 // ============================================================================
@@ -14,10 +17,9 @@
 #define LEFT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / LEFT_PULSES_PER_REV)
 #define RIGHT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / RIGHT_PULSES_PER_REV)
 
-// Control loop timing - MUCH SLOWER for low resolution encoders
-#define PID_UPDATE_INTERVAL_MS 100        // 10Hz - gives time for multiple pulses
-#define TELEMETRY_INTERVAL_MS 500         // 2Hz telemetry
-#define SENSOR_READ_INTERVAL_MS 10        // 100Hz sensor reading
+#define PID_UPDATE_INTERVAL_MS 100
+#define TELEMETRY_INTERVAL_MS 500
+#define SENSOR_READ_INTERVAL_MS 10
 
 // ============================================================================
 // MOTOR SPEED PID PARAMETERS - TUNED FOR LOW RESOLUTION ENCODERS
@@ -30,34 +32,41 @@
 #define MOTOR_PID_OUTPUT_MAX 100
 
 // ============================================================================
-// LINE FOLLOWING PID PARAMETERS (Demo 2)
+// LINE FOLLOWING PID - Single controller for all situations
+// 🎯 TUNE THESE FOR YOUR ROBOT
 // ============================================================================
 
-#define LINE_PID_KP 0.80f
-#define LINE_PID_KI 0.00f
-#define LINE_PID_KD 0.10f
-#define LINE_STEERING_MAX 100
+#define LINE_PID_KP 0.05f            // 🔧 Main tuning knob
+                                      // Position +1000 → Steering = 5 mm/s
+                                      // 
+                                      // Too jerky? → DECREASE to 0.003
+                                      // Too slow to correct? → INCREASE to 0.008
+                                      //
+                                      // Range: 0.003 - 0.010
+
+#define LINE_PID_KI 0.01f            // 🔧 Leave at 0 unless steady drift
+                                      // Only increase if robot consistently pulls one direction
+
+#define LINE_PID_KD 0.01f            // 🔧 Damping - prevents overshoot
+                                      // Kd/Kp ratio: 0.015/0.005 = 3.0 (good damping)
+                                      //
+                                      // Still oscillates? → INCREASE to 0.020
+                                      // Too sluggish? → DECREASE to 0.010
+                                      //
+                                      // Range: 0.010 - 0.025
+
+#define LINE_STEERING_MAX 40         // 🔧 Maximum steering correction (mm/s)
+                                      // With base speed 55: motors range 35-75 mm/s
+                                      // Ratio: 75/35 = 2.1:1 (moderate turning)
+                                      //
+                                      // Too violent? → DECREASE to 15
+                                      // Can't make corners? → INCREASE to 25
+                                      //
+                                      // Range: 15 - 30
 
 #define LINE_POSITION_MIN -2000
 #define LINE_POSITION_CENTER 0
 #define LINE_POSITION_MAX 2000
-
-// ============================================================================
-// HEADING PID PARAMETERS (Demo 1, 2, 3)
-// ============================================================================
-
-// Demo 1: Straight driving - VERY GENTLE
-#define HEADING_PID_KP_DEMO1 0.15f        // Low correction
-#define HEADING_PID_KI_DEMO1 0.00f        // No integral for now
-#define HEADING_PID_KD_DEMO1 0.00f        // No derivative - too noisy
-
-// Demo 2 & 3: Accurate turning
-#define HEADING_PID_KP_DEMO23 0.20f
-#define HEADING_PID_KI_DEMO23 0.00f
-#define HEADING_PID_KD_DEMO23 0.00f
-
-#define HEADING_CORRECTION_MAX 20         // Very limited correction
-#define HEADING_TOLERANCE_DEGREES 5.0f    // More tolerance
 
 // ============================================================================
 // SPEED SETTINGS
@@ -77,66 +86,43 @@
 #define MAX_SPEED_MM_S 300.0f
 
 // ============================================================================
-// IR SENSOR CONFIGURATION (Demo 2, 3)
+// MOTOR CALIBRATION
 // ============================================================================
 
-#define NUM_IR_SENSORS 5
-#define IR_THRESHOLD_WHITE 2000
-#define IR_THRESHOLD_BLACK 500
-#define IR_LINE_LOST_THRESHOLD 100
-
-#define IR_WEIGHT_0 -2000
-#define IR_WEIGHT_1 -1000
-#define IR_WEIGHT_2 0
-#define IR_WEIGHT_3 1000
-#define IR_WEIGHT_4 2000
+#define LEFT_MOTOR_OFFSET 2           // Power offset if motors unbalanced
+                                      // Robot veers right? → INCREASE
+                                      // Robot veers left? → DECREASE
 
 // ============================================================================
-// IMU CONFIGURATION (Demo 1, 2, 3)
+// IMU CONFIGURATION
 // ============================================================================
 
 #define IMU_FILTER_ALPHA 0.96f
 #define IMU_CALIBRATION_SAMPLES 100
 #define IMU_GYRO_BIAS_MAX 5.0f
 #define IMU_HEADING_CHANGE_THRESHOLD 1.0f
-
+#define HEADING_TOLERANCE_DEGREES 5.0f
 // ============================================================================
-// ULTRASONIC SENSOR (Demo 3)
+// TUNING GUIDE
 // ============================================================================
-
-#define ULTRASONIC_TIMEOUT_US 30000
-#define ULTRASONIC_MIN_DISTANCE_MM 20
-#define ULTRASONIC_MAX_DISTANCE_MM 4000
-#define OBSTACLE_DETECTION_DISTANCE_MM 200
-#define OBSTACLE_CLEARANCE_MIN_MM 300
-
-// ============================================================================
-// SERVO CONFIGURATION (Demo 3)
-// ============================================================================
-
-#define SERVO_MIN_PULSE_US 500
-#define SERVO_MAX_PULSE_US 2500
-#define SERVO_FREQUENCY_HZ 50
-#define SERVO_ANGLE_CENTER 90
-#define SERVO_ANGLE_LEFT 20
-#define SERVO_ANGLE_RIGHT 160
-#define SERVO_SCAN_DELAY_MS 300
-
-// ============================================================================
-// OBSTACLE AVOIDANCE (Demo 3)
-// ============================================================================
-
-#define AVOID_TURN_ANGLE_DEG 90.0f
-#define AVOID_FORWARD_DISTANCE_MM 300
-#define AVOID_RETURN_TIMEOUT_MS 5000
-
-typedef enum {
-    OBSTACLE_STATE_NONE = 0,
-    OBSTACLE_STATE_DETECTED,
-    OBSTACLE_STATE_SCANNING,
-    OBSTACLE_STATE_AVOIDING,
-    OBSTACLE_STATE_RETURNING
-} ObstacleState;
+//
+// PROBLEM: Robot oscillates (swings left-right repeatedly)
+//   → DECREASE LINE_PID_KP to 0.003
+//   → INCREASE LINE_PID_KD to 0.020
+//
+// PROBLEM: Robot drifts off line slowly
+//   → INCREASE LINE_PID_KP to 0.008
+//   → Check LEFT_MOTOR_OFFSET
+//
+// PROBLEM: Steering always at max (±20 in debug)
+//   → DECREASE LINE_PID_KP (it's too high!)
+//   → Or INCREASE LINE_STEERING_MAX
+//
+// PROBLEM: Can't follow line at all
+//   → Check sensor calibration first!
+//   → Verify position values are reasonable (±500 to ±1500)
+//   → Try LINE_PID_KP = 0.010 and LINE_STEERING_MAX = 30
+//
 
 // ============================================================================
 // STATE MACHINE (Demo 2, 3)

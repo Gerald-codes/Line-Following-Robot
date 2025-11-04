@@ -1,40 +1,39 @@
 /**
  * line_following.h
- * Line following control interface
+ * Line following controller interface
  */
 
 #ifndef LINE_FOLLOWING_H
 #define LINE_FOLLOWING_H
 
 #include "pico/stdlib.h"
+#include <stdbool.h>
 
 // Line following states
 typedef enum {
-    LINE_STATE_FOLLOWING,    // Following line edge
-    LINE_STATE_LOST,         // Line lost, searching
-    LINE_STATE_SEARCHING,    // Initial search for line
-    LINE_STATE_STOPPED,      // Stopped (timeout or command)
-    LINE_STATE_TURNING       // Executing turn command
+    LINE_FOLLOW_IDLE = 0,
+    LINE_FOLLOW_ON_EDGE,
+    LINE_FOLLOW_SLIGHT_LEFT,
+    LINE_FOLLOW_SLIGHT_RIGHT,
+    LINE_FOLLOW_TURN_LEFT,
+    LINE_FOLLOW_TURN_RIGHT,
+    LINE_FOLLOW_LOST
 } LineFollowState;
 
 // Initialize line following controller
 void line_following_init(void);
 
-// Update line following control
-// dt: Time since last update (seconds)
-// Returns: Steering correction (-LINE_STEERING_MAX to +LINE_STEERING_MAX)
+// Update line following (call every control cycle)
+// Returns: steering correction value (negative = turn right, positive = turn left)
 float line_following_update(float dt);
 
-// Set line following state
-void line_following_set_state(LineFollowState state);
+// Reset line following state
+void line_following_reset(void);
 
 // Get current state
 LineFollowState line_following_get_state(void);
 
-// Reset line following controller
-void line_following_reset(void);
-
-// Convert state to string
+// Convert state to string for debugging
 const char* line_state_to_string(LineFollowState state);
 
 #endif // LINE_FOLLOWING_H
