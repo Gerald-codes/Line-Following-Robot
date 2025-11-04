@@ -18,7 +18,7 @@ if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD pico_w CACHE STRING "Board type")  
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -35,6 +35,7 @@ add_executable(Ultrasonic
     servo.c
     timer_manager.c
     obstacle_scanner.c
+    telemetry.c
 )
 
 # Add include directories
@@ -47,6 +48,8 @@ target_link_libraries(Ultrasonic
     hardware_timer
     hardware_pwm
     m
+    pico_cyw43_arch_lwip_threadsafe_background
+    pico_lwip_mqtt
 )
 
 # Enable USB output, disable UART output

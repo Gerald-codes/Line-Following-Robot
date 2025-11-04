@@ -58,4 +58,24 @@ float scanner_calculate_width(int angle_start, int angle_end, uint64_t min_dista
  */
 void scanner_print_results(ScanResult result);
 
+
+/**
+ * Enable telemetry publishing during scans
+ * Call this after scanner_init() and telemetry_init() to enable automatic
+ * telemetry publishing during obstacle scanning
+ */
+void scanner_enable_telemetry(void);
+
+/**
+ * Disable telemetry publishing during scans
+ */
+void scanner_disable_telemetry(void);
+
+/**
+ * Check if telemetry is enabled for scanner
+ * @return true if telemetry publishing is enabled
+ */
+bool scanner_is_telemetry_enabled(void);
+
+
 #endif
