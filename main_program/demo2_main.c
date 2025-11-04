@@ -125,7 +125,7 @@ int main() {
         update_motor_speed(&right_metrics, right_count, current_time);
         
         // PID update every 100ms
-        if (current_time - last_pid >= 100) {
+        if (current_time - last_pid >= 50) {
             float dt = (current_time - last_pid) / 1000.0f;
             
             // Get steering correction from line following PID

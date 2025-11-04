@@ -38,7 +38,7 @@
 // 🎯 TUNE THESE FOR YOUR ROBOT
 // ============================================================================
 
-#define LINE_PID_KP 0.05f            // 🔧 Main tuning knob
+#define LINE_PID_KP 0.01f            // 🔧 Main tuning knob
                                       // Position +1000 → Steering = 5 mm/s
                                       // 
                                       // Too jerky? → DECREASE to 0.003
@@ -46,10 +46,10 @@
                                       //
                                       // Range: 0.003 - 0.010
 
-#define LINE_PID_KI 0.01f            // 🔧 Leave at 0 unless steady drift
+#define LINE_PID_KI 0.00f            // 🔧 Leave at 0 unless steady drift
                                       // Only increase if robot consistently pulls one direction
 
-#define LINE_PID_KD 0.01f            // 🔧 Damping - prevents overshoot
+#define LINE_PID_KD 0.03f            // 🔧 Damping - prevents overshoot
                                       // Kd/Kp ratio: 0.015/0.005 = 3.0 (good damping)
                                       //
                                       // Still oscillates? → INCREASE to 0.020
