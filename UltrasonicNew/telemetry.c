@@ -16,7 +16,7 @@ static ip_addr_t broker_ip;
 #define WIFI_PASSWORD "imcool123"
 
 // MQTT Broker IP - Update with your broker's IP
-#define MQTT_BROKER_IP "10.166.8.160"  // Change to your broker IP
+#define MQTT_BROKER_IP "10.193.42.160"  // Change to your broker IP
 #define MQTT_BROKER_PORT 1883
 
 // Internal helper functions

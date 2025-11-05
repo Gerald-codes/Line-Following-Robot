@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 // MQTT Configuration
-#define MQTT_BROKER_ADDRESS "tcp://10.166.8.160:1883"  // Change to your broker address
+#define MQTT_BROKER_ADDRESS "tcp://10.193.42.160:1883"  // Change to your broker address
 #define MQTT_CLIENT_ID "pico_robot_car"
 #define MQTT_QOS 1
 #define MQTT_TIMEOUT 10000L

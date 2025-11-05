@@ -36,6 +36,7 @@ add_executable(Ultrasonic
     timer_manager.c
     obstacle_scanner.c
     telemetry.c
+    motor.c
 )
 
 # Add include directories
