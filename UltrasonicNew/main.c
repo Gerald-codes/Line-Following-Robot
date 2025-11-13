@@ -270,7 +270,7 @@ void continuous_navigation(void) {
 
 int main() {
     stdio_init_all();
-    timer_wait_ms(2000);
+    // timer_wait_ms(2000);
     
     print_system_info();
     
@@ -285,21 +285,21 @@ int main() {
     motor_init(M2A, M2B);
     printf("✓ Motors initialized\n");
 
-    // Initialize telemetry system (optional)
-    printf("\nInitializing telemetry system...\n");
-    TelemetryStatus telem_status = telemetry_init(MQTT_BROKER_ADDRESS, MQTT_CLIENT_ID);
+    // // Initialize telemetry system (optional)
+    // printf("\nInitializing telemetry system...\n");
+    // TelemetryStatus telem_status = telemetry_init(MQTT_BROKER_ADDRESS, MQTT_CLIENT_ID);
     
-    if (telem_status == TELEMETRY_SUCCESS) {
-        printf("✓ Telemetry system initialized successfully\n");
-        printf("✓ Connected to MQTT broker\n");
-        telemetry_publish_status("System initialized");
+    // if (telem_status == TELEMETRY_SUCCESS) {
+    //     printf("✓ Telemetry system initialized successfully\n");
+    //     printf("✓ Connected to MQTT broker\n");
+    //     telemetry_publish_status("System initialized");
         
-        // Enable telemetry in scanner
-        scanner_enable_telemetry();
-    } else {
-        printf("✗ Failed to initialize telemetry: %d\n", telem_status);
-        printf("  Continuing without telemetry...\n");
-    }
+    //     // Enable telemetry in scanner
+    //     scanner_enable_telemetry();
+    // } else {
+    //     printf("✗ Failed to initialize telemetry: %d\n", telem_status);
+    //     printf("  Continuing without telemetry...\n");
+    // }
     
     printf("\n========================================\n");
     printf("System ready!\n");
