@@ -1,89 +1,109 @@
 # ninja log v6
+5003	5539	7847281062295944	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/chap_ms.c.obj	cb2e9b56910918d5
+143	340	7847281015503043	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/pico-sdk/src/rp2040/boot_stage2/bs2_default.dis	3d18ceb901afcb54
+4766	5447	7847281059915840	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/lowpan6_ble.c.obj	d290b678071db62b
+941	1389	7847281021672456	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.obj	6a3e48d07867660
 49	95	7847281013093863	pico-sdk/src/rp2_common/pico_cyw43_driver/cyw43_bus_pio_spi.pio.h	79782d40d32718e6
+2006	2388	7847281032317137	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.obj	dc067f59bb6ec660
+58	361	7847303082556421	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	c8dee37e17ad34fd
 49	95	7847281013093863	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/pico-sdk/src/rp2_common/pico_cyw43_driver/cyw43_bus_pio_spi.pio.h	79782d40d32718e6
+976	1350	7847281022021316	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.obj	41b8060cf102a375
+5081	5695	7847281063061262	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/demand.c.obj	9290d10d601bda4a
+1000	1690	7847281022251352	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.obj	edc515970d87bdba
 41	141	7847281012673878	pico-sdk/src/rp2040/boot_stage2/CMakeFiles/bs2_default.dir/compile_time_choice.S.obj	3a1e316fe9b105e9
 143	340	7847281015503043	pico-sdk/src/rp2040/boot_stage2/bs2_default.elf	3d18ceb901afcb54
-143	340	7847281015503043	pico-sdk/src/rp2040/boot_stage2/bs2_default.dis	3d18ceb901afcb54
-143	340	7847281015503043	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/pico-sdk/src/rp2040/boot_stage2/bs2_default.dis	3d18ceb901afcb54
+861	1572	7847281020867154	CMakeFiles/Ultrasonic.dir/servo.c.obj	d2e7429f40861bb1
 340	383	7847281015996531	pico-sdk/src/rp2040/boot_stage2/bs2_default.bin	17ea70132e3b585e
+143	340	7847281015503043	pico-sdk/src/rp2040/boot_stage2/bs2_default.dis	3d18ceb901afcb54
 340	383	7847281015996531	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/pico-sdk/src/rp2040/boot_stage2/bs2_default.bin	17ea70132e3b585e
 383	840	7847281020431853	pico-sdk/src/rp2040/boot_stage2/bs2_default_padded_checksummed.S	d25a3ddd12d67ff5
+1897	2581	7847281031221722	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.obj	c450913e54c33085
 383	840	7847281020431853	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/pico-sdk/src/rp2040/boot_stage2/bs2_default_padded_checksummed.S	d25a3ddd12d67ff5
 1018	1303	7847281022441454	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq_handler_chain.S.obj	3e28624c015fc0e1
+1498	2105	7847281027240374	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.obj	d2e6e8ad306fbd2c
+6016	6714	7847281072409827	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/cyw43-driver/src/cyw43_lwip.c.obj	7b989cef083cc6f8
 930	1326	7847281021562451	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2040/pico_platform/platform.c.obj	dc7346176f43bab
-976	1350	7847281022021316	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync/sync.c.obj	41b8060cf102a375
 850	1374	7847281020757140	CMakeFiles/Ultrasonic.dir/ultrasonic.c.obj	e80c1835e6cfbc24
-941	1389	7847281021672456	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_common/common.c.obj	6a3e48d07867660
+3708	4335	7847281049335596	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/autoip.c.obj	4ab11536bbf0c793
+2074	2767	7847281032992492	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.obj	336a1c896fee24b7
 988	1411	7847281022141325	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.obj	7cc67e97a3a08ccc
+1873	2262	7847281030981710	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.obj	103474a8528a5d80
 1040	1430	7847281022656657	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_sync/lock_core.c.obj	27c35e6ec7951db1
+1389	2049	7847281026145033	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.obj	c688ad6a06d6e235
 911	1441	7847281021367147	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdlib/stdlib.c.obj	7073175940b206e3
+5428	6104	7847281066535536	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppapi.c.obj	1d89026fe78dd8ff
+5399	5926	7847281066245422	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/multilink.c.obj	2e9eeb4814bfa5e7
+2948	3834	7847281041732983	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.obj	ba388fb28cc7ca3b
 954	1454	7847281021792436	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_platform_panic/panic.c.obj	efcacf687d49a91b
 871	1465	7847281020967139	CMakeFiles/Ultrasonic.dir/timer_manager.c.obj	e9632b44960e543e
 965	1476	7847281021901351	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/hardware_claim/claim.c.obj	9e5f8a435fa413fc
+3917	4500	7847281051426443	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/igmp.c.obj	7b5e8b547b9d350d
+1540	1957	7847281027655684	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.obj	2d02e3b866f4d739
+1076	1931	7847281023019037	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.obj	439d80195671cba4
 1030	1498	7847281022556644	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_sync/sem.c.obj	7e9ad4de9ada0eb1
-840	1515	7847281020657113	CMakeFiles/Ultrasonic.dir/main.c.obj	6b79c8085840d969
+45	264	7847297870331201	CMakeFiles/Ultrasonic.dir/main.c.obj	6b79c8085840d969
+1572	2006	7847281027975668	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.obj	74e59f76627bb75b
+1690	2273	7847281029161092	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.obj	baf712fffad39b4c
 1064	1527	7847281022899077	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_sync/critical_section.c.obj	192290a6e5cfa9ed
+1607	2172	7847281028325679	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.obj	80749afa6e36b86c
+2027	2562	7847281032527264	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.obj	495d1ac5252b2d29
+4501	5188	7847281057261838	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/api_msg.c.obj	cdd67979094d4346
 902	1539	7847281021277143	CMakeFiles/Ultrasonic.dir/motor.c.obj	ca255f6e7fa610b
-861	1572	7847281020867154	CMakeFiles/Ultrasonic.dir/servo.c.obj	d2e7429f40861bb1
 1051	1584	7847281022766650	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_sync/mutex.c.obj	80f7a969d5243d6
+1326	1944	7847281025519816	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.obj	2035d04dd089e7b0
 920	1595	7847281021467243	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_gpio/gpio.c.obj	f8d1eb175061de29
-881	1606	7847281021067226	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	c8dee37e17ad34fd
-1000	1690	7847281022251352	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_irq/irq.c.obj	edc515970d87bdba
 1304	1841	7847281025289705	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_time/timeout_helper.c.obj	525b1cfe12069d11
+2973	3407	7847281041983024	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.obj	bb46532e87be62b3
 1477	1854	7847281027020409	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_ticks/ticks.c.obj	b642cc374839ef22
 1411	1872	7847281026365044	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_uart/uart.c.obj	2918800bba17cf12
+1918	2315	7847281031431873	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.obj	70c28361cceb159d
 1585	1885	7847281028105696	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_divider/divider.S.obj	1762e57cb8b96cb0
 1454	1896	7847281026800379	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_vreg/vreg.c.obj	9ede58e5e0bd808b
 1350	1906	7847281025755059	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_util/datetime.c.obj	47c71728bb752282
+2618	3023	7847281038436839	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.obj	5dd989f5d03988bb
 1527	1917	7847281027530503	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_boot_lock/boot_lock.c.obj	fcbba91c5769ab81
-1076	1931	7847281023019037	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_time/time.c.obj	439d80195671cba4
-1326	1944	7847281025519816	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_timer/timer.c.obj	2035d04dd089e7b0
-1540	1957	7847281027655684	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_flash/flash.c.obj	2d02e3b866f4d739
-1441	1970	7847281026670416	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.obj	8333d90ab7a6fd3d
-1572	2006	7847281027975668	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xosc/xosc.c.obj	74e59f76627bb75b
 1376	2026	7847281026015083	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_util/pheap.c.obj	8d2cfaea66fed697
-1430	2038	7847281026560442	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.obj	9ad41d6375939190
-1389	2049	7847281026145033	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/common/pico_util/queue.c.obj	c688ad6a06d6e235
+1441	1970	7847281026670416	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pll/pll.c.obj	8333d90ab7a6fd3d
 1516	2074	7847281027410499	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom_lock.c.obj	9b1793c773df3b0f
+5539	6259	7847281067656046	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/upap.c.obj	f805c56b30bc7078
+1430	2038	7847281026560442	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_clocks/clocks.c.obj	9ad41d6375939190
 1466	2091	7847281026910383	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_watchdog/watchdog.c.obj	7e40f74618b1f9c0
-1498	2105	7847281027240374	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bootrom/bootrom.c.obj	d2e6e8ad306fbd2c
+2038	2539	7847281032642498	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.obj	b3a38c167414b215
 1855	2139	7847281030801764	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.obj	40daec706f92a0cd
+3034	3708	7847281042598349	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/def.c.obj	cfabc941b33b12ff
 1595	2161	7847281028205679	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime/runtime.c.obj	16383332e95db37b
-1607	2172	7847281028325679	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init.c.obj	80749afa6e36b86c
 1842	2196	7847281030671738	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.obj	46978b6515d45467
 891	2219	7847281021167155	CMakeFiles/Ultrasonic.dir/telemetry.c.obj	bda4fc7933a02c09
-1873	2262	7847281030981710	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_divider/divider_hardware.S.obj	103474a8528a5d80
-1690	2273	7847281029161092	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.obj	baf712fffad39b4c
-1931	2284	7847281031567152	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.obj	ed4d7be1875e5028
+4043	4656	7847281052687077	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/icmp6.c.obj	7d2f40ccdce43416
 1885	2300	7847281031111760	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_aeabi_rp2040.S.obj	620deb61bf87ac2f
-1918	2315	7847281031431873	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_v1_rom_shim_rp2040.S.obj	70c28361cceb159d
+4531	5159	7847281057567162	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/if_api.c.obj	f97ef97450246f95
+1931	2284	7847281031567152	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_int64_ops/pico_int64_ops_aeabi.S.obj	ed4d7be1875e5028
 1945	2336	7847281031707150	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_aeabi_rp2040.S.obj	f31db92057485153
-2006	2388	7847281032317137	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_v1_rom_shim_rp2040.S.obj	dc067f59bb6ec660
 1958	2500	7847281031837165	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_init_rom_rp2040.c.obj	c1172f9ea332a634
-2038	2539	7847281032642498	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_mem_ops/mem_ops_aeabi.S.obj	b3a38c167414b215
-2027	2562	7847281032527264	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_malloc/malloc.c.obj	495d1ac5252b2d29
-1897	2581	7847281031221722	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_init_rom_rp2040.c.obj	c450913e54c33085
 2092	2595	7847281033172492	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.obj	f8c5bc5862c4eb04
 2139	2618	7847281033647837	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S.obj	b2b82fc8a53c37b7
+6104	6516	7847281073298420	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_dma/dma.c.obj	330e12ba6981dd55
 1907	2750	7847281031321747	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_double/double_math.c.obj	a3eb51444cb8693
-2074	2767	7847281032992492	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cxx_options/new_delete.cpp.obj	336a1c896fee24b7
 2049	2790	7847281032752506	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_atomic/atomic.c.obj	41c635373d0c70e8
 1970	2802	7847281031957136	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_float/float_math.c.obj	896abc8c00458153
 2301	2874	7847281035263128	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_xip_cache/xip_cache.c.obj	30b0ac21358581d0
 2161	2923	7847281033867831	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_clib_interface/newlib_interface.c.obj	15f67898bd46e5ae
 2273	2935	7847281034983114	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_unique_id/unique_id.c.obj	f4750680879fb3ca
 2262	2946	7847281034873150	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c.obj	163c4958fa5fdb51
+5274	6037	7847281064990043	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/lcp.c.obj	9fa3c8c57d387c3b
 2582	2960	7847281038076720	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_device.c.obj	44d6397c7ff3082d
 2105	2973	7847281033312477	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_printf/printf.c.obj	893d4efee0af1dda
 2285	2985	7847281035103120	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_flash/flash.c.obj	237750018cace194
 2173	2997	7847281033987829	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio/stdio.c.obj	ff843bdef1b27d0c
 2540	3010	7847281037654827	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/audio/audio_device.c.obj	cb1259287acb6b0
-2618	3023	7847281038436839	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/hid/hid_device.c.obj	5dd989f5d03988bb
 2500	3034	7847281037257038	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd_control.c.obj	47120a850cc1660b
+3051	4219	7847281042768402	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/dns.c.obj	b8bd46fb4a8e18b7
 2196	3051	7847281034217789	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/reset_interface.c.obj	4bbf2fc560b01f0a
 2595	3061	7847281038206731	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/dfu/dfu_rt_device.c.obj	702f0369b47dbc7b
 2751	3082	7847281039763652	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/midi/midi_device.c.obj	91f733074941e7e3
+3159	3917	7847281043843723	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/mem.c.obj	b3318af6520db9d8
 2336	3159	7847281035621613	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.obj	fd532a78a94bf80b
+361	959	7847303091407987	Ultrasonic.dis	4ec9a5522a28566
 2316	3169	7847281035416385	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.obj	e9782d394817ccdc
 2220	3223	7847281034457953	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_stdio_usb/stdio_usb.c.obj	f563a33360587af7
 2790	3258	7847281040163647	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/net/ecm_rndis_device.c.obj	259055589736374d
@@ -91,40 +111,38 @@
 2768	3331	7847281039933669	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/msc/msc_device.c.obj	4f31908350af5576
 2874	3355	7847281040997608	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.obj	4007cac2f1b655b4
 2389	3376	7847281036141599	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/device/usbd.c.obj	cdc78c9226248181
-2973	3407	7847281041983024	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.obj	bb46532e87be62b3
+4683	5478	7847281059090455	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ethernet.c.obj	81718ec16cc781ef
+4031	4667	7847281052566923	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/ethip6.c.obj	f10577832d8dd981
+3082	3927	7847281043078362	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ip.c.obj	11f473ddfff82e45
 2562	3430	7847281037874829	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/cdc/cdc_device.c.obj	71f67416cba850a2
+4557	5081	7847281057822619	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/netbuf.c.obj	2003cd5482c72b87
 2936	3444	7847281041612984	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/video/video_device.c.obj	822afb917498a2d6
 3010	3514	7847281042363011	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_rand/rand.c.obj	ad76b036402baab6
 2997	3585	7847281042232992	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_async_context/async_context_base.c.obj	83167dbbb3cfc7b2
 2985	3636	7847281042113026	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_lwip/lwip_nosys.c.obj	ec501f7c76565bf7
 2923	3649	7847281041487726	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/class/vendor/vendor_device.c.obj	31166824b32b9dbf
-3034	3708	7847281042598349	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/def.c.obj	cfabc941b33b12ff
 2961	3810	7847281041872983	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/common/tusb_fifo.c.obj	4769f6d923b05d3e
-2948	3834	7847281041732983	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/tinyusb/src/tusb.c.obj	ba388fb28cc7ca3b
 3062	3887	7847281042878376	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/inet_chksum.c.obj	47998d0bba1e9d0f
-3159	3917	7847281043843723	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/mem.c.obj	b3318af6520db9d8
-3082	3927	7847281043078362	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ip.c.obj	11f473ddfff82e45
 3376	3938	7847281046019703	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/altcp.c.obj	ed89444dd551c6eb
 3431	3949	7847281046564902	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/altcp_tcp.c.obj	d0652d613df0e827
 3355	3971	7847281045809713	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/sys.c.obj	8e2b86e9d731e8ab
 3408	4019	7847281046339722	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/altcp_alloc.c.obj	17391ff5dc81c460
 3023	4030	7847281042493120	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/init.c.obj	1222ce86e20ead54
+5695	6291	7847281069215836	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/md4.c.obj	8ef40d2edc6c1eb2
 3332	4043	7847281045569714	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/stats.c.obj	3613e2e7e9851939
 3258	4127	7847281044839058	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/pbuf.c.obj	325914e548c0603c
 3170	4138	7847281043953726	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/memp.c.obj	820d4f49dbbae0ba
 3223	4189	7847281044493813	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/netif.c.obj	bdee140d929ff705
 3321	4206	7847281045469140	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/raw.c.obj	1adafcb968845788
-3051	4219	7847281042768402	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/dns.c.obj	b8bd46fb4a8e18b7
-3708	4335	7847281049335596	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/autoip.c.obj	4ab11536bbf0c793
 3971	4487	7847281051971759	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/acd.c.obj	cbd0fcd7fc353112
-3917	4500	7847281051426443	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/igmp.c.obj	7b5e8b547b9d350d
+5682	6337	7847281069085845	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/des.c.obj	f751bb3f8048c1ed
 3444	4512	7847281046695012	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/tcp.c.obj	21d075a66c74e59b
 3514	4531	7847281047395016	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/tcp_in.c.obj	20ee58f7c6e5c937
 3949	4557	7847281051751751	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/ip4_addr.c.obj	19823706d7f3ad59
+4695	5559	7847281059200456	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/bridgeif.c.obj	f662ddbb0c21b9bf
 3637	4590	7847281048625603	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/timeouts.c.obj	875cdd4399105766
+6260	6413	7847281074852408	pico-sdk/src/rp2040/boot_stage2/CMakeFiles/bs2_default_library.dir/bs2_default_padded_checksummed.S.obj	a837ec3237cfb6a5
 3887	4645	7847281051126379	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/icmp.c.obj	eaa0a1f51a5f49fa
-4043	4656	7847281052687077	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/icmp6.c.obj	7d2f40ccdce43416
-4031	4667	7847281052566923	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/ethip6.c.obj	f10577832d8dd981
 4139	4683	7847281053646725	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/ip6.c.obj	6a7e90ab1474152a
 4020	4694	7847281052451851	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/dhcp6.c.obj	fa7cd2b8ea247094
 3649	4708	7847281048745580	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/udp.c.obj	a9a6ef7302f26e0
@@ -132,115 +150,78 @@
 4189	4734	7847281054144962	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/ip6_addr.c.obj	c4763b165d9292b4
 4127	4752	7847281053526203	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/inet6.c.obj	a293b6042193d88a
 3834	4765	7847281050596375	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/etharp.c.obj	1af2a162b2617fd0
+5447	6002	7847281066780746	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppcrypt.c.obj	deacf78cd04bb1a6
 4220	4779	7847281054455083	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/mld6.c.obj	7725a2b5865f5a7d
 3938	4793	7847281051631737	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/ip4.c.obj	63f3e14170aa075a
 3928	4901	7847281051536471	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/ip4_frag.c.obj	62bc1ffe23b19d40
 4206	4990	7847281054314956	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/ip6_frag.c.obj	f9ec6765aeb9cfe2
 4335	5003	7847281055610949	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv6/nd6.c.obj	999277bc2375bcc7
+5490	6166	7847281067160750	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppol2tp.c.obj	df14b818ef3adeba
 3810	5018	7847281050360920	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/core/ipv4/dhcp.c.obj	b2fcb03dafc547f5
-4557	5081	7847281057822619	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/netbuf.c.obj	2003cd5482c72b87
 4488	5123	7847281057131827	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/api_lib.c.obj	cc6a9d67d2b2b672
-4531	5159	7847281057567162	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/if_api.c.obj	f97ef97450246f95
 4590	5172	7847281058155110	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/netdb.c.obj	49d0ed5f02ab287
-4501	5188	7847281057261838	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/api_msg.c.obj	cdd67979094d4346
 4513	5229	7847281057381848	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/err.c.obj	b7d28acc5f385f6
 4645	5241	7847281058710442	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/netifapi.c.obj	8be22ec03c608e59
 4656	5273	7847281058820430	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/sockets.c.obj	b70b851c888677e8
 4668	5321	7847281058930483	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/api/tcpip.c.obj	c42afeb2e0d0367e
 4734	5385	7847281059595854	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/lowpan6_common.c.obj	124c8ebc29b76cf5
 4752	5399	7847281059785838	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/lowpan6.c.obj	3ae2890eb20529eb
+5478	6060	7847281067040735	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppoe.c.obj	f8231fdcd367d86b
 4709	5411	7847281059340437	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/bridgeif_fdb.c.obj	f9f224e77db854cf
 4779	5428	7847281060045844	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/zepif.c.obj	1778daefbab0f0da
-4766	5447	7847281059915840	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/lowpan6_ble.c.obj	d290b678071db62b
-4683	5478	7847281059090455	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ethernet.c.obj	81718ec16cc781ef
 4722	5490	7847281059480564	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/slipif.c.obj	15be4b476ee54623
 4793	5501	7847281060191550	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/auth.c.obj	35e3a4f9e6521788
-5003	5539	7847281062295944	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/chap_ms.c.obj	cb2e9b56910918d5
-4695	5559	7847281059200456	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/bridgeif.c.obj	f662ddbb0c21b9bf
 4901	5624	7847281061270587	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/ccp.c.obj	22c2b7536ab9f578
 4991	5636	7847281062165943	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/chap-md5.c.obj	23f1fe3ff4f4fcc7
 5019	5682	7847281062446049	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/chap-new.c.obj	2ecf02ac71f560b0
-5081	5695	7847281063061262	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/demand.c.obj	9290d10d601bda4a
 5159	5737	7847281063846192	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/ecp.c.obj	61d5703a0f022aca
 5123	5775	7847281063489438	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/eap.c.obj	8cc0d859a3847da9
+5915	6177	7847281071405320	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_arch/cyw43_arch_freertos.c.obj	5907b9ad2eb7082b
 5172	5792	7847281063976181	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/eui64.c.obj	ee1a37128cba388
 5188	5806	7847281064141478	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/fsm.c.obj	ea006994845f94b4
 5230	5832	7847281064554812	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/ipcp.c.obj	3a8268bd8dc0e5dc
 5241	5914	7847281064670044	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/ipv6cp.c.obj	3a0e1ea22f7989f1
-5399	5926	7847281066245422	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/multilink.c.obj	2e9eeb4814bfa5e7
 5386	5966	7847281066115417	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/mppe.c.obj	302c0c53b50e444b
-5447	6002	7847281066780746	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppcrypt.c.obj	deacf78cd04bb1a6
 5411	6015	7847281066375430	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/ppp.c.obj	a7418a2970e7db79
 5321	6026	7847281065470147	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/magic.c.obj	ba9f9cde2af32f14
-5274	6037	7847281064990043	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/lcp.c.obj	9fa3c8c57d387c3b
 5806	6048	7847281070319983	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_arch/cyw43_arch_poll.c.obj	f15c07e36be6b0c1
-5478	6060	7847281067040735	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppoe.c.obj	f8231fdcd367d86b
-5428	6104	7847281066535536	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppapi.c.obj	1d89026fe78dd8ff
-5490	6166	7847281067160750	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppol2tp.c.obj	df14b818ef3adeba
-5915	6177	7847281071405320	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_arch/cyw43_arch_freertos.c.obj	5907b9ad2eb7082b
 5501	6189	7847281067270741	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/pppos.c.obj	b2fa7e8cdb695d78
 5625	6244	7847281068500604	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/vj.c.obj	f768017c3424eb7c
-5539	6259	7847281067656046	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/upap.c.obj	f805c56b30bc7078
 5637	6269	7847281068625858	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/arc4.c.obj	7f67eb916348c3fa
 5560	6283	7847281067855245	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/utils.c.obj	255d782e6510c446
-5695	6291	7847281069215836	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/md4.c.obj	8ef40d2edc6c1eb2
-5682	6337	7847281069085845	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/des.c.obj	f751bb3f8048c1ed
 5738	6351	7847281069629985	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/md5.c.obj	268ffd6d114dfb5
 5776	6387	7847281070009984	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/netif/ppp/polarssl/sha1.c.obj	b819942b4160a955
-6260	6413	7847281074852408	pico-sdk/src/rp2040/boot_stage2/CMakeFiles/bs2_default_library.dir/bs2_default_padded_checksummed.S.obj	a837ec3237cfb6a5
+5926	6841	7847281071525417	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_driver/cyw43_bus_pio_spi.c.obj	84f0d9a2bb7c5f64
 6002	6447	7847281072279726	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/cyw43-driver/src/cyw43_stats.c.obj	c2e37b597e057f0c
 6166	6490	7847281073916335	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_exception/exception.c.obj	a96ffda079c3aaf1
-6104	6516	7847281073298420	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_dma/dma.c.obj	330e12ba6981dd55
 6038	6580	7847281072628426	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_driver/cybt_shared_bus/cybt_shared_bus.c.obj	906ce31a24a5aeb9
 5832	6613	7847281070585318	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_arch/cyw43_arch_threadsafe_background.c.obj	93b50c499ac47a92
 5792	6622	7847281070179948	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_arch/cyw43_arch.c.obj	53886f68c014c6f4
 6060	6626	7847281072858415	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/hardware_pio/pio.c.obj	9594d4c973693dfd
 6048	6628	7847281072738419	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_driver/cybt_shared_bus/cybt_shared_bus_driver.c.obj	62641439766a9505
 6190	6634	7847281074157053	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_async_context/async_context_threadsafe_background.c.obj	16c5ba08b2f3da42
-6016	6714	7847281072409827	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/cyw43-driver/src/cyw43_lwip.c.obj	7b989cef083cc6f8
 6026	6768	7847281072513144	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/cyw43-driver/src/cyw43_ctrl.c.obj	1cbd984d793999ce
 6177	6789	7847281074036319	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_driver/cyw43_driver.c.obj	af2e3c35911cdc69
-5926	6841	7847281071525417	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_cyw43_driver/cyw43_bus_pio_spi.c.obj	84f0d9a2bb7c5f64
 6244	6906	7847281074692411	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/lwip/src/apps/mqtt/mqtt.c.obj	abfb149708a7d67f
 5967	7145	7847281071920575	CMakeFiles/Ultrasonic.dir/C_/Users/Chervelle/.pico-sdk/sdk/2.2.0/lib/cyw43-driver/src/cyw43_ll.c.obj	7074ac60e93d1629
-7145	7638	7847281088520819	Ultrasonic.elf	4ec9a5522a28566
-7145	7638	7847281088520819	Ultrasonic.dis	4ec9a5522a28566
-7145	7638	7847281088520819	Ultrasonic.hex	4ec9a5522a28566
-7145	7638	7847281088520819	Ultrasonic.bin	4ec9a5522a28566
-7145	7638	7847281088520819	Ultrasonic.uf2	4ec9a5522a28566
-7145	7638	7847281088520819	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	4ec9a5522a28566
-7145	7638	7847281088520819	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	4ec9a5522a28566
-7145	7638	7847281088520819	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	4ec9a5522a28566
-7145	7638	7847281088520819	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	4ec9a5522a28566
-64	301	7847281190777399	CMakeFiles/Ultrasonic.dir/main.c.obj	6b79c8085840d969
-71	324	7847281190847423	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	c8dee37e17ad34fd
-324	809	7847281198123704	Ultrasonic.elf	4ec9a5522a28566
-324	809	7847281198123704	Ultrasonic.dis	4ec9a5522a28566
-324	809	7847281198123704	Ultrasonic.hex	4ec9a5522a28566
-324	809	7847281198123704	Ultrasonic.bin	4ec9a5522a28566
-324	809	7847281198123704	Ultrasonic.uf2	4ec9a5522a28566
-324	809	7847281198123704	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	4ec9a5522a28566
-324	809	7847281198123704	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	4ec9a5522a28566
-324	809	7847281198123704	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	4ec9a5522a28566
-324	809	7847281198123704	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	4ec9a5522a28566
-51	281	7847282076943671	CMakeFiles/Ultrasonic.dir/main.c.obj	6b79c8085840d969
-282	800	7847282084344408	Ultrasonic.elf	4ec9a5522a28566
-282	800	7847282084344408	Ultrasonic.dis	4ec9a5522a28566
-282	800	7847282084344408	Ultrasonic.hex	4ec9a5522a28566
-282	800	7847282084344408	Ultrasonic.bin	4ec9a5522a28566
-282	800	7847282084344408	Ultrasonic.uf2	4ec9a5522a28566
-282	800	7847282084344408	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	4ec9a5522a28566
-282	800	7847282084344408	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	4ec9a5522a28566
-282	800	7847282084344408	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	4ec9a5522a28566
-282	800	7847282084344408	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	4ec9a5522a28566
-57	327	7847283641138373	CMakeFiles/Ultrasonic.dir/main.c.obj	6b79c8085840d969
-67	331	7847283641238363	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	c8dee37e17ad34fd
-331	871	7847283649151536	Ultrasonic.elf	4ec9a5522a28566
-331	871	7847283649151536	Ultrasonic.dis	4ec9a5522a28566
-331	871	7847283649151536	Ultrasonic.hex	4ec9a5522a28566
-331	871	7847283649151536	Ultrasonic.bin	4ec9a5522a28566
-331	871	7847283649151536	Ultrasonic.uf2	4ec9a5522a28566
-331	871	7847283649151536	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	4ec9a5522a28566
-331	871	7847283649151536	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	4ec9a5522a28566
-331	871	7847283649151536	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	4ec9a5522a28566
-331	871	7847283649151536	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	4ec9a5522a28566
+361	959	7847303091407987	Ultrasonic.elf	4ec9a5522a28566
+361	959	7847303091407987	Ultrasonic.hex	4ec9a5522a28566
+361	959	7847303091407987	Ultrasonic.bin	4ec9a5522a28566
+361	959	7847303091407987	Ultrasonic.uf2	4ec9a5522a28566
+361	959	7847303091407987	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	4ec9a5522a28566
+361	959	7847303091407987	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	4ec9a5522a28566
+361	959	7847303091407987	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	4ec9a5522a28566
+361	959	7847303091407987	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	4ec9a5522a28566
+43	198	7848997007861270	pico-sdk/src/rp2040/boot_stage2/bs2_default_padded_checksummed.S	204039f1b74631ef
+43	198	7848997007861270	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/pico-sdk/src/rp2040/boot_stage2/bs2_default_padded_checksummed.S	204039f1b74631ef
+211	329	7848997008142223	pico-sdk/src/rp2040/boot_stage2/CMakeFiles/bs2_default_library.dir/bs2_default_padded_checksummed.S.obj	a837ec3237cfb6a5
+199	522	7848997008022425	CMakeFiles/Ultrasonic.dir/obstacle_scanner.c.obj	c8dee37e17ad34fd
+522	1008	7848997016010347	Ultrasonic.elf	4ec9a5522a28566
+522	1008	7848997016010347	Ultrasonic.dis	4ec9a5522a28566
+522	1008	7848997016010347	Ultrasonic.hex	4ec9a5522a28566
+522	1008	7848997016010347	Ultrasonic.bin	4ec9a5522a28566
+522	1008	7848997016010347	Ultrasonic.uf2	4ec9a5522a28566
+522	1008	7848997016010347	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.dis	4ec9a5522a28566
+522	1008	7848997016010347	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.hex	4ec9a5522a28566
+522	1008	7848997016010347	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.bin	4ec9a5522a28566
+522	1008	7848997016010347	C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build/Ultrasonic.uf2	4ec9a5522a28566

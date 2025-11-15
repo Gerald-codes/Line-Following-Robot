@@ -1387,7 +1387,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[C:/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0/python3.13.exe][cfound components: Interpreter ][v3.13.9()]"
+			"value" : "[c:/Python313/python.exe][cfound components: Interpreter ][v3.13.9()]"
 		},
 		{
 			"name" : "PICO_32BIT",
@@ -1918,6 +1918,18 @@
 			"value" : "C:/Users/Chervelle/.pico-sdk/sdk/2.2.0/tools"
 		},
 		{
+			"name" : "Python3_EXECUTABLE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : "c:/Python313/python.exe"
+		},
+		{
 			"name" : "Ultrasonic_BINARY_DIR",
 			"properties" : 
 			[
@@ -1983,11 +1995,11 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "Path to a program."
+					"value" : ""
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0/python3.13.exe"
+			"value" : "c:/Python313/python.exe"
 		},
 		{
 			"name" : "_Python3_INTERPRETER_PROPERTIES",
@@ -1999,7 +2011,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "Python;3;13;9;32;64;;;abi3;C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\\Lib;C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\\Lib;C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\\Lib\\site-packages;C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\\Lib\\site-packages"
+			"value" : "Python;3;13;9;32;64;;;abi3;c:\\Python313\\Lib;c:\\Python313\\Lib;c:\\Python313\\Lib\\site-packages;c:\\Python313\\Lib\\site-packages"
 		},
 		{
 			"name" : "_Python3_INTERPRETER_SIGNATURE",
@@ -2011,7 +2023,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "60e8bbfb77b3582657047096513047da"
+			"value" : "fd8d7dd3256880e26c8a611437a17762"
 		},
 		{
 			"name" : "_Python3_NumPy_REASON_FAILURE",

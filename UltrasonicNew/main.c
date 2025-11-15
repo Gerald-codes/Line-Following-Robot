@@ -184,16 +184,15 @@ void demo_obstacle_avoidance(void) {
             printf("Width: %.2f cm\n", obs->smoothed_width);
             printf("Distance: %llu cm\n", obs->min_distance);
             
-            // Determine clearer side
-            int obstacle_center = (obs->angle_start + obs->angle_end) / 2;
-            const char* clearer_side = (obstacle_center > ANGLE_CENTER) ? "LEFT" : "RIGHT";
-            printf("Clearer side: %s\n", clearer_side);
+            // Use the new accurate avoidance direction function
+            AvoidanceDirection direction = scanner_get_best_avoidance_direction(result);
+            const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
             
             if (telemetry_is_connected()) {
                 char msg[128];
                 snprintf(msg, sizeof(msg), 
                         "Obstacle: %.1fcm wide, %llucm away, go %s", 
-                        obs->smoothed_width, obs->min_distance, clearer_side);
+                        obs->smoothed_width, obs->min_distance, dir_str);
                 telemetry_publish_status(msg);
             }
         }
@@ -244,6 +243,13 @@ void continuous_navigation(void) {
                 current_state = STATE_SCANNING;
                 ScanResult result = scanner_perform_scan();
                 scanner_print_results(result);
+                
+                // Analyze and get avoidance direction
+                if (result.obstacle_count > 0) {
+                    AvoidanceDirection direction = scanner_get_best_avoidance_direction(result);
+                    const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
+                    printf("\nSuggested avoidance: Go %s\n", dir_str);
+                }
                 
                 // Stay stopped
                 current_state = STATE_STOPPED;

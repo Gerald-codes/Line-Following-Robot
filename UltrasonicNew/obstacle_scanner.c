@@ -401,3 +401,154 @@ void scanner_print_results(ScanResult result) {
                obs->width, obs->smoothed_width);
     }
 }
+void scanner_get_clear_space_analysis(ScanResult result, int* left_clear, int* right_clear) {
+    *left_clear = 0;
+    *right_clear = 0;
+    
+    // Create a boolean array to mark which angles are blocked
+    bool blocked[MAX_ANGLE - MIN_ANGLE + 1];
+    for (int i = 0; i <= MAX_ANGLE - MIN_ANGLE; i++) {
+        blocked[i] = false;
+    }
+    
+    // Mark all angles that have obstacles
+    for (int i = 0; i < result.obstacle_count; i++) {
+        Obstacle* obs = &result.obstacles[i];
+        for (int angle = obs->angle_start; angle <= obs->angle_end; angle += SCAN_STEP) {
+            int index = (angle - MIN_ANGLE) / SCAN_STEP;
+            if (index >= 0 && index <= (MAX_ANGLE - MIN_ANGLE) / SCAN_STEP) {
+                blocked[index] = true;
+            }
+        }
+    }
+    
+    // Count clear space on RIGHT side (MIN_ANGLE to ANGLE_CENTER) - servo mounted backwards
+    // Physical RIGHT = lower angles (50-80°)
+    for (int angle = MIN_ANGLE; angle < ANGLE_CENTER; angle += SCAN_STEP) {
+        int index = (angle - MIN_ANGLE) / SCAN_STEP;
+        if (index >= 0 && index <= (MAX_ANGLE - MIN_ANGLE) / SCAN_STEP && !blocked[index]) {
+            *right_clear += SCAN_STEP;  // Changed from left_clear to right_clear
+        }
+    }
+    
+    // Count clear space on LEFT side (ANGLE_CENTER to MAX_ANGLE) - servo mounted backwards
+    // Physical LEFT = higher angles (80-110°)
+    for (int angle = ANGLE_CENTER; angle <= MAX_ANGLE; angle += SCAN_STEP) {
+        int index = (angle - MIN_ANGLE) / SCAN_STEP;
+        if (index >= 0 && index <= (MAX_ANGLE - MIN_ANGLE) / SCAN_STEP && !blocked[index]) {
+            *left_clear += SCAN_STEP;  // Changed from right_clear to left_clear
+        }
+    }
+}
+
+AvoidanceDirection scanner_get_best_avoidance_direction(ScanResult result) {
+    // If no obstacles detected, no avoidance needed
+    if (result.obstacle_count == 0) {
+        printf("[AVOIDANCE] No obstacles detected - no avoidance needed\n");
+        return AVOID_NONE;
+    }
+    
+    int left_clear = 0;
+    int right_clear = 0;
+    
+    // Get clear space analysis
+    scanner_get_clear_space_analysis(result, &left_clear, &right_clear);
+    
+    // Print detailed analysis
+    printf("\n=== CLEAR SPACE ANALYSIS ===\n");
+    printf("Left side clear space:  %d degrees\n", left_clear);
+    printf("Right side clear space: %d degrees\n", right_clear);
+    
+    // Determine which side is better
+    AvoidanceDirection direction;
+    if (left_clear > right_clear) {
+        direction = AVOID_LEFT;
+        printf("RECOMMENDATION: Go LEFT (more clear space)\n");
+    } else if (right_clear > left_clear) {
+        direction = AVOID_RIGHT;
+        printf("RECOMMENDATION: Go RIGHT (more clear space)\n");
+    } else {
+        // Equal clear space - use distance analysis as tiebreaker
+        printf("Equal clear space on both sides - checking distance distribution...\n");
+        
+        // Find where the obstacle is closest (most dangerous)
+        uint64_t min_distance_overall = 999;
+        int min_distance_angle = ANGLE_CENTER;
+        
+        // Analyze distance at multiple points across scan range
+        uint64_t left_total_distance = 0;
+        uint64_t right_total_distance = 0;
+        int left_count = 0;
+        int right_count = 0;
+        
+        for (int i = 0; i < result.obstacle_count; i++) {
+            Obstacle* obs = &result.obstacles[i];
+            
+            // Find closest point in this obstacle
+            for (int angle = obs->angle_start; angle <= obs->angle_end; angle += SCAN_STEP) {
+                int dist_index = (angle - MIN_ANGLE) / SCAN_STEP;
+                if (dist_index >= 0 && dist_index < 41 && result.distances[dist_index] > 0) {
+                    uint64_t dist = result.distances[dist_index];
+                    
+                    // Track closest point
+                    if (dist < min_distance_overall) {
+                        min_distance_overall = dist;
+                        min_distance_angle = angle;
+                    }
+                    
+                    // Accumulate distances for averaging (SWAPPED for servo orientation)
+                    // Physical LEFT = higher angles (80-110°)
+                    // Physical RIGHT = lower angles (50-80°)
+                    if (angle < ANGLE_CENTER) {
+                        right_total_distance += dist;  // Changed from left
+                        right_count++;
+                    } else {
+                        left_total_distance += dist;   // Changed from right
+                        left_count++;
+                    }
+                }
+            }
+        }
+        
+        // Calculate average distances
+        uint64_t avg_left_distance = (left_count > 0) ? (left_total_distance / left_count) : 999;
+        uint64_t avg_right_distance = (right_count > 0) ? (right_total_distance / right_count) : 999;
+        
+        printf("Obstacle closest at angle: %d° (%llu cm)\n", min_distance_angle, min_distance_overall);
+        printf("Average left side distance: %llu cm\n", avg_left_distance);
+        printf("Average right side distance: %llu cm\n", avg_right_distance);
+        
+        // Decision: go away from closest point (SWAPPED for servo orientation)
+        // Physical LEFT = higher angles (>80°), Physical RIGHT = lower angles (<80°)
+        if (min_distance_angle < ANGLE_CENTER) {
+            direction = AVOID_LEFT;  // Changed from AVOID_RIGHT
+            printf("RECOMMENDATION: Go LEFT (obstacle closest on right at %d°)\n", min_distance_angle);
+        } else if (min_distance_angle > ANGLE_CENTER) {
+            direction = AVOID_RIGHT;  // Changed from AVOID_LEFT
+            printf("RECOMMENDATION: Go RIGHT (obstacle closest on left at %d°)\n", min_distance_angle);
+        } else {
+            // Closest point is at center, use average distance
+            if (avg_left_distance > avg_right_distance) {
+                direction = AVOID_LEFT;
+                printf("RECOMMENDATION: Go LEFT (better average distance)\n");
+            } else {
+                direction = AVOID_RIGHT;
+                printf("RECOMMENDATION: Go RIGHT (better average distance)\n");
+            }
+        }
+    }
+    
+    printf("=============================\n\n");
+    
+    // Publish to telemetry if enabled
+    if (telemetry_enabled && telemetry_is_connected()) {
+        char msg[128];
+        const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
+        snprintf(msg, sizeof(msg), 
+                "Avoidance: Go %s (L:%d° R:%d° clear)", 
+                dir_str, left_clear, right_clear);
+        telemetry_publish_status(msg);
+    }
+    
+    return direction;
+}

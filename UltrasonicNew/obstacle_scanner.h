@@ -77,5 +77,30 @@ void scanner_disable_telemetry(void);
  */
 bool scanner_is_telemetry_enabled(void);
 
+/**
+ * Avoidance direction options
+ */
+typedef enum {
+    AVOID_LEFT,
+    AVOID_RIGHT,
+    AVOID_NONE
+} AvoidanceDirection;
+
+/**
+ * Analyze scan result and determine which side has more clear space
+ * Uses actual clear space calculation, not just obstacle center
+ * @param result ScanResult from scanner_perform_scan()
+ * @return AvoidanceDirection indicating which way to go (LEFT, RIGHT, or NONE)
+ */
+AvoidanceDirection scanner_get_best_avoidance_direction(ScanResult result);
+
+/**
+ * Get detailed clear space information for debugging
+ * @param result ScanResult from scanner_perform_scan()
+ * @param left_clear Output: degrees of clear space on left side
+ * @param right_clear Output: degrees of clear space on right side
+ */
+void scanner_get_clear_space_analysis(ScanResult result, int* left_clear, int* right_clear);
+
 
 #endif

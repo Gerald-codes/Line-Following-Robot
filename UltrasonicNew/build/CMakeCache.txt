@@ -323,6 +323,9 @@ PICO_STDIO_UART:BOOL=ON
 //Globally enable stdio USB
 PICO_STDIO_USB:BOOL=OFF
 
+//No help, variable specified on the command line.
+Python3_EXECUTABLE:UNINITIALIZED=c:/Python313/python.exe
+
 //Value Computed by CMake
 Ultrasonic_BINARY_DIR:STATIC=C:/Users/Chervelle/Desktop/INF2004 EMBEDDED/Line-Following-Robot/UltrasonicNew/build
 
@@ -510,7 +513,7 @@ DOXYGEN_DOT_EXECUTABLE-ADVANCED:INTERNAL=1
 DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
 FAMILY_MCUS:INTERNAL=RP2040
 //Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[C:/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0/python3.13.exe][cfound components: Interpreter ][v3.13.9()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[c:/Python313/python.exe][cfound components: Interpreter ][v3.13.9()]
 PICO_32BIT:INTERNAL=1
 PICO_ARM:INTERNAL=1
 PICO_BOOT_STAGE2_DIR:INTERNAL=C:/Users/Chervelle/.pico-sdk/sdk/2.2.0/src/rp2040/boot_stage2
@@ -542,11 +545,10 @@ PICO_TOOLS_DIR:INTERNAL=C:/Users/Chervelle/.pico-sdk/sdk/2.2.0/tools
 _Python3_Compiler_REASON_FAILURE:INTERNAL=
 //Development reason failure
 _Python3_Development_REASON_FAILURE:INTERNAL=
-//Path to a program.
-_Python3_EXECUTABLE:INTERNAL=C:/Program Files/WindowsApps/PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0/python3.13.exe
+_Python3_EXECUTABLE:INTERNAL=c:/Python313/python.exe
 //Python3 Properties
-_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;9;32;64;;;abi3;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\site-packages;C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\site-packages
-_Python3_INTERPRETER_SIGNATURE:INTERNAL=60e8bbfb77b3582657047096513047da
+_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;9;32;64;;;abi3;c:\Python313\Lib;c:\Python313\Lib;c:\Python313\Lib\site-packages;c:\Python313\Lib\site-packages
+_Python3_INTERPRETER_SIGNATURE:INTERNAL=fd8d7dd3256880e26c8a611437a17762
 //NumPy reason failure
 _Python3_NumPy_REASON_FAILURE:INTERNAL=
 
