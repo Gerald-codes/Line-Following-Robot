@@ -37,6 +37,8 @@ add_executable(Ultrasonic
     obstacle_scanner.c
     telemetry.c
     motor.c
+    avoidance_maneuver.c
+    imu_helper.c
 )
 
 # Add include directories
@@ -48,6 +50,7 @@ target_link_libraries(Ultrasonic
     hardware_gpio
     hardware_timer
     hardware_pwm
+    hardware_i2c
     m
     pico_cyw43_arch_lwip_threadsafe_background
     pico_lwip_mqtt

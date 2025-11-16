@@ -6,6 +6,10 @@
 #include "obstacle_scanner.h"
 #include "telemetry.h"
 #include "motor.h"
+#include "avoidance_maneuver.h"
+#include "imu_helper.h"
+int ultrasonic_read_debug(void);
+int safe_ultrasonic_read(void);
 
 // Navigation parameters
 #define CRITICAL_DISTANCE 15  // Stop when obstacle within 15cm
@@ -53,6 +57,65 @@ void print_system_info(void) {
     printf("  Scan Complete: %s\n", TOPIC_SCAN_COMPLETE);
     printf("========================================\n");
 }
+int ultrasonic_read_debug() {
+    // Trigger pulse
+    gpio_put(TRIG_PIN, 0);
+    sleep_us(2);
+    gpio_put(TRIG_PIN, 1);
+    sleep_us(10);
+    gpio_put(TRIG_PIN, 0);
+
+    uint32_t timeout_us = 35000; // 35ms timeout
+
+    // Wait for echo HIGH
+    absolute_time_t start_wait = get_absolute_time();
+    while (!gpio_get(ECHO_PIN)) {
+        if (absolute_time_diff_us(start_wait, get_absolute_time()) > timeout_us) {
+            printf("[US] Timeout: waiting for HIGH\n");
+            return 999; // error code
+        }
+    }
+
+    // Measure duration
+    absolute_time_t t0 = get_absolute_time();
+    while (gpio_get(ECHO_PIN)) {
+        if (absolute_time_diff_us(t0, get_absolute_time()) > timeout_us) {
+            printf("[US] Timeout: stuck HIGH\n");
+            return 999;
+        }
+    }
+    absolute_time_t t1 = get_absolute_time();
+    int duration = absolute_time_diff_us(t0, t1);
+
+    int cm = duration / 58;
+    printf("[US] Raw=%dus -> %dcm\n", duration, cm);
+    return cm;
+}
+
+int safe_ultrasonic_read(void) {
+    NavigationState prev_state = current_state;
+
+    if (current_state == STATE_MOVING_FORWARD) {
+        // Temporarily stop motors (no state change)
+        motor_drive(M1A, M1B, 0);
+        motor_drive(M2A, M2B, 0);
+    }
+
+    // Make sure servo is centered and settle
+    servo_set_angle(ANGLE_CENTER);
+    sleep_ms(20);
+
+    // Perform measurement
+    int d = ultrasonic_read_debug();
+
+    // Restore forward motion if it was previously moving
+    if (prev_state == STATE_MOVING_FORWARD) {
+        motor_drive(M1A, M1B, -NORMAL_SPEED);
+        motor_drive(M2A, M2B, -NORMAL_SPEED - 4);
+    }
+
+    return d;
+}
 
 /**
  * Quick check forward path (single center point check for speed)
@@ -60,8 +123,9 @@ void print_system_info(void) {
  */
 bool check_forward_path(void) {
     // Keep servo at center - no need to move it
+    printf("\n[DEBUG] ANGLE_CENTER = %d\n", ANGLE_CENTER);
     servo_set_angle(ANGLE_CENTER);
-    timer_wait_ms(50);  // Short delay for servo to stabilize
+    timer_wait_ms(200);
     
     uint64_t distance;
     int status = ultrasonic_get_distance(TRIG_PIN, ECHO_PIN, &distance);
@@ -120,19 +184,24 @@ void move_forward(void) {
 
 /**
  * Demo sequence for Week 10 Demo 3
- * Shows obstacle detection, stopping, and scanning
+ * Shows obstacle detection, stopping, scanning, and complete avoidance maneuver
  */
 void demo_obstacle_avoidance(void) {
     printf("\n");
     printf("╔════════════════════════════════════════════════════╗\n");
-    printf("║     DEMO 3: OBSTACLE AVOIDANCE DEMONSTRATION       ║\n");
+    printf("║     DEMO 3: COMPLETE OBSTACLE AVOIDANCE            ║\n");
     printf("╚════════════════════════════════════════════════════╝\n");
     printf("\n");
     printf("Demo sequence:\n");
     printf("1. Robot moves forward while checking continuously\n");
     printf("2. If obstacle < %d cm, STOP immediately\n", CRITICAL_DISTANCE);
-    printf("3. Perform full scan to measure obstacle\n");
-    printf("4. Determine clearer path\n");
+    printf("3. Perform full scan to determine clearer side\n");
+    printf("4. Execute avoidance maneuver:\n");
+    printf("   - Turn off line (45°)\n");
+    printf("   - Move parallel past obstacle\n");
+    printf("   - Check if obstacle cleared\n");
+    printf("   - Turn back toward line\n");
+    printf("   - Move forward to find line\n");
     printf("\nStarting in 3 seconds...\n\n");
     
     timer_wait_ms(3000);
@@ -177,23 +246,39 @@ void demo_obstacle_avoidance(void) {
         ScanResult result = scanner_perform_scan();
         scanner_print_results(result);
         
-        // Step 5: Analyze results
-        if (result.obstacle_count > 0) {
-            printf("\n[Step 5] === OBSTACLE ANALYSIS ===\n");
-            Obstacle* obs = &result.obstacles[0];
-            printf("Width: %.2f cm\n", obs->smoothed_width);
-            printf("Distance: %llu cm\n", obs->min_distance);
-            
-            // Use the new accurate avoidance direction function
-            AvoidanceDirection direction = scanner_get_best_avoidance_direction(result);
-            const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
+        // Step 5: Get avoidance direction
+        printf("\n[Step 5] Determining avoidance strategy...\n");
+        AvoidanceDirection direction = scanner_get_best_avoidance_direction(result);
+        
+        if (direction == AVOID_NONE) {
+            printf("\n[Result] No clear path - manual intervention needed\n");
+            current_state = STATE_STOPPED;
+            return;
+        }
+        
+        // Step 6: Execute avoidance maneuver
+        printf("\n[Step 6] Executing avoidance maneuver...\n");
+        avoidance_start(direction);
+        
+        // Run avoidance state machine until complete
+        while (!avoidance_is_complete()) {
+            AvoidanceState state = avoidance_update();
+            timer_wait_ms(50);  // Update at 20Hz
+        }
+        
+        // Check result
+        if (avoidance_was_successful()) {
+            printf("\n[Step 7] ✓ Avoidance successful!\n");
+            printf("Position: Should be back near the line\n");
+            printf("Ready for line follower to take over\n");
             
             if (telemetry_is_connected()) {
-                char msg[128];
-                snprintf(msg, sizeof(msg), 
-                        "Obstacle: %.1fcm wide, %llucm away, go %s", 
-                        obs->smoothed_width, obs->min_distance, dir_str);
-                telemetry_publish_status(msg);
+                telemetry_publish_status("Avoidance complete - line follower can resume");
+            }
+        } else {
+            printf("\n[Step 7] ✗ Avoidance failed\n");
+            if (telemetry_is_connected()) {
+                telemetry_publish_status("Avoidance failed");
             }
         }
         
@@ -284,6 +369,16 @@ int main() {
     printf("\nInitializing modules...\n");
     timer_manager_init();
     scanner_init();
+    avoidance_init();
+    
+    // Initialize IMU
+    printf("Initializing IMU...\n");
+    if (imu_init()) {
+        printf("✓ IMU initialized\n");
+    } else {
+        printf("✗ IMU initialization failed - continuing without IMU\n");
+        printf("  (Avoidance will use time-based turns)\n");
+    }
     
     // Initialize motors
     printf("Initializing motors...\n");
