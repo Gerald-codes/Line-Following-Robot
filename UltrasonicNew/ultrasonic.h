@@ -5,8 +5,8 @@
 #include <sys/types.h>
 
 // Ultrasonic sensor pins
-#define TRIG_PIN 1
-#define ECHO_PIN 0
+#define TRIG_PIN 28
+#define ECHO_PIN 7
 #define TIMEOUT_US 30000
 #define MIN_DISTANCE 2
 #define MAX_DISTANCE 400
