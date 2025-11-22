@@ -82,6 +82,24 @@ void handle_obstacle_scanning(void) {
         return;
     }
     
+    float margin = 10.0;
+    float best_gap_width = 0.0;
+    float robot_speed_cmps = 20.0; // MEASURE your real speed in cm/s!
+
+    if (direction == AVOID_LEFT) {
+        // If your scanner has a function/gap listing for leftmost gap
+        best_gap_width = result.obstacles[0].width; // replace with your actual field!
+    } else {
+        best_gap_width = result.obstacles[result.obstacle_count - 1].width;  // rightmost gap
+    }
+
+    float move_distance_cm = best_gap_width + margin;
+    uint32_t forward_duration_ms = (uint32_t)((move_distance_cm / robot_speed_cmps) * 1000.0 * 1.25);
+    avoidance_set_forward_duration(forward_duration_ms);
+
+    printf("[DEBUG] Setting forward_duration_ms = %lu ms (gap: %.1f cm, margin: %.1f)\n",
+            forward_duration_ms, best_gap_width, margin);
+
     // Start avoidance maneuver
     if (avoidance_start(direction)) {
         change_state(STATE_OBSTACLE_AVOIDING);
