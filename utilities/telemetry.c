@@ -311,17 +311,17 @@ bool telemetry_publish_all(
     // 1. Line data
     printf("Publishing line data...\n");
     success &= publish_line_data(ir_reading, line_position, line_pos_filtered, line_state);
-    sleep_ms(10);
+    sleep_ms(20);
     
     // 2. IMU data
     printf("Publishing IMU data...\n");
     success &= publish_imu_data(imu);
-    sleep_ms(10);
+    sleep_ms(20);
     
     // 3. State data
     printf("Publishing state data...\n");
     success &= publish_state_data(robot_state, obstacle_state, elapsed);
-    sleep_ms(10);
+    sleep_ms(20);
     
     // 4. Encoder data (with speed calculation)
     printf("Publishing encoder data...\n");
@@ -345,7 +345,7 @@ bool telemetry_publish_all(
     }
     
     success &= telemetry_publish_encoder(speed_mm_s, distance_mm, left_enc, right_enc);
-    sleep_ms(10);
+    sleep_ms(20);
     
     last_encoder_time = current_time;
     last_left_count = left_enc;

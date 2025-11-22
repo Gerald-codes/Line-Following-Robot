@@ -308,7 +308,7 @@ bool mqtt_publish(const char *topic, const char *payload, uint8_t qos) {
     
     // Build PUBLISH packet
     uint8_t *p = mqtt_state.tx_buffer;
-    *p++ = MQTT_PUBLISH | (qos << 1) | 0x01;  // Fixed header with RETAIN
+    *p++ = MQTT_PUBLISH | (qos << 1);  // Fixed header with RETAIN
     
     // Calculate remaining length
     uint16_t remaining_len = 2 + topic_len + payload_len;
