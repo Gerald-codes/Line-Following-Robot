@@ -1,14 +1,16 @@
 /**
  * integrated_main.c
  * 
- * INTEGRATED LINE FOLLOWING + OBSTACLE AVOIDANCE + BARCODE SCANNING
+ * INTEGRATED LINE FOLLOWING + OBSTACLE AVOIDANCE + BARCODE SCANNING + TELEMETRY
  * 
  * Features:
  * - Line following using single IR sensor
- * - Barcode detection and turning (NEW!)
+ * - Barcode detection and turning
+ * - Barcode telemetry publishing (NEW!)
  * - Obstacle detection with ultrasonic sensor
  * - Obstacle avoidance maneuvers
  * - State machine coordination
+ * - WiFi/MQTT real-time telemetry
  * 
  * States:
  * 1. LINE_FOLLOWING - Normal line tracking
@@ -55,7 +57,7 @@
 // NEW: WiFi and Telemetry
 #include "wifi.h"
 #include "telemetry.h"
-#include "barcode.h"
+#include "barcode_scanner.h"  // NEW: Direct barcode scanner interface
 #include "mqtt_client.h"
 
 // ============================================================================
@@ -86,6 +88,9 @@ static uint32_t state_entry_time = 0;
 static uint32_t last_telemetry_time = 0;
 static RobotState prev_robot_state = ROBOT_STATE_IDLE;
 static uint32_t robot_state_enter_time = 0;
+
+// NEW: Barcode telemetry tracking
+static BarcodeCommand last_published_barcode = BARCODE_CMD_NONE;
 
 // ============================================================================
 // FUNCTION PROTOTYPES
@@ -315,6 +320,29 @@ static void publish_telemetry_data(uint32_t current_time) {
             obstacle_state,
             current_time
         );
+        
+        // NEW: Check and publish barcode detections
+        BarcodeCommand barcode_cmd = barcode_scanner_update();
+        if (barcode_cmd != BARCODE_CMD_NONE && barcode_cmd != last_published_barcode) {
+            char decoded_char = barcode_scanner_get_last_character();
+            
+            // Publish to MQTT
+            telemetry_publish_barcode(barcode_cmd, decoded_char);
+            
+            // Log to console
+            printf("\n╔════════════════════════════════════════════════════════╗\n");
+            printf("║  📊 BARCODE TELEMETRY: '%c' → %-23s║\n", 
+                   decoded_char,
+                   barcode_command_to_string(barcode_cmd));
+            printf("╚════════════════════════════════════════════════════════╝\n\n");
+            
+            last_published_barcode = barcode_cmd;
+        }
+        
+        // Reset published barcode when scanner is ready for next scan
+        if (barcode_scanner_is_ready() && last_published_barcode != BARCODE_CMD_NONE) {
+            last_published_barcode = BARCODE_CMD_NONE;
+        }
         
         last_telemetry_time = current_time;
     }

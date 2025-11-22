@@ -267,9 +267,7 @@ AvoidanceState avoidance_update(void) {
                 context.state = AVOIDANCE_CENTER_ON_LINE; // (or set a global flag if state machine in main.c)
                 context.state_start_time = current_time;
 
-                if (telemetry_is_connected()) {
-                    telemetry_publish_status("Line found - realigning to original heading");
-                }
+              
                 break; // Stop further processing of elapsed timeout
             }
 

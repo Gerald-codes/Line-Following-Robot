@@ -12,10 +12,8 @@
 #include "imu.h"
 #include "config.h"           // This already defines RobotState and ObstacleState!
 #include "obstacle_scanner.h"
-#include "barcode.h"
+#include "barcode_scanner.h"  // Now correctly includes BarcodeCommand
 #include "avoidance_maneuver.h"
-
-// REMOVED the duplicate enum definitions - they're already in config.h!
 
 /**
  * Initialize telemetry system
@@ -38,10 +36,6 @@ bool telemetry_is_ready(void);
  * Publish all telemetry data in one call
  * This is the main function to call from your main loop
  * 
- * @param L_power Left motor power (0-100)
- * @param R_power Right motor power (0-100)
- * @param base_power Base power setting
- * @param steering_power Steering correction value
  * @param ir_reading Raw IR sensor reading
  * @param line_position Current line position
  * @param line_pos_filtered Filtered line position
@@ -63,7 +57,7 @@ bool telemetry_publish_all(
 );
 
 /**
- * NEW: Publish encoder and speed data
+ * Publish encoder and speed data
  * @param speed_mm_s Current speed in mm/s
  * @param distance_mm Total distance travelled in mm
  * @param left_count Left encoder count
@@ -73,19 +67,20 @@ bool telemetry_publish_encoder(float speed_mm_s, float distance_mm,
                                 int32_t left_count, int32_t right_count);
 
 /**
- * NEW: Publish barcode detection data
- * @param result Pointer to BarcodeResult structure
+ * Publish barcode detection data
+ * @param command The decoded barcode command (LEFT/RIGHT/etc)
+ * @param character The actual character decoded ('A', 'B', etc)
  */
-bool telemetry_publish_barcode(const BarcodeResult *result);
+bool telemetry_publish_barcode(BarcodeCommand command, char character);
 
 /**
- * NEW: Publish obstacle scan results
+ * Publish obstacle scan results
  * @param scan_result Pointer to ScanResult structure
  */
 bool telemetry_publish_obstacle_scan(const ScanResult *scan_result);
 
 /**
- * NEW: Publish avoidance maneuver status
+ * Publish avoidance maneuver status
  * @param direction Avoidance direction (LEFT/RIGHT/NONE)
  * @param state Current avoidance state
  * @param obstacle_cleared Whether obstacle has been cleared
@@ -95,7 +90,7 @@ bool telemetry_publish_avoidance(AvoidanceDirection direction,
                                   bool obstacle_cleared);
 
 /**
- * NEW: Publish individual obstacle data (for real-time monitoring)
+ * Publish individual obstacle data (for real-time monitoring)
  * @param distance_mm Ultrasonic distance reading
  * @param width_cm Calculated obstacle width
  * @param clearance_left_cm Left clearance
@@ -107,7 +102,7 @@ bool telemetry_publish_obstacle_data(uint64_t distance_mm,
                                       float clearance_right_cm);
 
 /**
- * NEW: Publish state change events
+ * Publish state change events
  * @param prev_state Previous robot state
  * @param new_state New robot state
  * @param duration_ms Time spent in previous state

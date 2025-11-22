@@ -8,7 +8,7 @@
 #include "config.h"
 #include "encoder.h"
 #include "encoder_utils.h"
-#include "barcode.h"
+#include "barcode_scanner.h"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -158,16 +158,15 @@ bool telemetry_publish_encoder(float speed_mm_s, float distance_mm,
 // NEW: BARCODE TELEMETRY
 // ============================================================================
 
-bool telemetry_publish_barcode(const BarcodeResult *result) {
-    if (!result) return false;
-    
+bool telemetry_publish_barcode(BarcodeCommand command, char character) {
     char json[JSON_BUFFER_SIZE];
+    
+    const char *cmd_str = barcode_command_to_string(command);
+    
     snprintf(json, sizeof(json),
-             "{\"valid\":%s,\"msg\":\"%s\",\"bars\":%u,\"time\":%lu}",
-             result->valid ? "true" : "false",
-             result->message,
-             result->bar_count,
-             result->total_time_ms);
+             "{\"command\":\"%s\",\"char\":\"%c\"}",
+             cmd_str, character);
+    
     return publish_json(MQTT_TOPIC_BARCODE, json);
 }
 
@@ -357,6 +356,3 @@ bool telemetry_publish_all(
     publish_cycle++;  // Keep for tracking, but not used for rotation anymore
     return success;
 }
-
-
-
