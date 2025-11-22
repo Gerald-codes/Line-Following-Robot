@@ -56,6 +56,7 @@ add_executable(main
     hardware_drivers/ultrasonic.c
     hardware_drivers/servo.c
     hardware_drivers/calibration.c
+    hardware_drivers/barcode_scanner.c
     
     # Control algorithms
     control_algo/pid.c
@@ -64,6 +65,7 @@ add_executable(main
     control_algo/obstacle_scanner.c
     control_algo/avoidance_maneuver.c
     control_algo/obstacle_control.c
+    control_algo/barcode_control.c
     
     # Utilities
     utilities/timer_manager.c

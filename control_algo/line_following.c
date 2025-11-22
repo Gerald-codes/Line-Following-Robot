@@ -3,7 +3,8 @@
  * Uses ONE IR sensor and ONE PID controller
  * IR reading is used directly as error signal
  * 
- * Updated with complete line following control logic
+ * Updated with barcode speed control integration
+ * NOW SLOWS DOWN WHILE SCANNING BARCODES!
  */
 
 #include "line_following.h"
@@ -11,6 +12,7 @@
 #include "motor.h"
 #include "config.h"
 #include "pin_definitions.h"
+#include "barcode_control.h"
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
@@ -59,8 +61,8 @@ static float R_power = 0.0f;
 static uint32_t line_lost_start = 0;
 #define LINE_LOST_TIMEOUT_MS 2000
 
-// Base speeds and limits
-#define BASE_POWER 40.0f
+// Base speeds and limits - BASE_POWER is now dynamic from barcode system
+#define DEFAULT_BASE_POWER 40.0f
 #define MIN_POWER 25.0f
 #define MAX_POWER 60.0f
 
@@ -150,24 +152,12 @@ void line_following_init(void) {
     
     printf("Single IR Line Following Initialized\n");
     printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
-    printf("  Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
+    printf("  Base Power: Dynamic (from barcode), Min: %.1f, Max: %.1f\n", MIN_POWER, MAX_POWER);
 }
 
 // ============================================================================
 // NORMALIZE IR READING TO ERROR SIGNAL
 // ============================================================================
-/**
- * Convert raw IR reading to normalized error
- * 
- * IR Reading → Error Signal:
- * - WHITE (< threshold): -1.0 (sensor over white, line is to the right)
- * - BLACK (> threshold): +1.0 (sensor over black/line, need to go left)
- * 
- * The normalization maps:
- *   white_value → -1.0
- *   threshold   →  0.0
- *   black_value → +1.0
- */
 static float normalize_ir_to_error(uint16_t ir_reading) {
     uint16_t white = ir_get_white_value();
     uint16_t black = ir_get_black_value();
@@ -276,17 +266,12 @@ float line_following_update(float dt) {
 // ============================================================================
 // COMPLETE LINE FOLLOWING UPDATE WITH MOTOR CONTROL
 // ============================================================================
-/**
- * Main line following update function that handles:
- * - PID calculation
- * - Adaptive gain adjustment
- * - Motor power calculation and application
- * - Line lost detection
- * - Debug output
- * 
- * Returns: true if line is being followed, false if line is lost
- */
 bool line_following_control_update(uint32_t current_time, float dt) {
+    // Get base speed from barcode system
+    // Automatically returns scan speed (25) if currently scanning!
+    float BASE_POWER = (float)barcode_get_current_speed();
+    bool is_scanning = barcode_is_scanning();
+    
     // Update line following PID
     float steering = line_following_update(dt);
     float error = normalized_error;
@@ -308,9 +293,14 @@ bool line_following_control_update(uint32_t current_time, float dt) {
     
     // Debug output every 500ms
     if (current_time - last_debug_time >= 500) {
-        printf("[LINE] Error: %+.2f | Steering: %+.2f | L:%d R:%d | State: %s\n",
-               error, steering, left_motor, right_motor,
-               line_state_to_string(current_state));
+        if (is_scanning) {
+            printf("[LINE] SCANNING | Speed:%d | Error:%+.2f | L:%d R:%d\n",
+                   (int)BASE_POWER, error, left_motor, right_motor);
+        } else {
+            printf("[LINE] Speed:%d | Error:%+.2f | Steer:%+.2f | L:%d R:%d | %s\n",
+                   (int)BASE_POWER, error, steering, left_motor, right_motor,
+                   line_state_to_string(current_state));
+        }
         last_debug_time = current_time;
     }
     
@@ -319,13 +309,13 @@ bool line_following_control_update(uint32_t current_time, float dt) {
         if (line_lost_start == 0) {
             line_lost_start = current_time;
         } else if (current_time - line_lost_start > LINE_LOST_TIMEOUT_MS) {
-            return false;  // Line lost timeout
+            return false;
         }
     } else {
-        line_lost_start = 0;  // Reset if line is found
+        line_lost_start = 0;
     }
     
-    return true;  // Line following active
+    return true;
 }
 
 // ============================================================================
