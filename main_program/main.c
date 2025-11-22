@@ -319,16 +319,9 @@ int main() {
     //     printf("✓ Telemetry connected\n");
     //     scanner_enable_telemetry();
     // }
+
+    sleep_ms(50);
     
-    // Run calibration
-    printf("\n═══════════════════════════════════════════════════════════════\n");
-    printf("  IR SENSOR CALIBRATION\n");
-    printf("  Press GP20 to start calibration\n");
-    printf("═══════════════════════════════════════════════════════════════\n\n");
-    
-    while (!calibration_button_pressed()) {
-        sleep_ms(10);
-    }
     
     calibration_run_sequence();
     
