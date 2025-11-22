@@ -78,6 +78,8 @@ static uint32_t state_entry_time = 0;
 static void init_hardware(void);
 static void handle_returning_to_line(void);
 static void handle_line_lost(void);
+static void handle_realigning_heading(void);
+
 static const char* state_to_string(SystemState state);
 
 SystemState get_current_state(void) {
@@ -174,6 +176,7 @@ static const char* state_to_string(SystemState state) {
         case STATE_OBSTACLE_SCANNING: return "OBSTACLE_SCANNING";
         case STATE_OBSTACLE_AVOIDING: return "OBSTACLE_AVOIDING";
         case STATE_RETURNING_TO_LINE: return "RETURNING_TO_LINE";
+        case STATE_REALIGNING_HEADING: return "REALIGNING_HEADING";
         case STATE_LINE_LOST: return "LINE_LOST";
         case STATE_STOPPED: return "STOPPED";
         default: return "UNKNOWN";
@@ -191,7 +194,9 @@ static void handle_returning_to_line(void) {
     // Check if we found the line
     if (ir_line_detected()) {
         printf("\n[LINE] Line detected! Resuming normal following\n");
-        change_state(STATE_LINE_FOLLOWING);
+        motor_stop(M1A, M1B);
+        motor_stop(M2A, M2B);
+        change_state(STATE_REALIGNING_HEADING);
         return;
     }
     
@@ -231,6 +236,59 @@ static void handle_line_lost(void) {
         change_state(STATE_STOPPED);
     }
 }
+
+static void handle_realigning_heading(void) {
+    uint32_t current_time = to_ms_since_boot(get_absolute_time());
+    
+    // Get saved original heading
+    float target_heading = avoidance_get_original_heading();
+    
+    // Update IMU
+    imu_helper_update();
+    float current_heading = imu_helper_get_relative_heading();
+    
+    // Calculate heading error
+    float heading_error = current_heading - target_heading;
+    
+    // Normalize to -180 to +180
+    while (heading_error > 180.0f) heading_error -= 360.0f;
+    while (heading_error < -180.0f) heading_error += 360.0f;
+    
+    printf("[REALIGN] Current: %.1f° | Target: %.1f° | Error: %.1f°\n", 
+           current_heading, target_heading, heading_error);
+    
+    // Check if aligned (within 5° tolerance)
+    if (fabsf(heading_error) <= 5.0f) {
+        printf("[REALIGN] ✓ Heading aligned! Resuming normal line following\n");
+        motor_stop(M1A, M1B);
+        motor_stop(M2A, M2B);
+        change_state(STATE_LINE_FOLLOWING);
+        return;
+    }
+    
+    // Turn to correct heading (slower, more precise)
+    int turn_speed_outer = 35;
+    int turn_speed_inner = 15;
+    
+    if (heading_error > 0) {
+        // Need to turn right
+        motor_drive(M1A, M1B, -turn_speed_inner);   // Left slow
+        motor_drive(M2A, M2B, -turn_speed_outer);   // Right fast
+    } else {
+        // Need to turn left
+        motor_drive(M1A, M1B, -turn_speed_outer);   // Left fast
+        motor_drive(M2A, M2B, -turn_speed_inner);   // Right slow
+    }
+    
+    // Timeout after 3 seconds
+    if (current_time - state_entry_time > 3000) {
+        printf("[REALIGN] ⚠️ Realignment timeout - proceeding anyway\n");
+        motor_stop(M1A, M1B);
+        motor_stop(M2A, M2B);
+        change_state(STATE_LINE_FOLLOWING);
+    }
+}
+
 
 // ============================================================================
 // MAIN PROGRAM
@@ -351,6 +409,11 @@ int main() {
                     change_state(STATE_LINE_FOLLOWING);
                 }
                 break;
+
+            case STATE_REALIGNING_HEADING:
+                handle_realigning_heading();
+                break;
+
         }
         
         // Emergency stop button
