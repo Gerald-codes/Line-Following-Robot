@@ -1,105 +1,233 @@
 /**
- * line_following.c
- * SIMPLIFIED: Single PID controller for line following
- * No mode switching, no complexity - just smooth PID control
+ * line_following_single_ir.c - Single IR Sensor Line Following
+ * Uses ONE IR sensor and ONE PID controller
+ * IR reading is used directly as error signal
  */
 
 #include "line_following.h"
 #include "ir_sensor.h"
-#include "pid.h"
 #include "config.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include <math.h>
 
-static PIDController line_pid;
-static LineFollowState current_state = LINE_FOLLOW_IDLE;
-static float filtered_position = 0.0f;
+// ============================================================================
+// PID STATE
+// ============================================================================
+typedef struct {
+    float kp;
+    float ki;
+    float kd;
+    float integral;
+    float prev_error;
+    float output;
+    bool initialized;
+} PIDController;
 
+static PIDController pid = {
+    .kp = LINE_PID_KP,
+    .ki = LINE_PID_KI,
+    .kd = LINE_PID_KD,
+    .integral = 0.0f,
+    .prev_error = 0.0f,
+    .output = 0.0f,
+    .initialized = false
+};
+
+// ============================================================================
+// LINE STATE
+// ============================================================================
+static LineFollowState current_state = LINE_FOLLOW_CENTERED;
+static float normalized_error = 0.0f;
+static float filtered_error = 0.0f;
+
+// Filter for smoothing
+#define ERROR_FILTER_ALPHA 0.7f
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
 void line_following_init(void) {
-    pid_init(&line_pid,
-             LINE_PID_KP,
-             LINE_PID_KI,
-             LINE_PID_KD,
-             -LINE_STEERING_MAX,
-             LINE_STEERING_MAX);
+    pid.integral = 0.0f;
+    pid.prev_error = 0.0f;
+    pid.output = 0.0f;
+    pid.initialized = false;
+    current_state = LINE_FOLLOW_CENTERED;
+    normalized_error = 0.0f;
+    filtered_error = 0.0f;
     
-    current_state = LINE_FOLLOW_IDLE;
-    filtered_position = 0.0f;
-    
-    printf("✓ Line following initialized\n");
-    printf("  Kp: %.3f, Ki: %.3f, Kd: %.3f\n",
-           LINE_PID_KP, LINE_PID_KI, LINE_PID_KD);
-    printf("  Max steering: %d mm/s\n", LINE_STEERING_MAX);
+    printf("Single IR Line Following Initialized\n");
+    printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
 }
 
-void line_following_reset(void) {
-    pid_reset(&line_pid);
-    current_state = LINE_FOLLOW_IDLE;
-    filtered_position = 0.0f;
+// ============================================================================
+// NORMALIZE IR READING TO ERROR SIGNAL
+// ============================================================================
+/**
+ * Convert raw IR reading to normalized error
+ * 
+ * IR Reading → Error Signal:
+ * - WHITE (< threshold): -1.0 (sensor over white, line is to the right)
+ * - BLACK (> threshold): +1.0 (sensor over black/line, need to go left)
+ * 
+ * The normalization maps:
+ *   white_value → -1.0
+ *   threshold   →  0.0
+ *   black_value → +1.0
+ */
+static float normalize_ir_to_error(uint16_t ir_reading) {
+    uint16_t white = ir_get_white_value();
+    uint16_t black = ir_get_black_value();
+    uint16_t threshold = ir_get_threshold();
+    
+    float error;
+    
+    if (ir_reading < threshold) {
+        // On white side - normalize from white to threshold
+        if (threshold > white) {
+            error = -1.0f * (float)(threshold - ir_reading) / (float)(threshold - white);
+        } else {
+            error = -1.0f;
+        }
+    } else {
+        // On black side - normalize from threshold to black
+        if (black > threshold) {
+            error = +1.0f * (float)(ir_reading - threshold) / (float)(black - threshold);
+        } else {
+            error = +1.0f;
+        }
+    }
+    
+    // Clamp to [-1, +1]
+    if (error < -1.0f) error = -1.0f;
+    if (error > +1.0f) error = +1.0f;
+    
+    return error;
 }
 
+// ============================================================================
+// UPDATE LINE STATE
+// ============================================================================
+static void update_line_state(float error) {
+    const float CENTERED_THRESHOLD = 0.15f;
+    const float FAR_THRESHOLD = 0.6f;
+    
+    if (fabsf(error) < CENTERED_THRESHOLD) {
+        current_state = LINE_FOLLOW_CENTERED;
+    } else if (error < -FAR_THRESHOLD) {
+        current_state = LINE_FOLLOW_FAR_LEFT;
+    } else if (error > FAR_THRESHOLD) {
+        current_state = LINE_FOLLOW_FAR_RIGHT;
+    } else if (error < 0) {
+        current_state = LINE_FOLLOW_LEFT;
+    } else {
+        current_state = LINE_FOLLOW_RIGHT;
+    }
+}
+
+// ============================================================================
+// PID UPDATE
+// ============================================================================
+float line_following_update(float dt) {
+    // Read IR sensor
+    uint16_t ir_reading = ir_read_line_sensor();
+    
+    // Convert to normalized error
+    float error = normalize_ir_to_error(ir_reading);
+    
+    // Apply exponential filter for smoothing
+    filtered_error = ERROR_FILTER_ALPHA * filtered_error + 
+                     (1.0f - ERROR_FILTER_ALPHA) * error;
+    
+    normalized_error = filtered_error;
+    
+    // Update state
+    update_line_state(normalized_error);
+    
+    // Initialize previous error on first run
+    if (!pid.initialized) {
+        pid.prev_error = normalized_error;
+        pid.initialized = true;
+        return 0.0f;
+    }
+    
+    // PID Calculation
+    // P term
+    float p_term = pid.kp * normalized_error;
+    
+    // I term with anti-windup
+    pid.integral += normalized_error * dt;
+    const float INTEGRAL_MAX = 10.0f;
+    if (pid.integral > INTEGRAL_MAX) pid.integral = INTEGRAL_MAX;
+    if (pid.integral < -INTEGRAL_MAX) pid.integral = -INTEGRAL_MAX;
+    float i_term = pid.ki * pid.integral;
+    
+    // D term
+    float derivative = (normalized_error - pid.prev_error) / dt;
+    float d_term = pid.kd * derivative;
+    
+    // Total output
+    pid.output = p_term + i_term + d_term;
+    
+    // Clamp output
+    const float OUTPUT_MAX = 3.0f; // was 2
+    if (pid.output > OUTPUT_MAX) pid.output = OUTPUT_MAX;
+    if (pid.output < -OUTPUT_MAX) pid.output = -OUTPUT_MAX;
+    
+    // Update previous error
+    pid.prev_error = normalized_error;
+    
+    return pid.output;
+}
+
+// ============================================================================
+// RESET INTEGRAL
+// ============================================================================
+void line_following_reset_integral(void) {
+    pid.integral = 0.0f;
+}
+
+// ============================================================================
+// GAIN SETTERS
+// ============================================================================
+void line_following_set_kp(float kp) {
+    pid.kp = kp;
+}
+
+void line_following_set_ki(float ki) {
+    pid.ki = ki;
+}
+
+void line_following_set_kd(float kd) {
+    pid.kd = kd;
+}
+
+// ============================================================================
+// GETTERS
+// ============================================================================
 LineFollowState line_following_get_state(void) {
     return current_state;
 }
 
-const char* line_state_to_string(LineFollowState state) {
-    switch (state) {
-        case LINE_FOLLOW_IDLE:
-            return "IDLE";
-        case LINE_FOLLOW_ON_EDGE:
-            return "On Edge";
-        case LINE_FOLLOW_SLIGHT_LEFT:
-            return "Left";
-        case LINE_FOLLOW_SLIGHT_RIGHT:
-            return "Right";
-        case LINE_FOLLOW_TURN_LEFT:
-            return "Sharp Left";
-        case LINE_FOLLOW_TURN_RIGHT:
-            return "Sharp Right";
-        case LINE_FOLLOW_LOST:
-            return "Lost";
-        default:
-            return "UNKNOWN";
-    }
+float line_following_get_filtered_pos(void) {
+    return normalized_error;
 }
 
-float line_following_update(float dt) {
-    // Read raw position from sensor
-    int32_t raw_position = ir_get_line_position();
-    
-    // Apply low-pass filter to smooth out noise
-    // 0.7 = keep 70% of old value, 0.3 = add 30% of new value
-    filtered_position = 0.7f * filtered_position + 0.3f * (float)raw_position;
-    
-    // Update display state based on filtered position
-    int32_t abs_pos = abs((int32_t)filtered_position);
-    if (abs_pos < 200) {
-        current_state = LINE_FOLLOW_ON_EDGE;
-    } else if (abs_pos < 800) {
-        current_state = (filtered_position > 0) ? LINE_FOLLOW_SLIGHT_LEFT : LINE_FOLLOW_SLIGHT_RIGHT;
-    } else if (abs_pos < 1500) {
-        current_state = (filtered_position > 0) ? LINE_FOLLOW_TURN_LEFT : LINE_FOLLOW_TURN_RIGHT;
-    } else {
-        current_state = LINE_FOLLOW_LOST;
+float line_following_get_error(void) {
+    return normalized_error;
+}
+
+float line_following_get_output(void) {
+    return pid.output;
+}
+
+const char* line_state_to_string(LineFollowState state) {
+    switch (state) {
+        case LINE_FOLLOW_CENTERED:    return "CENTERED";
+        case LINE_FOLLOW_LEFT:        return "LEFT";
+        case LINE_FOLLOW_RIGHT:       return "RIGHT";
+        case LINE_FOLLOW_FAR_LEFT:    return "FAR_LEFT";
+        case LINE_FOLLOW_FAR_RIGHT:   return "FAR_RIGHT";
+        case LINE_FOLLOW_LOST:        return "LOST";
+        default:                      return "UNKNOWN";
     }
-    
-    // Compute PID - target is 0 (on the edge)
-    pid_set_target(&line_pid, 0);
-   // float steering = pid_compute(&line_pid, -filtered_position, dt);
-    float steering = pid_compute(&line_pid, -(float)raw_position, dt);
-    
-    // Clamp steering to max limit
-    if (steering > LINE_STEERING_MAX) steering = LINE_STEERING_MAX;
-    if (steering < -LINE_STEERING_MAX) steering = -LINE_STEERING_MAX;
-    
-    // Debug output every 500ms
-    static uint32_t last_debug = 0;
-    uint32_t current_time = to_ms_since_boot(get_absolute_time());
-    if (current_time - last_debug > 500) {
-        printf("PID: raw=%+5ld, filt=%+6.0f, steer=%+5.1f\n", 
-               raw_position, filtered_position, steering);
-        last_debug = current_time;
-    }
-    
-    return steering;
 }

@@ -1,6 +1,5 @@
 /**
- * config.h - FIXED WITH SEPARATE ENCODER VALUES
- * Uses correct encoder values for left (41 PPR) and right (45 PPR)
+ * config.h - Configuration for Single IR Line Following
  */
 
 #ifndef CONFIG_H
@@ -10,93 +9,84 @@
 // HARDWARE CONFIGURATION
 // ============================================================================
 
-// Wheel specifications - SEPARATE VALUES FOR EACH ENCODER!
+// Wheel specifications
 #define WHEEL_DIAMETER_MM 65.0f
 #define WHEEL_BASE_MM 130.0f
-#define LEFT_PULSES_PER_REV 50.163           // Calibrated left encoder value
-#define RIGHT_PULSES_PER_REV 47.618          // Calibrated right encoder value
+#define LEFT_PULSES_PER_REV 41
+#define RIGHT_PULSES_PER_REV 45
 #define WHEEL_CIRCUMFERENCE_MM (WHEEL_DIAMETER_MM * 3.14159f)
 #define LEFT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / LEFT_PULSES_PER_REV)
 #define RIGHT_MM_PER_PULSE (WHEEL_CIRCUMFERENCE_MM / RIGHT_PULSES_PER_REV)
 
-// Control loop timing - MUCH SLOWER for low resolution encoders
-#define PID_UPDATE_INTERVAL_MS 100        // 10Hz - gives time for multiple pulses
-#define TELEMETRY_INTERVAL_MS 500         // 2Hz telemetry
-#define SENSOR_READ_INTERVAL_MS 10        // 100Hz sensor reading
+// Control loop timing
+#define PID_UPDATE_INTERVAL_MS 100
+#define TELEMETRY_INTERVAL_MS 500
+#define SENSOR_READ_INTERVAL_MS 10
 
 // ============================================================================
-// MOTOR SPEED PID PARAMETERS - TUNED FOR LOW RESOLUTION ENCODERS
+// MOTOR SPEED PID PARAMETERS
 // ============================================================================
 
-#define MOTOR_PID_KP 0.08f                // Very low - prevents overreaction
-#define MOTOR_PID_KI 0.01f                // Slow integral buildup
-#define MOTOR_PID_KD 0.00f                // No derivative - too noisy with low PPR
+#define MOTOR_PID_KP 0.08f
+#define MOTOR_PID_KI 0.01f
+#define MOTOR_PID_KD 0.00f
 #define MOTOR_PID_OUTPUT_MIN -100
 #define MOTOR_PID_OUTPUT_MAX 100
 
 // ============================================================================
-// LINE FOLLOWING PID PARAMETERS (Demo 2)
+// SINGLE IR LINE FOLLOWING PID
 // ============================================================================
+// These are BASE values - adaptive gains will scale them
 
-#define LINE_PID_KP 0.035f            // 🔧 Main tuning knob
-                                      // Position +1000 → Steering = 5 mm/s
-                                      // 
-                                      // Too jerky? → DECREASE to 0.003
-                                      // Too slow to correct? → INCREASE to 0.008
-                                      //
-                                      // Range: 0.003 - 0.010
+#define LINE_PID_KP 1.5f            // Base proportional gain
+                                     // Error of 1.0 → Steering ~1.5
+                                     // 
+                                     // Too jerky? → DECREASE to 1.0
+                                     // Too slow? → INCREASE to 2.5
+                                     // Range: 1.0 - 3.0
 
-#define LINE_PID_KI 0.00f            // 🔧 Leave at 0 unless steady drift
-                                      // Only increase if robot consistently pulls one direction
+#define LINE_PID_KI 0.0f             // Keep at zero for simple control
+                                     // Only add if steady-state error
 
-#define LINE_PID_KD 0.020f            // 🔧 Damping - prevents overshoot
-                                      // Kd/Kp ratio: 0.015/0.005 = 3.0 (good damping)
-                                      //
-                                      // Still oscillates? → INCREASE to 0.020
-                                      // Too sluggish? → DECREASE to 0.010
-                                      //
-                                      // Range: 0.010 - 0.025
-
-#define LINE_STEERING_MAX 40         // 🔧 Maximum steering correction (mm/s)
-                                      // With base speed 55: motors range 35-75 mm/s
-                                      // Ratio: 75/35 = 2.1:1 (moderate turning)
-                                      //
-                                      // Too violent? → DECREASE to 15
-                                      // Can't make corners? → INCREASE to 25
-                                      //
-                                      // Range: 15 - 30
-
-#define LINE_POSITION_MIN -2000
-#define LINE_POSITION_CENTER 0
-#define LINE_POSITION_MAX 2000
+#define LINE_PID_KD 0.8f             // Damping to prevent oscillation
+                                     // Good Kd/Kp ratio: ~0.5
+                                     // 
+                                     // Still oscillates? → INCREASE to 1.5
+                                     // Too sluggish? → DECREASE to 0.5
+                                     // Range: 0.5 - 2.0
 
 // ============================================================================
-// HEADING PID PARAMETERS (Demo 1, 2, 3)
+// IR SENSOR CONFIGURATION
+// ============================================================================
+// Single sensor positioned on line edge
+// Lower reading = white, higher reading = black
+
+#define IR_WHITE_DEFAULT 200         // Typical white surface reading
+#define IR_BLACK_DEFAULT 3000        // Typical black line reading
+#define IR_THRESHOLD_OFFSET 100      // Added to average for threshold
+
+// ============================================================================
+// HEADING PID PARAMETERS
 // ============================================================================
 
-// Demo 1: Straight driving - VERY GENTLE
-#define HEADING_PID_KP_DEMO1 0.15f        // Low correction
-#define HEADING_PID_KI_DEMO1 0.00f        // No integral for now
-#define HEADING_PID_KD_DEMO1 0.00f        // No derivative - too noisy
+#define HEADING_PID_KP_DEMO1 0.15f
+#define HEADING_PID_KI_DEMO1 0.00f
+#define HEADING_PID_KD_DEMO1 0.00f
 
-// Demo 2 & 3: Accurate turning
 #define HEADING_PID_KP_DEMO23 0.20f
 #define HEADING_PID_KI_DEMO23 0.00f
 #define HEADING_PID_KD_DEMO23 0.00f
 
-#define HEADING_CORRECTION_MAX 20         // Very limited correction
-#define HEADING_TOLERANCE_DEGREES 5.0f    // More tolerance
+#define HEADING_CORRECTION_MAX 20
+#define HEADING_TOLERANCE_DEGREES 5.0f
 
 // ============================================================================
 // SPEED SETTINGS
 // ============================================================================
 
-// Start moderate - low resolution encoders need lower speeds
-#define DEMO1_BASE_SPEED_MM_S 200.0f      // Moderate speed
-
-#define DEMO2_BASE_SPEED_MM_S 100.0f
+#define DEMO1_BASE_SPEED_MM_S 200.0f
+#define DEMO2_BASE_SPEED_MM_S 60.0f
 #define DEMO2_TURN_SPEED_MM_S 80.0f
-
 #define DEMO3_BASE_SPEED_MM_S 100.0f
 #define DEMO3_SCAN_SPEED_MM_S 60.0f
 #define DEMO3_AVOID_SPEED_MM_S 80.0f
@@ -105,20 +95,7 @@
 #define MAX_SPEED_MM_S 300.0f
 
 // ============================================================================
-// IR SENSOR CONFIGURATION (Demo 2, 3)
-// ============================================================================
-
-
-#define IR_LINE_LOST_THRESHOLD 100
-
-#define IR_WEIGHT_0 -2000
-#define IR_WEIGHT_1 -1000
-#define IR_WEIGHT_2 0
-#define IR_WEIGHT_3 1000
-#define IR_WEIGHT_4 2000
-
-// ============================================================================
-// IMU CONFIGURATION (Demo 1, 2, 3)
+// IMU CONFIGURATION
 // ============================================================================
 
 #define IMU_FILTER_ALPHA 0.96f
@@ -165,7 +142,7 @@ typedef enum {
 } ObstacleState;
 
 // ============================================================================
-// STATE MACHINE (Demo 2, 3)
+// STATE MACHINE
 // ============================================================================
 
 typedef enum {
@@ -185,7 +162,7 @@ typedef enum {
 #define STATE_TIMEOUT_LOST_MS 3000
 
 // ============================================================================
-// TELEMETRY (Demo 1, 2, 3)
+// TELEMETRY
 // ============================================================================
 
 #define MQTT_TOPIC_SPEED "robot/speed"
@@ -217,10 +194,10 @@ typedef enum {
 #define DEBUG_ENABLE_SENSORS 0
 
 // ============================================================================
-// MOTOR CALIBRATION - NO LONGER NEEDED WITH CORRECT ENCODER VALUES
+// MOTOR CALIBRATION
 // ============================================================================
-#define LEFT_MOTOR_OFFSET 2  
-#define LEFT_MOTOR_CORRECTION 1.00f       
-#define RIGHT_MOTOR_CORRECTION 1.00f      
+#define LEFT_MOTOR_OFFSET 2
+#define LEFT_MOTOR_CORRECTION 1.00f
+#define RIGHT_MOTOR_CORRECTION 1.00f
 
 #endif // CONFIG_H

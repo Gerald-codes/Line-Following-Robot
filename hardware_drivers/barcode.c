@@ -1,277 +1,275 @@
 /**
- * barcode.c
- * Code 39 barcode detection and decoding
- * Detects Code 39 format barcodes and interprets LEFT/RIGHT/STOP commands
+ * barcode_scanner.c
+ * Interrupt-based barcode scanner for Code39
  */
 
-#include "barcode.h"
-#include "ir_sensor.h"
-#include "config.h"
+//#include "barcode.h"
+#include "pico/stdlib.h"
+#include "hardware/gpio.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-// Code 39 timing (adjust based on speed and barcode size)
-#define NARROW_BAR_MIN_MS 20
-#define NARROW_BAR_MAX_MS 80
-#define WIDE_BAR_MIN_MS 80
-#define WIDE_BAR_MAX_MS 200
-
-// Barcode state
-static BarcodeState barcode_state = BARCODE_STATE_IDLE;
-static uint32_t last_transition_time = 0;
-static uint32_t bar_times[50];  // Store bar/space widths
-static uint8_t bar_count = 0;
-static bool last_sensor_state = false;
-static BarcodeCommand last_command = BARCODE_NONE;
-static char decoded_string[20];
-
-// Code 39 character encoding (9 bars: narrow=0, wide=1)
-// Format: bsbsbsbsb (b=bar, s=space)
+// Code39 lookup table
 typedef struct {
-    char character;
-    const char* pattern;  // 9 bits: 0=narrow, 1=wide
-} Code39Char;
+    char ch;
+    const char *pattern; // 9 characters, each 'n' (narrow) or 'w' (wide)
+} Code39;
 
-// Subset of Code 39 characters (just what we need + start/stop)
-static const Code39Char code39_table[] = {
-    {'*', "100101101"},  // Start/Stop character
-    {'L', "101010011"},  // LEFT command
-    {'R', "101001011"},  // RIGHT command
-    {'S', "110010101"},  // STOP command
-    {'0', "101001101"},
-    {'1', "110100101"},
-    {'2', "101100101"},
-    {'3', "110110100"},
-    {'4', "101001110"},
-    {'5', "110100110"},
-    {'6', "101100110"},
-    {'7', "101001011"},
-    {'8', "110100101"},
-    {'9', "101100101"},
+static const Code39 code39_table[] = {
+    {'0',"nnnwwnwnw"}, {'1',"wnnwnnnnw"}, {'2',"nnwwnnnnw"}, {'3',"wnwwnnnnn"},
+    {'4',"nnnwwnnnw"}, {'5',"wnnwwnnnn"}, {'6',"nnwwwnnnn"}, {'7',"nnnwnnwnw"},
+    {'8',"wnnwnnwnn"}, {'9',"nnwwnnwnn"}, {'A',"wnnnnwnnw"}, {'B',"nnwnnwnnw"},
+    {'C',"wnwnnwnnn"}, {'D',"nnnnwwnnw"}, {'E',"wnnnwwnnn"}, {'F',"nnwnwwnnn"},
+    {'G',"nnnnnwwnw"}, {'H',"wnnnnwwnn"}, {'I',"nnwnnwwnn"}, {'J',"nnnnwwwnn"},
+    {'K',"wnnnnnnww"}, {'L',"nnwnnnnww"}, {'M',"wnwnnnnwn"}, {'N',"nnnnwnnww"},
+    {'O',"wnnnwnnwn"}, {'P',"nnwnwnnwn"}, {'Q',"nnnnnnwww"}, {'R',"wnnnnnwwn"},
+    {'S',"nnwnnnwwn"}, {'T',"nnnnwnwwn"}, {'U',"wwnnnnnnw"}, {'V',"nwwnnnnnw"},
+    {'W',"wwwnnnnnn"}, {'X',"nwnnwnnnw"}, {'Y',"wwnnwnnnn"}, {'Z',"nwwnwnnnn"},
+    {'-',"nwnnnnwnw"}, {'.',"wwnnnnwnn"}, {' ',"nwwnnnwnn"}, {'$',"nwnwnwnnn"},
+    {'/',"nwnwnnnwn"}, {'+',"nwnnnwnwn"}, {'%',"nnnwnwnwn"}, {'*',"nwnnwnwnn"} // Start/stop
 };
+static const int code39_len = sizeof(code39_table) / sizeof(Code39);
 
-#define CODE39_TABLE_SIZE (sizeof(code39_table) / sizeof(Code39Char))
+// Global state
+static uint8_t barcode_gpio = 0;
+static BarData bars[MAX_BAR_COUNT];
+static volatile uint8_t bar_count = 0;
+static volatile bool scanning = false;
+static volatile uint64_t last_edge_time = 0;
+static volatile bool last_state = false;
+static volatile uint64_t scan_start_time = 0;
 
-void barcode_init(void) {
-    barcode_state = BARCODE_STATE_IDLE;
+// Forward declarations
+static void barcode_gpio_callback(uint gpio, uint32_t events);
+static char match_code39_pattern(const char *pattern9);
+
+// ============================================================================
+// PUBLIC FUNCTIONS
+// ============================================================================
+
+void barcode_init(uint8_t gpio_pin) {
+    barcode_gpio = gpio_pin;
+    
+    // Initialize GPIO
+    gpio_init(barcode_gpio);
+    gpio_set_dir(barcode_gpio, GPIO_IN);
+    gpio_disable_pulls(barcode_gpio);
+    
+    // Set up interrupt for both edges
+    gpio_set_irq_enabled_with_callback(barcode_gpio, 
+                                       GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
+                                       true,
+                                       &barcode_gpio_callback);
+    
+    // Disable initially
+    gpio_set_irq_enabled(barcode_gpio, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, false);
+    
+    printf("Barcode scanner initialized on GPIO %d\n", barcode_gpio);
+}
+
+void barcode_start_scan(void) {
+    // Reset state
     bar_count = 0;
-    last_sensor_state = false;
-    last_command = BARCODE_NONE;
-    decoded_string[0] = '\0';
-    printf("✓ Code 39 barcode decoder initialized\n");
+    scanning = true;
+    scan_start_time = time_us_64();
+    last_edge_time = scan_start_time;
+    last_state = gpio_get(barcode_gpio);
+    
+    // Enable interrupts
+    gpio_set_irq_enabled(barcode_gpio, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
+    
+    printf("Barcode scan started (initial state: %s)\n", last_state ? "WHITE" : "BLACK");
+}
+
+void barcode_stop_scan(void) {
+    // Disable interrupts
+    gpio_set_irq_enabled(barcode_gpio, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, false);
+    scanning = false;
+    
+    printf("Barcode scan stopped (%d bars captured)\n", bar_count);
+}
+
+bool barcode_is_scan_complete(void) {
+    if (!scanning) return true;
+    
+    // Check if we have enough bars
+    if (bar_count >= MAX_BAR_COUNT - 1) {
+        barcode_stop_scan();
+        return true;
+    }
+    
+    // Check for timeout (2 seconds since last edge = end of barcode)
+    uint64_t current_time = time_us_64();
+    if (bar_count > 10 && (current_time - last_edge_time) > 2000000) {
+        barcode_stop_scan();
+        return true;
+    }
+    
+    return false;
+}
+
+uint8_t barcode_get_bar_count(void) {
+    return bar_count;
 }
 
 void barcode_reset(void) {
-    barcode_state = BARCODE_STATE_IDLE;
+    barcode_stop_scan();
     bar_count = 0;
-    last_command = BARCODE_NONE;
-    decoded_string[0] = '\0';
+    scanning = false;
 }
 
-// Classify bar width as narrow (0) or wide (1)
-static char classify_bar(uint32_t width_ms) {
-    if (width_ms >= NARROW_BAR_MIN_MS && width_ms <= NARROW_BAR_MAX_MS) {
-        return '0';  // Narrow
-    } else if (width_ms >= WIDE_BAR_MIN_MS && width_ms <= WIDE_BAR_MAX_MS) {
-        return '1';  // Wide
-    } else {
-        return '?';  // Invalid
+void barcode_print_bars(void) {
+    printf("\n=== Captured Bars (%d total) ===\n", bar_count);
+    
+    if (bar_count == 0) {
+        printf("No bars captured!\n");
+        return;
     }
-}
-
-// Decode 9 bars/spaces into Code 39 character
-static char decode_code39_char(uint32_t* bars, uint8_t count) {
-    if (count != 9) return '?';
     
-    char pattern[10];
-    bool valid = true;
-    
-    // Convert bar widths to pattern string
-    for (int i = 0; i < 9; i++) {
-        pattern[i] = classify_bar(bars[i]);
-        if (pattern[i] == '?') {
-            valid = false;
-            break;
-        }
-    }
-    pattern[9] = '\0';
-    
-    if (!valid) return '?';
-    
-    // Match against Code 39 table
-    for (int i = 0; i < CODE39_TABLE_SIZE; i++) {
-        if (strcmp(pattern, code39_table[i].pattern) == 0) {
-            return code39_table[i].character;
+    // Find minimum bar width
+    uint32_t min_width = 0xFFFFFFFF;
+    for (int i = 0; i < bar_count; i++) {
+        if (bars[i].duration_us < min_width) {
+            min_width = bars[i].duration_us;
         }
     }
     
-    return '?';  // No match
-}
-
-// Decode complete barcode string
-static BarcodeCommand decode_barcode_command(const char* str) {
-    // Code 39 format: *COMMAND*
-    // Example: *L* = LEFT, *R* = RIGHT, *S* = STOP
+    printf("Minimum bar width: %lu us\n\n", min_width);
+    printf("Bar | Type  | Duration (us) | Duration (ms) | Units\n");
+    printf("----+-------+---------------+---------------+------\n");
     
-    if (strlen(str) < 3) return BARCODE_UNKNOWN;
-    
-    // Check for start/stop markers
-    if (str[0] != '*' || str[strlen(str)-1] != '*') {
-        return BARCODE_UNKNOWN;
-    }
-    
-    // Extract command (character between * markers)
-    char cmd = str[1];
-    
-    switch (cmd) {
-        case 'L':
-            return BARCODE_LEFT;
-        case 'R':
-            return BARCODE_RIGHT;
-        case 'S':
-            return BARCODE_STOP;
-        default:
-            return BARCODE_UNKNOWN;
+    for (int i = 0; i < bar_count; i++) {
+        uint8_t units = (bars[i].duration_us + min_width/2) / min_width;
+        printf("%3d | %s | %13lu | %13.2f | %d\n",
+               i,
+               bars[i].is_black ? "BLACK" : "WHITE",
+               bars[i].duration_us,
+               bars[i].duration_us / 1000.0f,
+               units);
     }
 }
 
-BarcodeCommand barcode_update(void) {
-    uint32_t current_time = to_ms_since_boot(get_absolute_time());
-    bool sensor_sees_black = ir_barcode_detected();
+bool barcode_decode(BarcodeResult* result) {
+    memset(result, 0, sizeof(BarcodeResult));
     
-    // Detect transitions (black→white or white→black)
-    if (sensor_sees_black != last_sensor_state) {
-        uint32_t bar_width = current_time - last_transition_time;
+    if (bar_count < 18) {
+        printf("ERROR: Not enough bars! Need at least 18, got %d\n", bar_count);
+        return false;
+    }
+    
+    result->bar_count = bar_count;
+    result->total_time_ms = (time_us_64() - scan_start_time) / 1000;
+    
+    // Find minimum bar width (unit width)
+    uint32_t min_width = 0xFFFFFFFF;
+    for (int i = 0; i < bar_count; i++) {
+        if (bars[i].duration_us < min_width) {
+            min_width = bars[i].duration_us;
+        }
+    }
+    
+    printf("\n=== Decoding Barcode ===\n");
+    printf("Total bars: %d\n", bar_count);
+    printf("Unit width: %lu us (%.2f ms)\n", min_width, min_width / 1000.0f);
+    
+    // Skip initial quiet zone if present
+    int start_index = 0;
+    if (!bars[0].is_black && bars[0].duration_us > bars[1].duration_us * 3) {
+        printf("Skipping initial quiet zone\n");
+        start_index = 1;
+    }
+    
+    // Calculate threshold: narrow vs wide
+    // Typically wide = 3x narrow, so threshold at 2x
+    uint32_t threshold = min_width * 2;
+    printf("Threshold: %lu us (narrow < threshold < wide)\n", threshold);
+    
+    // Build pattern string of 'n' and 'w'
+    char pattern[512];
+    int pattern_idx = 0;
+    
+    for (int i = start_index; i < bar_count; i++) {
+        pattern[pattern_idx++] = (bars[i].duration_us > threshold) ? 'w' : 'n';
+    }
+    pattern[pattern_idx] = '\0';
+    
+    printf("Pattern: %s (length: %d)\n", pattern, pattern_idx);
+    
+    // Decode into characters (9 bars per character)
+    char decoded[128];
+    int decoded_idx = 0;
+    
+    for (int i = 0; i + 9 <= pattern_idx; i += 9) {
+        char char_pattern[10];
+        strncpy(char_pattern, &pattern[i], 9);
+        char_pattern[9] = '\0';
         
-        switch (barcode_state) {
-            case BARCODE_STATE_IDLE:
-                // First transition - start detecting
-                barcode_state = BARCODE_STATE_DETECTING;
-                bar_count = 0;
-                decoded_string[0] = '\0';
-                last_transition_time = current_time;
-                break;
-                
-            case BARCODE_STATE_DETECTING:
-                // Record bar/space width
-                if (bar_width >= NARROW_BAR_MIN_MS) {
-                    bar_times[bar_count++] = bar_width;
-                    
-                    // Try to decode every 9 bars (one Code 39 character)
-                    if (bar_count >= 9) {
-                        char decoded_char = decode_code39_char(bar_times, 9);
-                        
-                        if (decoded_char != '?') {
-                            // Valid character decoded
-                            size_t len = strlen(decoded_string);
-                            if (len < 19) {
-                                decoded_string[len] = decoded_char;
-                                decoded_string[len + 1] = '\0';
-                            }
-                            
-                            // Check if complete barcode (ends with *)
-                            if (decoded_char == '*' && len > 0) {
-                                barcode_state = BARCODE_STATE_COMPLETE;
-                            } else {
-                                // Shift bars for next character
-                                // Keep last bar as it might be start of next char
-                                bar_count = 0;
-                            }
-                        } else {
-                            // Invalid character - reset
-                            barcode_state = BARCODE_STATE_IDLE;
-                        }
-                    }
-                    
-                    // Safety limit
-                    if (bar_count >= 50) {
-                        barcode_state = BARCODE_STATE_IDLE;
-                    }
-                }
-                
-                last_transition_time = current_time;
-                break;
-                
-            case BARCODE_STATE_COMPLETE:
-                // Already decoded - waiting for cooldown
-                break;
-                
-            case BARCODE_STATE_COOLDOWN:
-                // In cooldown period
-                break;
-        }
-    }
-    
-    // Timeout detection
-    if (barcode_state == BARCODE_STATE_DETECTING) {
-        if (current_time - last_transition_time > 500) {  // 500ms timeout
-            // Too long since last transition - probably end of barcode or error
-            if (strlen(decoded_string) > 0 && decoded_string[strlen(decoded_string)-1] == '*') {
-                barcode_state = BARCODE_STATE_COMPLETE;
-            } else {
-                barcode_state = BARCODE_STATE_IDLE;
-            }
-        }
-    }
-    
-    // Process complete barcode
-    if (barcode_state == BARCODE_STATE_COMPLETE) {
-        last_command = decode_barcode_command(decoded_string);
+        char c = match_code39_pattern(char_pattern);
+        decoded[decoded_idx++] = c;
         
-        printf("\n[BARCODE] Decoded: '%s' → ", decoded_string);
-        switch (last_command) {
-            case BARCODE_LEFT:
-                printf("TURN LEFT\n");
-                break;
-            case BARCODE_RIGHT:
-                printf("TURN RIGHT\n");
-                break;
-            case BARCODE_STOP:
-                printf("STOP\n");
-                break;
-            default:
-                printf("UNKNOWN\n");
-                break;
+        // Skip inter-character gap (narrow bar)
+        if (i + 9 < pattern_idx && pattern[i + 9] == 'n') {
+            i++;
         }
-        
-        barcode_state = BARCODE_STATE_COOLDOWN;
-        last_transition_time = current_time;
     }
+    decoded[decoded_idx] = '\0';
     
-    // Cooldown period
-    if (barcode_state == BARCODE_STATE_COOLDOWN) {
-        if (current_time - last_transition_time > 1000) {  // 1 second cooldown
-            barcode_state = BARCODE_STATE_IDLE;
+    printf("Decoded characters: %s\n", decoded);
+    
+    // Extract message between start/stop '*' markers
+    char *start = strchr(decoded, '*');
+    char *end = strrchr(decoded, '*');
+    
+    if (start && end && end > start) {
+        int len = end - start - 1;
+        if (len > 0 && len < 64) {
+            strncpy(result->message, start + 1, len);
+            result->message[len] = '\0';
+            result->valid = true;
+            
+            printf(">>> DECODED MESSAGE: %s <<<\n", result->message);
+            return true;
         }
     }
     
-    last_sensor_state = sensor_sees_black;
-    
-    return last_command;
+    printf("Decode failed - missing or invalid start/stop markers\n");
+    return false;
 }
 
-BarcodeCommand barcode_get_last_command(void) {
-    return last_command;
-}
+// ============================================================================
+// PRIVATE FUNCTIONS
+// ============================================================================
 
-void barcode_clear_command(void) {
-    last_command = BARCODE_NONE;
-}
-
-BarcodeState barcode_get_state(void) {
-    return barcode_state;
-}
-
-const char* barcode_command_to_string(BarcodeCommand cmd) {
-    switch (cmd) {
-        case BARCODE_LEFT:  return "TURN LEFT";
-        case BARCODE_RIGHT: return "TURN RIGHT";
-        case BARCODE_STOP:  return "STOP";
-        case BARCODE_NONE:  return "NONE";
-        default:            return "UNKNOWN";
+static char match_code39_pattern(const char *pattern9) {
+    for (int i = 0; i < code39_len; i++) {
+        if (strncmp(pattern9, code39_table[i].pattern, 9) == 0) {
+            return code39_table[i].ch;
+        }
     }
+    return '?';
 }
 
-const char* barcode_get_decoded_string(void) {
-    return decoded_string;
+// GPIO interrupt callback
+static void barcode_gpio_callback(uint gpio, uint32_t events) {
+    if (!scanning || gpio != barcode_gpio) return;
+    
+    uint64_t current_time = time_us_64();
+    uint64_t duration = current_time - last_edge_time;
+    
+    // Ignore very short pulses (noise)
+    if (duration < MIN_BAR_DURATION_US) {
+        return;
+    }
+    
+    // Store the bar that just ended
+    if (bar_count < MAX_BAR_COUNT) {
+        bars[bar_count].duration_us = duration;
+        bars[bar_count].is_black = last_state;  // The state we WERE in
+        bar_count++;
+    }
+    
+    // Update state for next bar
+    last_edge_time = current_time;
+    last_state = gpio_get(barcode_gpio);
 }

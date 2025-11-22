@@ -49,5 +49,13 @@ void ir_print_readings(void);
 // Get/set edge threshold
 uint16_t ir_get_threshold(void);
 void ir_set_threshold(uint16_t threshold);
+// Add these function declarations to ir_sensor.h
 
+uint16_t ir_get_threshold(void);
+void ir_set_threshold(uint16_t threshold);
+uint16_t ir_get_white_value(void);
+uint16_t ir_get_black_value(void);
+void ir_set_white_black_values(uint16_t white, uint16_t black);
+bool ir_barcode_digital_detected(void);
+void test_barcode_sensor(void);
 #endif // IR_SENSOR_H

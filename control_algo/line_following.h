@@ -1,39 +1,65 @@
 /**
- * line_following.h
- * Line following controller interface
+ * line_following.h - Single IR Line Following Interface
  */
 
 #ifndef LINE_FOLLOWING_H
 #define LINE_FOLLOWING_H
 
-#include "pico/stdlib.h"
+#include <stdint.h>
 #include <stdbool.h>
 
-// Line following states
+// ============================================================================
+// LINE FOLLOWING STATE
+// ============================================================================
 typedef enum {
-    LINE_FOLLOW_IDLE = 0,
-    LINE_FOLLOW_ON_EDGE,
-    LINE_FOLLOW_SLIGHT_LEFT,
-    LINE_FOLLOW_SLIGHT_RIGHT,
-    LINE_FOLLOW_TURN_LEFT,
-    LINE_FOLLOW_TURN_RIGHT,
-    LINE_FOLLOW_LOST
+    LINE_FOLLOW_CENTERED,      // On the edge (target position)
+    LINE_FOLLOW_LEFT,          // Slightly left of edge
+    LINE_FOLLOW_RIGHT,         // Slightly right of edge
+    LINE_FOLLOW_FAR_LEFT,      // Far left - need strong correction
+    LINE_FOLLOW_FAR_RIGHT,     // Far right - need strong correction
+    LINE_FOLLOW_LOST           // Line completely lost
 } LineFollowState;
 
-// Initialize line following controller
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
 void line_following_init(void);
 
-// Update line following (call every control cycle)
-// Returns: steering correction value (negative = turn right, positive = turn left)
+// ============================================================================
+// CONTROL UPDATE
+// ============================================================================
+/**
+ * Update PID controller based on current IR reading
+ * 
+ * @param dt Time step in seconds
+ * @return Steering correction value (normalized, typically -2 to +2)
+ *         Positive = steer right, Negative = steer left
+ */
 float line_following_update(float dt);
 
-// Reset line following state
-void line_following_reset(void);
+// ============================================================================
+// RESET
+// ============================================================================
+void line_following_reset_integral(void);
 
-// Get current state
+// ============================================================================
+// GAIN ADJUSTMENT (for adaptive control)
+// ============================================================================
+void line_following_set_kp(float kp);
+void line_following_set_ki(float ki);
+void line_following_set_kd(float kd);
+
+// ============================================================================
+// GETTERS
+// ============================================================================
 LineFollowState line_following_get_state(void);
+float line_following_get_filtered_pos(void);  // Returns normalized error [-1, +1]
+float line_following_get_error(void);         // Returns current error
+float line_following_get_output(void);        // Returns PID output
 
-// Convert state to string for debugging
+// ============================================================================
+// UTILITY
+// ============================================================================
 const char* line_state_to_string(LineFollowState state);
 
 #endif // LINE_FOLLOWING_H

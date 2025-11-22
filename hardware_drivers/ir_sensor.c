@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 // ADC channels
 #define LINE_SENSOR_ADC_CHANNEL 0    // GP26/ADC0 - Line tracking
 #define BARCODE_SENSOR_ADC_CHANNEL 1 // GP27/ADC1 - Barcode detection
@@ -19,7 +20,7 @@
 static uint16_t line_threshold = IR_EDGE_THRESHOLD;
 static uint16_t white_value = IR_THRESHOLD_WHITE;
 static uint16_t black_value = IR_THRESHOLD_BLACK;
-
+#define BARCODE_SENSOR_PIN 6  
 void ir_sensor_init(void) {
     // Initialize ADC
     adc_init();
@@ -27,13 +28,16 @@ void ir_sensor_init(void) {
     // Initialize line sensor (GP26 = ADC0)
     adc_gpio_init(26);
     
-    // Initialize barcode sensor (GP27 = ADC1)
-    adc_gpio_init(27);
+    gpio_init(BARCODE_SENSOR_PIN);
+    gpio_init(BARCODE_SENSOR_PIN);                    // Initialize GPIO pin 6
+    gpio_set_dir(BARCODE_SENSOR_PIN, GPIO_IN);
+    
     
     printf("✓ IR sensors initialized\n");
     printf("  Line sensor: GP26 (ADC0)\n");
-    printf("  Barcode sensor: GP27 (ADC1)\n");
+    printf("  Barcode sensor: GP6 (D0)\n");
     printf("  Edge threshold: %d\n", line_threshold);
+    printf("  White value: %d, Black value: %d\n", white_value, black_value);
     printf("  ⚠️  INVERTED SENSOR MODE (Black=HIGH, White=LOW)\n");
     printf("  📍 LEFT SIDE TRACING\n");
 }
@@ -51,18 +55,57 @@ uint16_t ir_read_barcode_sensor(void) {
 int32_t ir_get_line_position(void) {
     uint16_t reading = ir_read_line_sensor();
     
-    // Simple linear calculation
-    int32_t error = (int32_t)line_threshold - (int32_t)reading;
+    // ========================================================================
+    // NORMALIZED POSITION CALCULATION (Better for PID)
+    // ========================================================================
+    // Instead of using max_deviation, we normalize based on calibrated values
+    // This gives more consistent behavior across different sensors
     
-    // Scale down by dividing by 2
-    // This makes position range ±1000 instead of ±2000
-    error = error / 2;
+    int32_t position;
     
-    // Clamp to ±1000
-    if (error > 1000) error = 1000;
-    if (error < -1000) error = -1000;
+    if (reading < line_threshold) {
+        // Sensor is on WHITE side (reading < threshold)
+        // Map white_value...threshold → 0...LINE_POSITION_MAX
+        // Positive position = turn LEFT to return to edge
+        
+        int32_t white_range = line_threshold - white_value;
+        int32_t offset = line_threshold - reading;
+        
+        if (white_range > 0) {
+            position = (offset * LINE_POSITION_MAX) / white_range;
+        } else {
+            position = LINE_POSITION_MAX;  // Failsafe
+        }
+        
+    } else {
+        // Sensor is on BLACK side (reading >= threshold)
+        // Map threshold...black_value → 0...-LINE_POSITION_MAX
+        // Negative position = turn RIGHT to return to edge
+        
+        int32_t black_range = black_value - line_threshold;
+        int32_t offset = reading - line_threshold;
+        
+        if (black_range > 0) {
+            position = -(offset * LINE_POSITION_MAX) / black_range;
+        } else {
+            position = -LINE_POSITION_MAX;  // Failsafe
+        }
+    }
     
-    return error;
+    // Debug every 500ms
+    static uint32_t last_debug = 0;
+    uint32_t now = to_ms_since_boot(get_absolute_time());
+    if (now - last_debug > 500) {
+        printf("IR_DEBUG: read=%d, thr=%d, white=%d, black=%d, pos_calc=%ld\n",
+               reading, line_threshold, white_value, black_value, position);
+        last_debug = now;
+    }
+    
+    // Clamp to valid range
+    if (position > LINE_POSITION_MAX) position = LINE_POSITION_MAX;
+    if (position < LINE_POSITION_MIN) position = LINE_POSITION_MIN;
+    
+    return position;
 }
 
 void ir_set_max_deviation(uint16_t deviation) {
@@ -90,6 +133,45 @@ bool ir_line_detected(void) {
     if (tolerance < 200) tolerance = 200;  // Minimum tolerance
     
     return (diff < tolerance);
+}
+void test_barcode_sensor(void) {
+    sleep_ms(3000);
+    printf("\n=== BARCODE SENSOR TEST ===\n");
+    printf("Hold sensor over WHITE surface...\n");
+    sleep_ms(3000);
+    bool white = gpio_get(BARCODE_SENSOR_PIN);
+    printf("White reading: %d\n", white);
+    
+    printf("Hold sensor over BLACK surface...\n");
+    sleep_ms(3000);
+    bool black = gpio_get(BARCODE_SENSOR_PIN);
+    printf("Black reading: %d\n", black);
+    
+    if (black && !white) {
+        printf("✓ Use: return gpio_get()\n");
+    } else if (!black && white) {
+        printf("✓ Use: return !gpio_get()\n");
+    } else {
+        printf("⚠ Sensor not working or always same value!\n");
+    }
+    printf("===========================\n\n");
+}
+bool ir_barcode_digital_detected(void) {
+    // Read GP6 - returns true if black detected
+    // Adjust logic based on your sensor (may need to invert with !)
+    return !gpio_get(BARCODE_SENSOR_PIN);  // Assuming LOW = black detected
+}
+
+// Keep old function for compatibility, but use digital version
+bool ir_barcode_detected_digital(void) {
+    bool pin_state = gpio_get(BARCODE_SENSOR_PIN);
+    
+    // Test both ways and see which works for your sensor:
+    // Option 1: If sensor outputs HIGH when seeing black
+    return pin_state;
+    
+    // Option 2: If sensor outputs LOW when seeing black (inverted)
+    // return !pin_state;
 }
 
 bool ir_barcode_detected(void) {
