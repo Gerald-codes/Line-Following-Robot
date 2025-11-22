@@ -1,27 +1,30 @@
 /**
  * integrated_main.c
  * 
- * INTEGRATED LINE FOLLOWING + OBSTACLE AVOIDANCE
+ * INTEGRATED LINE FOLLOWING + OBSTACLE AVOIDANCE + BARCODE SCANNING
  * 
  * Features:
  * - Line following using single IR sensor
+ * - Barcode detection and turning (NEW!)
  * - Obstacle detection with ultrasonic sensor
  * - Obstacle avoidance maneuvers
  * - State machine coordination
- * - Ready for barcode integration (future)
  * 
  * States:
  * 1. LINE_FOLLOWING - Normal line tracking
- * 2. OBSTACLE_DETECTED - Obstacle spotted, stop and scan
- * 3. OBSTACLE_AVOIDING - Execute avoidance maneuver
- * 4. RETURNING_TO_LINE - Getting back to line
- * 5. LINE_LOST - Line lost, search mode
+ * 2. BARCODE_DETECTED - Barcode spotted, prepare for turn
+ * 3. BARCODE_TURN - Execute barcode turn maneuver
+ * 4. OBSTACLE_DETECTED - Obstacle spotted, stop and scan
+ * 5. OBSTACLE_AVOIDING - Execute avoidance maneuver
+ * 6. RETURNING_TO_LINE - Getting back to line
+ * 7. LINE_LOST - Line lost, search mode
  */
 
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
-//State
+
+// State
 #include "state_machine.h"
 
 // Hardware drivers
@@ -31,7 +34,10 @@
 #include "ir_sensor.h"
 #include "ultrasonic.h"
 #include "servo.h"
+
+// Control systems
 #include "obstacle_control.h"
+#include "barcode_control.h"
 
 // Control algorithms
 #include "line_following.h"
@@ -48,8 +54,6 @@
 // ============================================================================
 // SYSTEM STATE MACHINE
 // ============================================================================
-
-
 
 static SystemState current_state = STATE_IDLE;
 static SystemState previous_state = STATE_IDLE;
@@ -78,6 +82,8 @@ static uint32_t state_entry_time = 0;
 static void init_hardware(void);
 static void handle_returning_to_line(void);
 static void handle_line_lost(void);
+static void handle_realigning_heading(void);
+
 static const char* state_to_string(SystemState state);
 
 SystemState get_current_state(void) {
@@ -90,7 +96,7 @@ SystemState get_current_state(void) {
 
 static void init_hardware(void) {
     printf("\n╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║     INTEGRATED LINE FOLLOWING + OBSTACLE AVOIDANCE           ║\n");
+    printf("║   INTEGRATED LINE + OBSTACLE + BARCODE SYSTEM                ║\n");
     printf("╚═══════════════════════════════════════════════════════════════╝\n\n");
     
     printf("Initializing hardware...\n");
@@ -134,6 +140,9 @@ static void init_hardware(void) {
     line_following_init();
     printf("  ✓ Line Following Controller\n");
     
+    // Barcode control system
+    barcode_control_init();
+    
     // Obstacle systems
     scanner_init();
     avoidance_init();
@@ -170,20 +179,25 @@ static const char* state_to_string(SystemState state) {
     switch (state) {
         case STATE_IDLE: return "IDLE";
         case STATE_LINE_FOLLOWING: return "LINE_FOLLOWING";
+        case STATE_BARCODE_DETECTED: return "BARCODE_DETECTED";
+        case STATE_BARCODE_TURN: return "BARCODE_TURN";
         case STATE_OBSTACLE_DETECTED: return "OBSTACLE_DETECTED";
         case STATE_OBSTACLE_SCANNING: return "OBSTACLE_SCANNING";
         case STATE_OBSTACLE_AVOIDING: return "OBSTACLE_AVOIDING";
         case STATE_RETURNING_TO_LINE: return "RETURNING_TO_LINE";
+        case STATE_REALIGNING_HEADING: return "REALIGNING_HEADING";
         case STATE_LINE_LOST: return "LINE_LOST";
         case STATE_STOPPED: return "STOPPED";
         default: return "UNKNOWN";
     }
 }
 
-
+// ============================================================================
+// RETURNING TO LINE
+// ============================================================================
 
 static void handle_returning_to_line(void) {
-    // After avoidance, we should be near the line
+    // After avoidance or barcode turn, we should be near the line
     // Use line following logic but with more tolerance
     
     uint32_t current_time = to_ms_since_boot(get_absolute_time());
@@ -191,7 +205,9 @@ static void handle_returning_to_line(void) {
     // Check if we found the line
     if (ir_line_detected()) {
         printf("\n[LINE] Line detected! Resuming normal following\n");
-        change_state(STATE_LINE_FOLLOWING);
+        motor_stop(M1A, M1B);
+        motor_stop(M2A, M2B);
+        change_state(STATE_REALIGNING_HEADING);
         return;
     }
     
@@ -231,6 +247,59 @@ static void handle_line_lost(void) {
         change_state(STATE_STOPPED);
     }
 }
+
+static void handle_realigning_heading(void) {
+    uint32_t current_time = to_ms_since_boot(get_absolute_time());
+    
+    // Get saved original heading
+    float target_heading = avoidance_get_original_heading();
+    
+    // Update IMU
+    imu_helper_update();
+    float current_heading = imu_helper_get_relative_heading();
+    
+    // Calculate heading error
+    float heading_error = current_heading - target_heading;
+    
+    // Normalize to -180 to +180
+    while (heading_error > 180.0f) heading_error -= 360.0f;
+    while (heading_error < -180.0f) heading_error += 360.0f;
+    
+    printf("[REALIGN] Current: %.1f° | Target: %.1f° | Error: %.1f°\n", 
+           current_heading, target_heading, heading_error);
+    
+    // Check if aligned (within 5° tolerance)
+    if (fabsf(heading_error) <= 5.0f) {
+        printf("[REALIGN] ✓ Heading aligned! Resuming normal line following\n");
+        motor_stop(M1A, M1B);
+        motor_stop(M2A, M2B);
+        change_state(STATE_LINE_FOLLOWING);
+        return;
+    }
+    
+    // Turn to correct heading (slower, more precise)
+    int turn_speed_outer = 35;
+    int turn_speed_inner = 15;
+    
+    if (heading_error > 0) {
+        // Need to turn right
+        motor_drive(M1A, M1B, -turn_speed_inner);   // Left slow
+        motor_drive(M2A, M2B, -turn_speed_outer);   // Right fast
+    } else {
+        // Need to turn left
+        motor_drive(M1A, M1B, -turn_speed_outer);   // Left fast
+        motor_drive(M2A, M2B, -turn_speed_inner);   // Right slow
+    }
+    
+    // Timeout after 3 seconds
+    if (current_time - state_entry_time > 3000) {
+        printf("[REALIGN] ⚠️ Realignment timeout - proceeding anyway\n");
+        motor_stop(M1A, M1B);
+        motor_stop(M2A, M2B);
+        change_state(STATE_LINE_FOLLOWING);
+    }
+}
+
 
 // ============================================================================
 // MAIN PROGRAM
@@ -306,7 +375,26 @@ int main() {
                 break;
                 
             case STATE_LINE_FOLLOWING:
-                // Use the new integrated line following update function
+                // Check for barcode detection first (highest priority)
+                {
+                    BarcodeCommand barcode_cmd = barcode_check_for_detection();
+                    if (barcode_cmd != BARCODE_CMD_NONE && barcode_cmd != BARCODE_CMD_UNKNOWN) {
+                        BarcodeAction action = handle_barcode_detected(barcode_cmd);
+                        
+                        // Handle based on action type
+                        if (action == BARCODE_ACTION_TURN_LEFT || action == BARCODE_ACTION_TURN_RIGHT) {
+                            // Turn immediately
+                            change_state(STATE_BARCODE_TURN);
+                            break;
+                        }
+                        // Speed changes don't require state change - just continue
+                        else if (action == BARCODE_ACTION_SPEED_SLOW || action == BARCODE_ACTION_SPEED_FAST) {
+                            printf("[BARCODE] Speed changed, continuing line following\n");
+                        }
+                    }
+                }
+                
+                // Use the integrated line following update function
                 if (!line_following_control_update(current_time, dt)) {
                     // Line was lost
                     change_state(STATE_LINE_LOST);
@@ -318,6 +406,17 @@ int main() {
                         handle_obstacle_detected();
                     }
                     last_obstacle_check = current_time;
+                }
+                break;
+                
+            case STATE_BARCODE_DETECTED:
+                // Handled inline above
+                break;
+                
+            case STATE_BARCODE_TURN:
+                if (handle_barcode_turn()) {
+                    // Turn complete, return to line
+                    change_state(STATE_RETURNING_TO_LINE);
                 }
                 break;
                 
@@ -348,9 +447,15 @@ int main() {
                 printf("[SYSTEM] Stopped - press GP20 to restart\n");
                 
                 if (calibration_button_pressed()) {
+                    barcode_control_reset();  // Reset barcode scanner
                     change_state(STATE_LINE_FOLLOWING);
                 }
                 break;
+
+            case STATE_REALIGNING_HEADING:
+                handle_realigning_heading();
+                break;
+
         }
         
         // Emergency stop button

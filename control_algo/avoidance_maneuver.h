@@ -6,13 +6,13 @@
 
 // Maneuver parameters (tunable)
 #define TURN_ANGLE_DEG 45           // Degrees to turn when leaving line
-#define TURN_ANGLE_RIGHT_DEG 43      // For right avoidance
-#define TURN_ANGLE_LEFT_DEG 19       // For left avoidance (try a lower value)
-#define TURN_BACK_LEFT_DEG   46   // The turn-back angle for left avoidance (tune up if too small)
-#define TURN_BACK_RIGHT_DEG  23   // The turn-back angle for right avoidance (tune down if too large)
+#define TURN_ANGLE_RIGHT_DEG 50      // For right avoidance
+#define TURN_ANGLE_LEFT_DEG 45       // For left avoidance (try a lower value)
+#define TURN_BACK_LEFT_DEG   50   // The turn-back angle for left avoidance (tune up if too small)
+#define TURN_BACK_RIGHT_DEG  50   // The turn-back angle for right avoidance (tune down if too large)
 #define TURN_DURATION_MS 800        // Time to turn 45 degrees
-#define FORWARD_AVOID_DURATION_MS 1000  // Time to move forward past obstacle
-#define RETURN_TURN_DURATION_MS 700     // Time to turn back toward line
+#define FORWARD_AVOID_DURATION_MS 50  // Time to move forward past obstacle
+#define RETURN_TURN_DURATION_MS 500     // Time to turn back toward line
 #define SEARCH_LINE_DURATION_MS 2000    // Time to search for line
 #define OBSTACLE_CLEAR_DISTANCE 35      // cm - distance at which obstacle is "cleared"
 
@@ -25,7 +25,9 @@ typedef enum {
     AVOIDANCE_TURNING_BACK,         // Turning back toward line
     AVOIDANCE_REALIGN_FORWARD,
     AVOIDANCE_SEARCHING_LINE,       // Moving forward to find line
+    AVOIDANCE_CENTER_ON_LINE,
     AVOIDANCE_COMPLETE,
+    AVOIDANCE_REALIGN_TO_HEADING,
     AVOIDANCE_FAILED
 } AvoidanceState;
 
@@ -36,6 +38,7 @@ typedef struct {
     uint32_t state_start_time;       // When current state started
     bool obstacle_cleared;           // Flag for obstacle clearance
     uint32_t forward_duration_ms;
+    float original_heading;  // ADDED NEW FIELD
 } AvoidanceContext;
 
 /**
@@ -85,5 +88,10 @@ const char* avoidance_get_state_string(AvoidanceState state);
 bool avoidance_check_obstacle_cleared(void);
 
 void avoidance_set_forward_duration(uint32_t duration_ms);
+
+/**
+ * Get the original heading saved when avoidance started
+ */
+float avoidance_get_original_heading(void);
 
 #endif // AVOIDANCE_MANEUVER_H

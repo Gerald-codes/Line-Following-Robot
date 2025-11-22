@@ -16,6 +16,8 @@
 #define LEFT_ENCODER 3
 #define RIGHT_ENCODER 5
 
+#define IR_BARCODE_PIN 6
+
 #endif // PIN_DEFINITIONS_H
 
 

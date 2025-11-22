@@ -4,6 +4,7 @@
 #include "motor.h"
 #include "config.h"
 #include "pin_definitions.h"
+#include "barcode_control.h"
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
@@ -12,7 +13,7 @@
 // ============================================================================
 // SIDE SWAP CONTROL
 // ============================================================================
-#define SWAP_SENSOR_PIN 6
+#define SWAP_SENSOR_PIN 100
 static bool side_inverted = false;
 static bool prev_swap_state = false;
 
@@ -202,18 +203,6 @@ static void check_side_swap(void) {
 // ============================================================================
 // NORMALIZE IR READING TO ERROR SIGNAL
 // ============================================================================
-/**
- * Convert raw IR reading to normalized error
- * 
- * IR Reading → Error Signal:
- * - WHITE (< threshold): -1.0 (sensor over white, line is to the right)
- * - BLACK (> threshold): +1.0 (sensor over black/line, need to go left)
- * 
- * The normalization maps:
- *   white_value → -1.0
- *   threshold   →  0.0
- *   black_value → +1.0
- */
 static float normalize_ir_to_error(uint16_t ir_reading) {
     uint16_t white = ir_get_white_value();
     uint16_t black = ir_get_black_value();
@@ -360,6 +349,9 @@ float line_following_update(float dt) {
 bool line_following_control_update(uint32_t current_time, float dt) {
     // Check for side swap trigger
     check_side_swap();
+    
+    // float BASE_POWER = (float)barcode_get_current_speed();
+    bool is_scanning = barcode_is_scanning();
     
     // Get RAW error BEFORE any inversion for physical white/black detection
     uint16_t ir_reading = ir_read_line_sensor();
