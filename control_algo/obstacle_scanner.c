@@ -7,7 +7,6 @@
 #include <string.h>
 #include "telemetry.h"
 #include "pico/time.h"
-static bool telemetry_enabled = false;
 
 
 // Store last width for exponential moving average smoothing
@@ -66,19 +65,7 @@ void scanner_init(void) {
 }
 
 
-void scanner_enable_telemetry(void) {
-    telemetry_enabled = true;
-    printf("[SCANNER] Telemetry enabled\n");
-}
 
-void scanner_disable_telemetry(void) {
-    telemetry_enabled = false;
-    printf("[SCANNER] Telemetry disabled\n");
-}
-
-bool scanner_is_telemetry_enabled(void) {
-    return telemetry_enabled;
-}
 
 
 ScanResult scanner_perform_scan(void) {
@@ -95,9 +82,7 @@ ScanResult scanner_perform_scan(void) {
     printf("\n=== Starting Scan ===\n");
 
     
-    if (telemetry_enabled && telemetry_is_connected()) {
-        telemetry_publish_status("Scan started");
-    }
+  
     
     
     // Reset distance history for this scan
@@ -126,11 +111,6 @@ ScanResult scanner_perform_scan(void) {
             uint64_t smoothed_distance = get_smoothed_distance(distance);
 
             
-            // Publish distance telemetry for each reading
-            if (telemetry_enabled && telemetry_is_connected()) {
-                telemetry_publish_obstacle_distance(angle, smoothed_distance);
-            }
-            
             
             bool obstacle_detected = (smoothed_distance >= OBSTACLE_THRESHOLD_MIN && 
                                      smoothed_distance <= OBSTACLE_THRESHOLD_MAX);
@@ -146,10 +126,7 @@ ScanResult scanner_perform_scan(void) {
                 printf(" >>> START\n");
 
                 
-                // Publish obstacle detection event
-                if (telemetry_enabled && telemetry_is_connected()) {
-                    telemetry_publish_status("Obstacle detected");
-                }
+                
                 
             }
             else if (obstacle_detected && in_obstacle) {
@@ -186,26 +163,7 @@ ScanResult scanner_perform_scan(void) {
                         obs->smoothed_width = smoothed_width;
 
                         
-                        // Publish obstacle telemetry
-                        if (telemetry_enabled && telemetry_is_connected()) {
-                            telemetry_publish_obstacle_width(result.obstacle_count, width, smoothed_width);
-                            telemetry_publish_obstacle_angles(result.obstacle_count, 
-                                                            obstacle_start_angle, 
-                                                            obstacle_end_angle, 
-                                                            angle_span);
-                            
-                            // Publish complete obstacle data
-                            ObstacleTelemetry telem;
-                            telem.obstacle_id = result.obstacle_count;
-                            telem.angle_start = obs->angle_start;
-                            telem.angle_end = obs->angle_end;
-                            telem.angle_span = obs->angle_span;
-                            telem.min_distance = obs->min_distance;
-                            telem.width = obs->width;
-                            telem.smoothed_width = obs->smoothed_width;
-                            
-                            telemetry_publish_obstacle(&telem);
-                        }
+                        
                         
 
                         result.obstacle_count++;
@@ -249,26 +207,7 @@ ScanResult scanner_perform_scan(void) {
                         obs->smoothed_width = smoothed_width;
 
                         
-                        // Publish obstacle telemetry
-                        if (telemetry_enabled && telemetry_is_connected()) {
-                            telemetry_publish_obstacle_width(result.obstacle_count, width, smoothed_width);
-                            telemetry_publish_obstacle_angles(result.obstacle_count, 
-                                                            obstacle_start_angle, 
-                                                            obstacle_end_angle, 
-                                                            angle_span);
-                            
-                            // Publish complete obstacle data
-                            ObstacleTelemetry telem;
-                            telem.obstacle_id = result.obstacle_count;
-                            telem.angle_start = obs->angle_start;
-                            telem.angle_end = obs->angle_end;
-                            telem.angle_span = obs->angle_span;
-                            telem.min_distance = obs->min_distance;
-                            telem.width = obs->width;
-                            telem.smoothed_width = obs->smoothed_width;
-                            
-                            telemetry_publish_obstacle(&telem);
-                        }
+                        
                         
 
                         result.obstacle_count++;
@@ -280,10 +219,7 @@ ScanResult scanner_perform_scan(void) {
         }
 
         
-        // Process telemetry events periodically
-        if (telemetry_enabled && telemetry_is_connected()) {
-            telemetry_process();
-        }
+        
         
     }
     
@@ -310,26 +246,7 @@ ScanResult scanner_perform_scan(void) {
                 obs->smoothed_width = smoothed_width;
 
                 
-                // Publish obstacle telemetry
-                if (telemetry_enabled && telemetry_is_connected()) {
-                    telemetry_publish_obstacle_width(result.obstacle_count, width, smoothed_width);
-                    telemetry_publish_obstacle_angles(result.obstacle_count, 
-                                                    obstacle_start_angle, 
-                                                    MAX_ANGLE, 
-                                                    angle_span);
-                    
-                    // Publish complete obstacle data
-                    ObstacleTelemetry telem;
-                    telem.obstacle_id = result.obstacle_count;
-                    telem.angle_start = obs->angle_start;
-                    telem.angle_end = obs->angle_end;
-                    telem.angle_span = obs->angle_span;
-                    telem.min_distance = obs->min_distance;
-                    telem.width = obs->width;
-                    telem.smoothed_width = obs->smoothed_width;
-                    
-                    telemetry_publish_obstacle(&telem);
-                }
+                
                 
 
                 result.obstacle_count++;
@@ -344,28 +261,7 @@ ScanResult scanner_perform_scan(void) {
 
 
     
-    // Publish obstacle count and scan completion
-    if (telemetry_enabled && telemetry_is_connected()) {
-        telemetry_publish_obstacle_count(result.obstacle_count);
-        
-        // Publish complete scan results
-        ScanTelemetry scan_telem;
-        scan_telem.obstacle_count = result.obstacle_count;
-        scan_telem.scan_timestamp = to_us_since_boot(get_absolute_time());
-        
-        for (int i = 0; i < result.obstacle_count; i++) {
-            scan_telem.obstacles[i].obstacle_id = i;
-            scan_telem.obstacles[i].angle_start = result.obstacles[i].angle_start;
-            scan_telem.obstacles[i].angle_end = result.obstacles[i].angle_end;
-            scan_telem.obstacles[i].angle_span = result.obstacles[i].angle_span;
-            scan_telem.obstacles[i].min_distance = result.obstacles[i].min_distance;
-            scan_telem.obstacles[i].width = result.obstacles[i].width;
-            scan_telem.obstacles[i].smoothed_width = result.obstacles[i].smoothed_width;
-        }
-        
-        telemetry_publish_scan_results(&scan_telem);
-        telemetry_publish_status("Scan complete");
-    }
+    
     
     
     // Print all obstacles after scan completes
@@ -381,6 +277,10 @@ ScanResult scanner_perform_scan(void) {
     
     servo_set_angle(ANGLE_CENTER);
     result.is_scanning = false;
+
+    if (telemetry_is_ready()) {
+        telemetry_publish_obstacle_scan(&result);
+    }
     
     return result;
 }
@@ -545,15 +445,7 @@ AvoidanceDirection scanner_get_best_avoidance_direction(ScanResult result) {
     
     printf("=============================\n\n");
     
-    // Publish to telemetry if enabled
-    if (telemetry_enabled && telemetry_is_connected()) {
-        char msg[128];
-        const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
-        snprintf(msg, sizeof(msg), 
-                "Avoidance: Go %s (L:%d° R:%d° clear)", 
-                dir_str, left_clear, right_clear);
-        telemetry_publish_status(msg);
-    }
+    
     
     return direction;
 }

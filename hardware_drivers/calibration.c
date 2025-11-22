@@ -8,6 +8,7 @@
 #include "hardware/gpio.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "telemetry.h"
 
 #ifndef CALIBRATION_BUTTON_PIN
 #define CALIBRATION_BUTTON_PIN 20  // Default button pin
@@ -135,4 +136,9 @@ void calibration_run_sequence(void) {
     }
     
     printf("\n");
+
+    if (telemetry_is_ready()) {
+        telemetry_publish_calibration(white_value, black_value, threshold, sensor_range);
+        printf("Calibration data published to telemetry\n");
+    }
 }
