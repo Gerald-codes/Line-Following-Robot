@@ -70,5 +70,7 @@ float line_following_get_right_power(void);
 // UTILITIES
 // ============================================================================
 const char* line_state_to_string(LineFollowState state);
+bool line_following_is_side_inverted(void);
+
 
 #endif // LINE_FOLLOWING_H

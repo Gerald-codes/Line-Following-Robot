@@ -1,20 +1,21 @@
-/**
- * line_following.c - Single IR Sensor Line Following
- * Uses ONE IR sensor and ONE PID controller
- * IR reading is used directly as error signal
- * 
- * Updated with complete line following control logic
- */
-
 
 #include "line_following.h"
 #include "ir_sensor.h"
 #include "motor.h"
 #include "config.h"
 #include "pin_definitions.h"
+#include "barcode_control.h"
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
+
+
+// ============================================================================
+// SIDE SWAP CONTROL
+// ============================================================================
+#define SWAP_SENSOR_PIN 100
+static bool side_inverted = false;
+static bool prev_swap_state = false;
 
 
 // ============================================================================
@@ -163,28 +164,45 @@ void line_following_init(void) {
     R_power = 0.0f;
     line_lost_start = 0;
     last_debug_time = 0;
+    side_inverted = false; //true is right side of the line, false is left side
+    prev_swap_state = false;
+    
+    // Initialize GPIO 6 as input for side swap detection
+    gpio_init(SWAP_SENSOR_PIN);
+    gpio_set_dir(SWAP_SENSOR_PIN, GPIO_IN);
+    gpio_pull_up(SWAP_SENSOR_PIN);  // Pull-up for active-low sensor
     
     printf("Single IR Line Following Initialized\n");
     printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
     printf("  Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
+    printf("  Side swap sensor: GP%d\n", SWAP_SENSOR_PIN);
+}
+
+
+// ============================================================================
+// CHECK SIDE SWAP SENSOR
+// ============================================================================
+static void check_side_swap(void) {
+    bool swap_sensor = !gpio_get(SWAP_SENSOR_PIN);  // Inverted (LOW = black detected)
+    
+    // Detect rising edge (transition from white to black)
+    if (swap_sensor && !prev_swap_state) {
+        side_inverted = !side_inverted;  // Toggle side
+        printf("\n>>> SIDE SWAP! Now tracing %s side <<<\n\n", 
+               side_inverted ? "INVERTED" : "NORMAL");
+        
+        // Reset PID to prevent sudden jumps
+        pid.integral = 0.0f;
+        pid.prev_error = 0.0f;
+    }
+    
+    prev_swap_state = swap_sensor;
 }
 
 
 // ============================================================================
 // NORMALIZE IR READING TO ERROR SIGNAL
 // ============================================================================
-/**
- * Convert raw IR reading to normalized error
- * 
- * IR Reading → Error Signal:
- * - WHITE (< threshold): -1.0 (sensor over white, line is to the right)
- * - BLACK (> threshold): +1.0 (sensor over black/line, need to go left)
- * 
- * The normalization maps:
- *   white_value → -1.0
- *   threshold   →  0.0
- *   black_value → +1.0
- */
 static float normalize_ir_to_error(uint16_t ir_reading) {
     uint16_t white = ir_get_white_value();
     uint16_t black = ir_get_black_value();
@@ -211,6 +229,11 @@ static float normalize_ir_to_error(uint16_t ir_reading) {
     // Clamp to [-1, +1]
     if (error < -1.0f) error = -1.0f;
     if (error > +1.0f) error = +1.0f;
+    
+    // INVERT ERROR IF SIDE IS SWAPPED
+    if (side_inverted) {
+        error = -error;
+    }
     
     return error;
 }
@@ -244,7 +267,7 @@ float line_following_update(float dt) {
     // Read IR sensor
     uint16_t ir_reading = ir_read_line_sensor();
     
-    // Convert to normalized error
+    // Convert to normalized error (with side inversion if active)
     float error = normalize_ir_to_error(ir_reading);
     
     // Apply exponential filter for smoothing
@@ -317,35 +340,62 @@ float line_following_update(float dt) {
  * - PID calculation
  * - Adaptive gain adjustment
  * - Motor power calculation and application
+ * - Side swap detection
  * - Line lost detection
  * - Debug output
  * 
  * Returns: true if line is being followed, false if line is lost
  */
 bool line_following_control_update(uint32_t current_time, float dt) {
-    // Get RAW error before filtering for extreme detection
+    // Check for side swap trigger
+    check_side_swap();
+    
+    // float BASE_POWER = (float)barcode_get_current_speed();
+    bool is_scanning = barcode_is_scanning();
+    
+    // Get RAW error BEFORE any inversion for physical white/black detection
     uint16_t ir_reading = ir_read_line_sensor();
+    uint16_t threshold = ir_get_threshold();
+    
+    // Determine TRUE physical surface (not affected by side inversion)
+    bool on_white_surface = (ir_reading < threshold);
+    bool on_black_surface = (ir_reading >= threshold);
+    
+    // Now get the error WITH side inversion for PID control
     float raw_error = normalize_ir_to_error(ir_reading);
     float raw_error_magnitude = fabsf(raw_error);
     
     // Update PID with filtered error
     float steering = line_following_update(dt);
-    float error = normalized_error;  // This is filtered
+    float error = normalized_error;
     
     apply_adaptive_gains(fabsf(error));
     
-    // Use RAW error for extreme detection - PIVOT TURN for complete white/black
+    // Use PHYSICAL surface detection for extreme behavior
     if (raw_error_magnitude > 0.99f) {
-        // EXTREME: Use pivot turn based on RAW error direction
-        if (raw_error < 0) {
-            // On white surface, need to turn RIGHT
-            L_power = MAX_POWER - 10.0f;  // Stop left wheel completely
-            R_power = 0;
-        }
-        else
-        {
-            L_power = BASE_POWER - steering;
-            R_power = BASE_POWER + steering + 10.0f;
+        if (on_white_surface) {
+            // PHYSICALLY on white - pivot to find line
+            if (side_inverted) {
+                // Inverted mode: turn LEFT
+                L_power = 0;
+                R_power = MAX_POWER - 10.0f;
+            } else {
+                // Normal mode: turn RIGHT
+                L_power = MAX_POWER - 10.0f;
+                R_power = 0;
+            }
+        } else {  // on_black_surface
+            // PHYSICALLY on black - curve away from line
+             // ⬇️ FIXED: On black - steer AWAY from line
+            if (side_inverted) {
+                // Right side (inverted): on black means curve RIGHT (away)
+                L_power = BASE_POWER - steering + 10.0f;  // ← FIXED: was -10
+                R_power = BASE_POWER + steering - 10.0f;  // ← FIXED: was plain
+            } else {
+                // Left side (normal): on black means curve LEFT (away)
+                L_power = BASE_POWER - steering - 10.0f;  // ← FIXED: was plain
+                R_power = BASE_POWER + steering + 10.0f;  // ← KEEP
+            }
         }
     } else {
         // NORMAL: Differential steering
@@ -353,40 +403,42 @@ bool line_following_control_update(uint32_t current_time, float dt) {
         R_power = BASE_POWER + steering;
     }
     
-    // Apply deadband and limits
+    // Rest of your code unchanged...
     int left_motor = apply_deadband(L_power);
     int right_motor = apply_deadband(R_power);
     
-    // Drive motors
     motor_drive(M1A, M1B, -left_motor);
     motor_drive(M2A, M2B, -right_motor);
     
-    // Debug output every 500ms
+    // Debug output
     if (current_time - last_debug_time >= 500) {
+        const char* side_str = side_inverted ? "[INV]" : "[NOR]";
+        const char* surface = on_white_surface ? "WHITE" : "BLACK";
+        
         if (raw_error_magnitude > 0.98f) {
-            printf("[PIVOT] Raw: %.2f | Filtered: %.2f | L:%d R:%d | State: %s\n",
-                   raw_error, error, left_motor, right_motor,
+            printf("[PIVOT]%s %s | Raw: %.2f | Filtered: %.2f | L:%d R:%d | %s\n",
+                   side_str, surface, raw_error, error, left_motor, right_motor,
                    line_state_to_string(current_state));
         } else {
-            printf("[LINE] Raw: %.2f | Filtered: %.2f | Steering: %.2f | L:%d R:%d | State: %s\n",
-                   raw_error, error, steering, left_motor, right_motor,
+            printf("[LINE]%s Raw: %.2f | Filtered: %.2f | Steering: %.2f | L:%d R:%d | %s\n",
+                   side_str, raw_error, error, steering, left_motor, right_motor,
                    line_state_to_string(current_state));
         }
         last_debug_time = current_time;
     }
     
-    // Check if line is lost
+    // Line lost detection unchanged...
     if (current_state == LINE_FOLLOW_LOST) {
         if (line_lost_start == 0) {
             line_lost_start = current_time;
         } else if (current_time - line_lost_start > LINE_LOST_TIMEOUT_MS) {
-            return false;  // Line lost timeout
+            return false;
         }
     } else {
-        line_lost_start = 0;  // Reset if line is found
+        line_lost_start = 0;
     }
     
-    return true;  // Line following active
+    return true;
 }
 
 
@@ -446,6 +498,11 @@ float line_following_get_left_power(void) {
 
 float line_following_get_right_power(void) {
     return R_power;
+}
+
+
+bool line_following_is_side_inverted(void) {
+    return side_inverted;
 }
 
 

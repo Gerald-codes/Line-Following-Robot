@@ -17,7 +17,7 @@
 #ifndef BUTTON_DEBOUNCE_MS
 #define BUTTON_DEBOUNCE_MS 200
 #endif
-
+#define LED_PIN 1
 // Button state tracking
 static uint32_t last_button_time = 0;
 static bool last_button_state = false;
@@ -26,6 +26,9 @@ void calibration_init(void) {
     gpio_init(CALIBRATION_BUTTON_PIN);
     gpio_set_dir(CALIBRATION_BUTTON_PIN, GPIO_IN);
     gpio_pull_up(CALIBRATION_BUTTON_PIN);
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+
     
     printf("✓ Calibration button initialized on GP%d\n", CALIBRATION_BUTTON_PIN);
 }
@@ -61,9 +64,11 @@ void calibration_run_sequence(void) {
     printf("• Make sure the sensor is stable (5-10mm height)\n");
     printf("• Press the button when ready...\n\n");
     
+    gpio_put(LED_PIN, 1);  // Turn on while waiting
     while (!calibration_button_pressed()) {
         sleep_ms(10);
     }
+    gpio_put(LED_PIN, 0);  // Turn off when pressed
     
     printf("⏳ Calibrating white surface...\n");
     uint32_t white_sum = 0;
@@ -84,9 +89,11 @@ void calibration_run_sequence(void) {
     printf("• Make sure the sensor is stable (same height)\n");
     printf("• Press the button when ready...\n\n");
     
+    gpio_put(LED_PIN, 1);  // Turn on while waiting
     while (!calibration_button_pressed()) {
         sleep_ms(10);
     }
+    gpio_put(LED_PIN, 0);  // Turn off when pressed
     
     printf("⏳ Calibrating black surface...\n");
     uint32_t black_sum = 0;
@@ -131,8 +138,24 @@ void calibration_run_sequence(void) {
     if (sensor_range < 500) {
         printf("⚠️  WARNING: Low contrast!\n");
         printf("   Consider adjusting sensor height\n");
+        // Blink a few times then turn off
+        for (int i = 0; i < 3; i++) {
+            gpio_put(LED_PIN, 1); 
+            sleep_ms(200);
+            gpio_put(LED_PIN, 0);  
+            sleep_ms(200);
+        }
+        // Leave off
     } else if (sensor_range > 1500) {
         printf("✓ Good contrast!\n");
+        // Blink a few times then leave on
+        for (int i = 0; i < 3; i++) {
+            gpio_put(LED_PIN, 1); 
+            sleep_ms(200);
+            gpio_put(LED_PIN, 0);  
+            sleep_ms(200);
+        }
+        gpio_put(LED_PIN, 1);  // Leave on
     }
     
     printf("\n");
