@@ -4,7 +4,7 @@
 #include "ultrasonic.h"
 #include "timer_manager.h"
 #include "telemetry.h"
-#include "imu.h"
+#include "imu.h" 
 #include <stdio.h>
 #include <math.h>
 #include "ir_sensor.h"
@@ -26,7 +26,6 @@ void avoidance_init(void) {
     context.forward_duration_ms = FORWARD_AVOID_DURATION_MS;
     printf("[AVOIDANCE] System initialized\n");
 }
-
 void avoidance_set_forward_duration(uint32_t duration_ms) {
     context.forward_duration_ms = duration_ms;
 }
@@ -51,7 +50,7 @@ bool avoidance_start(AvoidanceDirection direction) {
         printf("[AVOIDANCE] No avoidance needed\n");
         return false;
     }
-
+    
     context.direction = direction;
     context.state = AVOIDANCE_TURNING_OFF_LINE;
     context.state_start_time = to_ms_since_boot(get_absolute_time());
@@ -67,11 +66,10 @@ bool avoidance_start(AvoidanceDirection direction) {
     const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
     printf("[AVOIDANCE] Starting maneuver - Direction: %s\n", dir_str);
     
-    // NEW: Publish avoidance start
     if (telemetry_is_ready()) {
         telemetry_publish_avoidance(direction, context.state, false);
     }
-    
+
     return true;
 }
 
@@ -96,56 +94,58 @@ bool avoidance_check_obstacle_cleared(void) {
     }
     
     printf("(sensor error)\n");
-    return false; // Assume not clear on error
+    return false;  // Assume not clear on error
 }
 
 AvoidanceState avoidance_update(void) {
-    if (context.state == AVOIDANCE_IDLE ||
-        context.state == AVOIDANCE_COMPLETE ||
+    if (context.state == AVOIDANCE_IDLE || 
+        context.state == AVOIDANCE_COMPLETE || 
         context.state == AVOIDANCE_FAILED) {
         return context.state;
     }
-
+    
     uint32_t current_time = to_ms_since_boot(get_absolute_time());
     uint32_t elapsed = current_time - context.state_start_time;
-    
-    // NEW: Track state changes for telemetry
+
     static AvoidanceState last_published_state = AVOIDANCE_IDLE;
     
     switch (context.state) {
         case AVOIDANCE_TURNING_OFF_LINE:
-            printf("[AVOIDANCE] State: Turning off line (%s)...\n",
+            printf("[AVOIDANCE] State: Turning off line (%s)...\n", 
                    (context.direction == AVOID_LEFT) ? "LEFT" : "RIGHT");
             
             // Update IMU reading
             imu_helper_update();
             float current_turn = imu_helper_get_relative_heading();
             float target = (context.direction == AVOID_LEFT) ? TURN_ANGLE_LEFT_DEG : -TURN_ANGLE_RIGHT_DEG;
+            
             printf("[AVOIDANCE] Current turn: %.1f°, Target: %.1f°\n", current_turn, target);
             
             // Turn away from line (45 degrees)
             if (context.direction == AVOID_LEFT) {
                 printf("DEBUG: TURN_ANGLE_LEFT_DEG macro value: %d, target: %.1f\n", TURN_ANGLE_LEFT_DEG, target);
-                motor_drive(M1A, M1B, -SPEED_TURN_OUTER);
-                motor_drive(M2A, M2B, -SPEED_TURN_INNER);
+                // Turn left: slow left motor, fast right motor
+                motor_drive(M1A, M1B, -SPEED_TURN_OUTER);   // M1 = Left motor = FAST
+                motor_drive(M2A, M2B, -SPEED_TURN_INNER);   // M2 = Right motor = SLOW
             } else {
-                motor_drive(M1A, M1B, -SPEED_TURN_INNER);
-                motor_drive(M2A, M2B, -SPEED_TURN_OUTER);
+                // Turn right: fast left motor, slow right motor
+                motor_drive(M1A, M1B, -SPEED_TURN_INNER);   // M1 = Left motor = SLOW
+                motor_drive(M2A, M2B, -SPEED_TURN_OUTER);   // M2 = Right motor = FAST
             }
             
             // Check if turn is complete using IMU
-            if (imu_helper_has_turned(target, 5.0f)) {
+            if (imu_helper_has_turned(target, 5.0f)) {  // 5° tolerance
                 printf("[AVOIDANCE] Turn complete (IMU-verified), moving parallel...\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
                 context.state = AVOIDANCE_MOVING_PARALLEL;
                 context.state_start_time = current_time;
-                
-                // NEW: Publish state change
+
                 if (telemetry_is_ready() && last_published_state != context.state) {
                     telemetry_publish_avoidance(context.direction, context.state, context.obstacle_cleared);
                     last_published_state = context.state;
                 }
+                
             }
             
             // Fallback: timeout after max duration
@@ -170,6 +170,8 @@ AvoidanceState avoidance_update(void) {
                 printf("[AVOIDANCE] Checking if obstacle cleared...\n");
                 context.state = AVOIDANCE_CHECKING_CLEARANCE;
                 context.state_start_time = current_time;
+                
+                // Stop to check
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
             }
@@ -178,18 +180,19 @@ AvoidanceState avoidance_update(void) {
         case AVOIDANCE_CHECKING_CLEARANCE:
             printf("[AVOIDANCE] State: Checking clearance...\n");
             
+            // Check if obstacle is cleared
             if (avoidance_check_obstacle_cleared()) {
                 context.obstacle_cleared = true;
                 printf("[AVOIDANCE] Obstacle cleared! Turning back to line...\n");
                 context.state = AVOIDANCE_TURNING_BACK;
                 context.state_start_time = current_time;
-                
-                // NEW: Publish obstacle cleared status
                 if (telemetry_is_ready()) {
                     telemetry_publish_avoidance(context.direction, context.state, context.obstacle_cleared);
                     last_published_state = context.state;
                 }
+                
             } else {
+                // Not cleared yet, continue moving forward
                 printf("[AVOIDANCE] Not cleared, continuing...\n");
                 context.state = AVOIDANCE_MOVING_PARALLEL;
                 context.state_start_time = current_time;
@@ -202,32 +205,37 @@ AvoidanceState avoidance_update(void) {
             // Update IMU reading
             imu_helper_update();
             float current_turn_back = imu_helper_get_relative_heading();
-            
+
+            // --- 90 DEGREE TURN LOGIC ---
             float target_turn_back;
             if (context.direction == AVOID_LEFT) {
-                target_turn_back = -TURN_BACK_LEFT_DEG;
+                target_turn_back = -TURN_BACK_LEFT_DEG;   // Current code
             } else {
                 target_turn_back = TURN_BACK_RIGHT_DEG;
             }
-            
+
             printf("[AVOIDANCE] Current heading: %.1f° (target: %.1f°)\n", current_turn_back, target_turn_back);
             
             // Turn back toward line (opposite direction)
             if (context.direction == AVOID_LEFT) {
-                motor_drive(M1A, M1B, -SPEED_TURN_INNER);
-                motor_drive(M2A, M2B, -SPEED_TURN_OUTER);
+                // Turn right to come back
+                motor_drive(M1A, M1B, -SPEED_TURN_INNER);   // M1 = Left motor = SLOW
+                motor_drive(M2A, M2B, -SPEED_TURN_OUTER);   // M2 = Right motor = FAST
             } else {
-                motor_drive(M1A, M1B, -SPEED_TURN_OUTER);
-                motor_drive(M2A, M2B, -SPEED_TURN_INNER);
+                // Turn left to come back
+                motor_drive(M1A, M1B, -SPEED_TURN_OUTER);   // M1 = Left motor = FAST
+                motor_drive(M2A, M2B, -SPEED_TURN_INNER);   // M2 = Right motor = SLOW
             }
             
-            // Check if we're back to original heading
+            // Check if we're back to original heading (within 10° tolerance)
             if (fabsf(current_turn_back - target_turn_back) <= 10.0f) {
                 printf("[AVOIDANCE] Turn complete (IMU-verified), searching for line...\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
+                context.state = AVOIDANCE_SEARCHING_LINE;
                 context.state = AVOIDANCE_REALIGN_FORWARD;
                 context.state_start_time = current_time;
+                
             }
             
             // Fallback: timeout
@@ -239,14 +247,13 @@ AvoidanceState avoidance_update(void) {
                 context.state_start_time = current_time;
             }
             break;
-            
-        case AVOIDANCE_REALIGN_FORWARD:
+
+        case AVOIDANCE_REALIGN_FORWARD:   
             printf("[AVOIDANCE] State: Final realign forward (elapsed: %lu ms)...\n", elapsed);
             motor_drive(M1A, M1B, -SPEED_FORWARD);
             motor_drive(M2A, M2B, -SPEED_FORWARD);
-            
             if (elapsed >= FORWARD_AVOID_DURATION_MS) {
-                printf("[AVOIDANCE] Foward complete. Searching for line...\n");
+                printf("[AVOIDANCE] Forward complete. Searching for line...\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
                 context.state = AVOIDANCE_SEARCHING_LINE;
@@ -257,6 +264,10 @@ AvoidanceState avoidance_update(void) {
         case AVOIDANCE_SEARCHING_LINE:
             printf("[AVOIDANCE] State: Searching for line (elapsed: %lu ms)...\n", elapsed);
             
+            // Move forward slowly to find the line
+            motor_drive(M1A, M1B, -SPEED_FORWARD * 0.8);
+            motor_drive(M2A, M2B, -SPEED_FORWARD * 0.7);
+
             // Actively check for line using IR or line following module!
             if (ir_line_detected()) {   // <-- Replace with your detection function
                 printf("[AVOIDANCE] ✓ Line detected! Stopping for realignment.\n");
@@ -267,7 +278,6 @@ AvoidanceState avoidance_update(void) {
                 context.state = AVOIDANCE_CENTER_ON_LINE; // (or set a global flag if state machine in main.c)
                 context.state_start_time = current_time;
 
-              
                 break; // Stop further processing of elapsed timeout
             }
 
@@ -281,12 +291,11 @@ AvoidanceState avoidance_update(void) {
 
                 printf("[AVOIDANCE] ✓ Maneuver complete!\n");
 
-                              
-                // NEW: Publish completion
                 if (telemetry_is_ready()) {
                     telemetry_publish_avoidance(context.direction, context.state, context.obstacle_cleared);
                     last_published_state = context.state;
                 }
+
             }
             break;
         case AVOIDANCE_CENTER_ON_LINE:
@@ -295,7 +304,7 @@ AvoidanceState avoidance_update(void) {
             // Move forward slowly for a short, fixed time (e.g., 400-800 ms, tune to your robot)
             motor_drive(M1A, M1B, -SPEED_FORWARD);
             motor_drive(M2A, M2B, -SPEED_FORWARD);
-            if (elapsed >= 2500) { // 500 ms center, tune as needed
+            if (elapsed >= 330) { // 500 ms center, tune as needed
                 printf("[AVOIDANCE] Centering complete. Ready to realign heading.\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
@@ -340,7 +349,7 @@ AvoidanceState avoidance_update(void) {
 }
 
 bool avoidance_is_complete(void) {
-    return (context.state == AVOIDANCE_COMPLETE ||
+    return (context.state == AVOIDANCE_COMPLETE || 
             context.state == AVOIDANCE_FAILED);
 }
 
@@ -357,9 +366,9 @@ void avoidance_reset(void) {
     // Make sure motors are stopped
     motor_stop(M1A, M1B);
     motor_stop(M2A, M2B);
+    
     printf("[AVOIDANCE] System reset\n");
 }
-
 
 float avoidance_get_original_heading(void) {
     return context.original_heading;
