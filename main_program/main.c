@@ -128,7 +128,6 @@ static void handle_obstacle_detected(void);
 static void handle_obstacle_avoidance(void);
 static void handle_line_lost(void);
 static void apply_adaptive_gains(float error_magnitude, bool in_gentle_curve);
-static PIDGainSet interpolate_gains(float error_magnitude);
 static void update_gentle_curve_mode(uint16_t ir_reading, uint32_t current_time);
 static int apply_deadband(float power);
 static void change_state(SystemState new_state);
@@ -250,32 +249,6 @@ static int apply_deadband(float power) {
 }
 
 // ============================================================================
-// ADAPTIVE GAIN INTERPOLATION
-// ============================================================================
-
-static PIDGainSet interpolate_gains(float error_magnitude) {
-    PIDGainSet result;
-    
-    if (error_magnitude < SMOOTH_ERROR_THRESHOLD) {
-        result = SMOOTH_GAINS;
-    }
-    else if (error_magnitude > AGGRESSIVE_ERROR_THRESHOLD) {
-        result = AGGRESSIVE_GAINS;
-    }
-    else {
-        // Linear interpolation
-        float blend = (error_magnitude - SMOOTH_ERROR_THRESHOLD) / 
-                     (AGGRESSIVE_ERROR_THRESHOLD - SMOOTH_ERROR_THRESHOLD);
-        
-        result.kp = SMOOTH_GAINS.kp + blend * (AGGRESSIVE_GAINS.kp - SMOOTH_GAINS.kp);
-        result.ki = SMOOTH_GAINS.ki + blend * (AGGRESSIVE_GAINS.ki - SMOOTH_GAINS.ki);
-        result.kd = SMOOTH_GAINS.kd + blend * (AGGRESSIVE_GAINS.kd - SMOOTH_GAINS.kd);
-    }
-    
-    return result;
-}
-
-// ============================================================================
 // GENTLE CURVE MODE DETECTION
 // ============================================================================
 
@@ -358,6 +331,28 @@ static void apply_adaptive_gains(float error_magnitude, bool in_gentle_curve) {
     }
     
     prev_error = current_error;
+}
+
+static PIDGainSet interpolate_gains(float error_magnitude) {
+    PIDGainSet result;
+    
+    if (error_magnitude < SMOOTH_ERROR_THRESHOLD) {
+        result = SMOOTH_GAINS;
+    }
+    else if (error_magnitude > AGGRESSIVE_ERROR_THRESHOLD) {
+        result = AGGRESSIVE_GAINS;
+    }
+    else {
+        // Linear interpolation
+        float blend = (error_magnitude - SMOOTH_ERROR_THRESHOLD) / 
+                     (AGGRESSIVE_ERROR_THRESHOLD - SMOOTH_ERROR_THRESHOLD);
+        
+        result.kp = SMOOTH_GAINS.kp + blend * (AGGRESSIVE_GAINS.kp - SMOOTH_GAINS.kp);
+        result.ki = SMOOTH_GAINS.ki + blend * (AGGRESSIVE_GAINS.ki - SMOOTH_GAINS.ki);
+        result.kd = SMOOTH_GAINS.kd + blend * (AGGRESSIVE_GAINS.kd - SMOOTH_GAINS.kd);
+    }
+    
+    return result;
 }
 
 // ============================================================================
