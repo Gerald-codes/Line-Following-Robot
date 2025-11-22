@@ -6,6 +6,7 @@
  * Updated with complete line following control logic
  */
 
+
 #include "line_following.h"
 #include "ir_sensor.h"
 #include "motor.h"
@@ -14,6 +15,7 @@
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
+
 
 // ============================================================================
 // PID STATE
@@ -28,6 +30,7 @@ typedef struct {
     bool initialized;
 } PIDController;
 
+
 static PIDController pid = {
     .kp = LINE_PID_KP,
     .ki = LINE_PID_KI,
@@ -38,6 +41,7 @@ static PIDController pid = {
     .initialized = false
 };
 
+
 // ============================================================================
 // LINE STATE
 // ============================================================================
@@ -45,8 +49,10 @@ static LineFollowState current_state = LINE_FOLLOW_CENTERED;
 static float normalized_error = 0.0f;
 static float filtered_error = 0.0f;
 
+
 // Filter for smoothing
 #define ERROR_FILTER_ALPHA 0.7f
+
 
 // ============================================================================
 // LINE FOLLOWING CONTROL STATE
@@ -55,14 +61,17 @@ static float filtered_error = 0.0f;
 static float L_power = 0.0f;
 static float R_power = 0.0f;
 
+
 // Line lost detection
 static uint32_t line_lost_start = 0;
 #define LINE_LOST_TIMEOUT_MS 2000
+
 
 // Base speeds and limits
 #define BASE_POWER 40.0f
 #define MIN_POWER 25.0f
 #define MAX_POWER 60.0f
+
 
 // Adaptive PID gains
 typedef struct {
@@ -71,11 +80,13 @@ typedef struct {
     float kd;
 } PIDGainSet;
 
+
 static const PIDGainSet SMOOTH_GAINS = {
     .kp = 1.5f,
     .ki = 0.0f,
     .kd = 0.8f
 };
+
 
 static const PIDGainSet AGGRESSIVE_GAINS = {
     .kp = 3.0f,
@@ -83,11 +94,14 @@ static const PIDGainSet AGGRESSIVE_GAINS = {
     .kd = 2.5f
 };
 
+
 #define SMOOTH_ERROR_THRESHOLD 0.2f
 #define AGGRESSIVE_ERROR_THRESHOLD 0.6f
 
+
 // Debug timing
 static uint32_t last_debug_time = 0;
+
 
 // ============================================================================
 // MOTOR CONTROL HELPERS
@@ -106,6 +120,7 @@ static int apply_deadband(float power) {
     
     return int_power;
 }
+
 
 // ============================================================================
 // ADAPTIVE GAINS
@@ -132,6 +147,7 @@ static void apply_adaptive_gains(float error_magnitude) {
     pid.kd = gains.kd;
 }
 
+
 // ============================================================================
 // INITIALIZATION
 // ============================================================================
@@ -152,6 +168,7 @@ void line_following_init(void) {
     printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
     printf("  Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
 }
+
 
 // ============================================================================
 // NORMALIZE IR READING TO ERROR SIGNAL
@@ -198,6 +215,7 @@ static float normalize_ir_to_error(uint16_t ir_reading) {
     return error;
 }
 
+
 // ============================================================================
 // UPDATE LINE STATE
 // ============================================================================
@@ -217,6 +235,7 @@ static void update_line_state(float error) {
         current_state = LINE_FOLLOW_RIGHT;
     }
 }
+
 
 // ============================================================================
 // PID UPDATE
@@ -263,15 +282,32 @@ float line_following_update(float dt) {
     pid.output = p_term + i_term + d_term;
     
     // Clamp output
-    const float OUTPUT_MAX = 3.0f;
-    if (pid.output > OUTPUT_MAX) pid.output = OUTPUT_MAX;
-    if (pid.output < -OUTPUT_MAX) pid.output = -OUTPUT_MAX;
+    // Adaptive output limit based on error magnitude
+    float output_max;
+    float error_magnitude = fabsf(normalized_error);
+
+
+    if (error_magnitude > 0.98f) {
+        // Far from line (sharp curves) - allow maximum steering
+        output_max = 20.0f;
+    } else if (error_magnitude > 0.7f) {
+        // Moderate error (gentle curves) - medium steering
+        output_max = 3.0f;
+    } else {
+        // Small error (straight line) - limited steering for stability
+        output_max = 2.5f;
+    }
+
+
+    if (pid.output > output_max) pid.output = output_max;
+    if (pid.output < -output_max) pid.output = -output_max;
     
     // Update previous error
     pid.prev_error = normalized_error;
     
     return pid.output;
 }
+
 
 // ============================================================================
 // COMPLETE LINE FOLLOWING UPDATE WITH MOTOR CONTROL
@@ -287,16 +323,35 @@ float line_following_update(float dt) {
  * Returns: true if line is being followed, false if line is lost
  */
 bool line_following_control_update(uint32_t current_time, float dt) {
-    // Update line following PID
-    float steering = line_following_update(dt);
-    float error = normalized_error;
+    // Get RAW error before filtering for extreme detection
+    uint16_t ir_reading = ir_read_line_sensor();
+    float raw_error = normalize_ir_to_error(ir_reading);
+    float raw_error_magnitude = fabsf(raw_error);
     
-    // Apply adaptive gains
+    // Update PID with filtered error
+    float steering = line_following_update(dt);
+    float error = normalized_error;  // This is filtered
+    
     apply_adaptive_gains(fabsf(error));
     
-    // Calculate motor powers
-    L_power = BASE_POWER - steering;
-    R_power = BASE_POWER + steering;
+    // Use RAW error for extreme detection - PIVOT TURN for complete white/black
+    if (raw_error_magnitude > 0.99f) {
+        // EXTREME: Use pivot turn based on RAW error direction
+        if (raw_error < 0) {
+            // On white surface, need to turn RIGHT
+            L_power = MAX_POWER - 10.0f;  // Stop left wheel completely
+            R_power = 0;
+        }
+        else
+        {
+            L_power = BASE_POWER - steering;
+            R_power = BASE_POWER + steering + 10.0f;
+        }
+    } else {
+        // NORMAL: Differential steering
+        L_power = BASE_POWER - steering;
+        R_power = BASE_POWER + steering;
+    }
     
     // Apply deadband and limits
     int left_motor = apply_deadband(L_power);
@@ -308,9 +363,15 @@ bool line_following_control_update(uint32_t current_time, float dt) {
     
     // Debug output every 500ms
     if (current_time - last_debug_time >= 500) {
-        printf("[LINE] Error: %+.2f | Steering: %+.2f | L:%d R:%d | State: %s\n",
-               error, steering, left_motor, right_motor,
-               line_state_to_string(current_state));
+        if (raw_error_magnitude > 0.98f) {
+            printf("[PIVOT] Raw: %.2f | Filtered: %.2f | L:%d R:%d | State: %s\n",
+                   raw_error, error, left_motor, right_motor,
+                   line_state_to_string(current_state));
+        } else {
+            printf("[LINE] Raw: %.2f | Filtered: %.2f | Steering: %.2f | L:%d R:%d | State: %s\n",
+                   raw_error, error, steering, left_motor, right_motor,
+                   line_state_to_string(current_state));
+        }
         last_debug_time = current_time;
     }
     
@@ -328,12 +389,14 @@ bool line_following_control_update(uint32_t current_time, float dt) {
     return true;  // Line following active
 }
 
+
 // ============================================================================
 // RESET INTEGRAL
 // ============================================================================
 void line_following_reset_integral(void) {
     pid.integral = 0.0f;
 }
+
 
 // ============================================================================
 // GAIN SETTERS
@@ -342,13 +405,16 @@ void line_following_set_kp(float kp) {
     pid.kp = kp;
 }
 
+
 void line_following_set_ki(float ki) {
     pid.ki = ki;
 }
 
+
 void line_following_set_kd(float kd) {
     pid.kd = kd;
 }
+
 
 // ============================================================================
 // GETTERS
@@ -357,25 +423,31 @@ LineFollowState line_following_get_state(void) {
     return current_state;
 }
 
+
 float line_following_get_filtered_pos(void) {
     return normalized_error;
 }
+
 
 float line_following_get_error(void) {
     return normalized_error;
 }
 
+
 float line_following_get_output(void) {
     return pid.output;
 }
+
 
 float line_following_get_left_power(void) {
     return L_power;
 }
 
+
 float line_following_get_right_power(void) {
     return R_power;
 }
+
 
 const char* line_state_to_string(LineFollowState state) {
     switch (state) {
