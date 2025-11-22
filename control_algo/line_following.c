@@ -1,11 +1,3 @@
-/**
- * line_following.c - Single IR Sensor Line Following
- * Uses ONE IR sensor and ONE PID controller
- * IR reading is used directly as error signal
- * 
- * Updated with barcode speed control integration
- * NOW SLOWS DOWN WHILE SCANNING BARCODES!
- */
 
 #include "line_following.h"
 #include "ir_sensor.h"
@@ -16,6 +8,15 @@
 #include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
+
+
+// ============================================================================
+// SIDE SWAP CONTROL
+// ============================================================================
+#define SWAP_SENSOR_PIN 100
+static bool side_inverted = false;
+static bool prev_swap_state = false;
+
 
 // ============================================================================
 // PID STATE
@@ -30,6 +31,7 @@ typedef struct {
     bool initialized;
 } PIDController;
 
+
 static PIDController pid = {
     .kp = LINE_PID_KP,
     .ki = LINE_PID_KI,
@@ -40,6 +42,7 @@ static PIDController pid = {
     .initialized = false
 };
 
+
 // ============================================================================
 // LINE STATE
 // ============================================================================
@@ -47,8 +50,10 @@ static LineFollowState current_state = LINE_FOLLOW_CENTERED;
 static float normalized_error = 0.0f;
 static float filtered_error = 0.0f;
 
+
 // Filter for smoothing
 #define ERROR_FILTER_ALPHA 0.7f
+
 
 // ============================================================================
 // LINE FOLLOWING CONTROL STATE
@@ -57,14 +62,17 @@ static float filtered_error = 0.0f;
 static float L_power = 0.0f;
 static float R_power = 0.0f;
 
+
 // Line lost detection
 static uint32_t line_lost_start = 0;
 #define LINE_LOST_TIMEOUT_MS 2000
 
-// Base speeds and limits - BASE_POWER is now dynamic from barcode system
-#define DEFAULT_BASE_POWER 40.0f
+
+// Base speeds and limits
+#define BASE_POWER 40.0f
 #define MIN_POWER 25.0f
 #define MAX_POWER 60.0f
+
 
 // Adaptive PID gains
 typedef struct {
@@ -73,11 +81,13 @@ typedef struct {
     float kd;
 } PIDGainSet;
 
+
 static const PIDGainSet SMOOTH_GAINS = {
     .kp = 1.5f,
     .ki = 0.0f,
     .kd = 0.8f
 };
+
 
 static const PIDGainSet AGGRESSIVE_GAINS = {
     .kp = 3.0f,
@@ -85,11 +95,14 @@ static const PIDGainSet AGGRESSIVE_GAINS = {
     .kd = 2.5f
 };
 
+
 #define SMOOTH_ERROR_THRESHOLD 0.2f
 #define AGGRESSIVE_ERROR_THRESHOLD 0.6f
 
+
 // Debug timing
 static uint32_t last_debug_time = 0;
+
 
 // ============================================================================
 // MOTOR CONTROL HELPERS
@@ -108,6 +121,7 @@ static int apply_deadband(float power) {
     
     return int_power;
 }
+
 
 // ============================================================================
 // ADAPTIVE GAINS
@@ -134,6 +148,7 @@ static void apply_adaptive_gains(float error_magnitude) {
     pid.kd = gains.kd;
 }
 
+
 // ============================================================================
 // INITIALIZATION
 // ============================================================================
@@ -149,11 +164,41 @@ void line_following_init(void) {
     R_power = 0.0f;
     line_lost_start = 0;
     last_debug_time = 0;
+    side_inverted = false;
+    prev_swap_state = false;
+    
+    // Initialize GPIO 6 as input for side swap detection
+    gpio_init(SWAP_SENSOR_PIN);
+    gpio_set_dir(SWAP_SENSOR_PIN, GPIO_IN);
+    gpio_pull_up(SWAP_SENSOR_PIN);  // Pull-up for active-low sensor
     
     printf("Single IR Line Following Initialized\n");
     printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
-    printf("  Base Power: Dynamic (from barcode), Min: %.1f, Max: %.1f\n", MIN_POWER, MAX_POWER);
+    printf("  Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
+    printf("  Side swap sensor: GP%d\n", SWAP_SENSOR_PIN);
 }
+
+
+// ============================================================================
+// CHECK SIDE SWAP SENSOR
+// ============================================================================
+static void check_side_swap(void) {
+    bool swap_sensor = !gpio_get(SWAP_SENSOR_PIN);  // Inverted (LOW = black detected)
+    
+    // Detect rising edge (transition from white to black)
+    if (swap_sensor && !prev_swap_state) {
+        side_inverted = !side_inverted;  // Toggle side
+        printf("\n>>> SIDE SWAP! Now tracing %s side <<<\n\n", 
+               side_inverted ? "INVERTED" : "NORMAL");
+        
+        // Reset PID to prevent sudden jumps
+        pid.integral = 0.0f;
+        pid.prev_error = 0.0f;
+    }
+    
+    prev_swap_state = swap_sensor;
+}
+
 
 // ============================================================================
 // NORMALIZE IR READING TO ERROR SIGNAL
@@ -185,8 +230,14 @@ static float normalize_ir_to_error(uint16_t ir_reading) {
     if (error < -1.0f) error = -1.0f;
     if (error > +1.0f) error = +1.0f;
     
+    // INVERT ERROR IF SIDE IS SWAPPED
+    if (side_inverted) {
+        error = -error;
+    }
+    
     return error;
 }
+
 
 // ============================================================================
 // UPDATE LINE STATE
@@ -208,6 +259,7 @@ static void update_line_state(float error) {
     }
 }
 
+
 // ============================================================================
 // PID UPDATE
 // ============================================================================
@@ -215,7 +267,7 @@ float line_following_update(float dt) {
     // Read IR sensor
     uint16_t ir_reading = ir_read_line_sensor();
     
-    // Convert to normalized error
+    // Convert to normalized error (with side inversion if active)
     float error = normalize_ir_to_error(ir_reading);
     
     // Apply exponential filter for smoothing
@@ -253,9 +305,25 @@ float line_following_update(float dt) {
     pid.output = p_term + i_term + d_term;
     
     // Clamp output
-    const float OUTPUT_MAX = 3.0f;
-    if (pid.output > OUTPUT_MAX) pid.output = OUTPUT_MAX;
-    if (pid.output < -OUTPUT_MAX) pid.output = -OUTPUT_MAX;
+    // Adaptive output limit based on error magnitude
+    float output_max;
+    float error_magnitude = fabsf(normalized_error);
+
+
+    if (error_magnitude > 0.98f) {
+        // Far from line (sharp curves) - allow maximum steering
+        output_max = 20.0f;
+    } else if (error_magnitude > 0.7f) {
+        // Moderate error (gentle curves) - medium steering
+        output_max = 3.0f;
+    } else {
+        // Small error (straight line) - limited steering for stability
+        output_max = 2.5f;
+    }
+
+
+    if (pid.output > output_max) pid.output = output_max;
+    if (pid.output < -output_max) pid.output = -output_max;
     
     // Update previous error
     pid.prev_error = normalized_error;
@@ -263,48 +331,102 @@ float line_following_update(float dt) {
     return pid.output;
 }
 
+
 // ============================================================================
 // COMPLETE LINE FOLLOWING UPDATE WITH MOTOR CONTROL
 // ============================================================================
+/**
+ * Main line following update function that handles:
+ * - PID calculation
+ * - Adaptive gain adjustment
+ * - Motor power calculation and application
+ * - Side swap detection
+ * - Line lost detection
+ * - Debug output
+ * 
+ * Returns: true if line is being followed, false if line is lost
+ */
 bool line_following_control_update(uint32_t current_time, float dt) {
-    // Get base speed from barcode system
-    // Automatically returns scan speed (25) if currently scanning!
-    float BASE_POWER = (float)barcode_get_current_speed();
+    // Check for side swap trigger
+    check_side_swap();
+    
+    // float BASE_POWER = (float)barcode_get_current_speed();
     bool is_scanning = barcode_is_scanning();
     
-    // Update line following PID
+    // Get RAW error BEFORE any inversion for physical white/black detection
+    uint16_t ir_reading = ir_read_line_sensor();
+    uint16_t threshold = ir_get_threshold();
+    
+    // Determine TRUE physical surface (not affected by side inversion)
+    bool on_white_surface = (ir_reading < threshold);
+    bool on_black_surface = (ir_reading >= threshold);
+    
+    // Now get the error WITH side inversion for PID control
+    float raw_error = normalize_ir_to_error(ir_reading);
+    float raw_error_magnitude = fabsf(raw_error);
+    
+    // Update PID with filtered error
     float steering = line_following_update(dt);
     float error = normalized_error;
     
-    // Apply adaptive gains
     apply_adaptive_gains(fabsf(error));
     
-    // Calculate motor powers
-    L_power = BASE_POWER - steering;
-    R_power = BASE_POWER + steering;
+    // Use PHYSICAL surface detection for extreme behavior
+    if (raw_error_magnitude > 0.99f) {
+        if (on_white_surface) {
+            // PHYSICALLY on white - pivot to find line
+            if (side_inverted) {
+                // Inverted mode: turn LEFT
+                L_power = 0;
+                R_power = MAX_POWER - 10.0f;
+            } else {
+                // Normal mode: turn RIGHT
+                L_power = MAX_POWER - 10.0f;
+                R_power = 0;
+            }
+        } else {  // on_black_surface
+            // PHYSICALLY on black - curve away from line
+            if (side_inverted) {
+                // Inverted mode: curve LEFT
+                L_power = BASE_POWER - steering - 10.0f;
+                R_power = BASE_POWER + steering;
+            } else {
+                // Normal mode: curve RIGHT
+                L_power = BASE_POWER - steering;
+                R_power = BASE_POWER + steering + 10.0f;
+            }
+        }
+    } else {
+        // NORMAL: Differential steering
+        L_power = BASE_POWER - steering;
+        R_power = BASE_POWER + steering;
+    }
     
-    // Apply deadband and limits
+    // Rest of your code unchanged...
     int left_motor = apply_deadband(L_power);
     int right_motor = apply_deadband(R_power);
     
-    // Drive motors
     motor_drive(M1A, M1B, -left_motor);
     motor_drive(M2A, M2B, -right_motor);
     
-    // Debug output every 500ms
+    // Debug output
     if (current_time - last_debug_time >= 500) {
-        if (is_scanning) {
-            printf("[LINE] SCANNING | Speed:%d | Error:%+.2f | L:%d R:%d\n",
-                   (int)BASE_POWER, error, left_motor, right_motor);
+        const char* side_str = side_inverted ? "[INV]" : "[NOR]";
+        const char* surface = on_white_surface ? "WHITE" : "BLACK";
+        
+        if (raw_error_magnitude > 0.98f) {
+            printf("[PIVOT]%s %s | Raw: %.2f | Filtered: %.2f | L:%d R:%d | %s\n",
+                   side_str, surface, raw_error, error, left_motor, right_motor,
+                   line_state_to_string(current_state));
         } else {
-            printf("[LINE] Speed:%d | Error:%+.2f | Steer:%+.2f | L:%d R:%d | %s\n",
-                   (int)BASE_POWER, error, steering, left_motor, right_motor,
+            printf("[LINE]%s Raw: %.2f | Filtered: %.2f | Steering: %.2f | L:%d R:%d | %s\n",
+                   side_str, raw_error, error, steering, left_motor, right_motor,
                    line_state_to_string(current_state));
         }
         last_debug_time = current_time;
     }
     
-    // Check if line is lost
+    // Line lost detection unchanged...
     if (current_state == LINE_FOLLOW_LOST) {
         if (line_lost_start == 0) {
             line_lost_start = current_time;
@@ -318,12 +440,14 @@ bool line_following_control_update(uint32_t current_time, float dt) {
     return true;
 }
 
+
 // ============================================================================
 // RESET INTEGRAL
 // ============================================================================
 void line_following_reset_integral(void) {
     pid.integral = 0.0f;
 }
+
 
 // ============================================================================
 // GAIN SETTERS
@@ -332,13 +456,16 @@ void line_following_set_kp(float kp) {
     pid.kp = kp;
 }
 
+
 void line_following_set_ki(float ki) {
     pid.ki = ki;
 }
 
+
 void line_following_set_kd(float kd) {
     pid.kd = kd;
 }
+
 
 // ============================================================================
 // GETTERS
@@ -347,25 +474,36 @@ LineFollowState line_following_get_state(void) {
     return current_state;
 }
 
+
 float line_following_get_filtered_pos(void) {
     return normalized_error;
 }
+
 
 float line_following_get_error(void) {
     return normalized_error;
 }
 
+
 float line_following_get_output(void) {
     return pid.output;
 }
+
 
 float line_following_get_left_power(void) {
     return L_power;
 }
 
+
 float line_following_get_right_power(void) {
     return R_power;
 }
+
+
+bool line_following_is_side_inverted(void) {
+    return side_inverted;
+}
+
 
 const char* line_state_to_string(LineFollowState state) {
     switch (state) {

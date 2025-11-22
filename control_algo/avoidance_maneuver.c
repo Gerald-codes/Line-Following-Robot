@@ -7,6 +7,8 @@
 #include "imu.h" 
 #include <stdio.h>
 #include <math.h>
+#include "ir_sensor.h"
+
 
 // Global context
 static AvoidanceContext context;
@@ -56,6 +58,10 @@ bool avoidance_start(AvoidanceDirection direction) {
     
     // Reset IMU heading for this maneuver
     imu_helper_start_avoidance();
+
+    // SAVE THE ORIGINAL HEADING
+    context.original_heading = imu_helper_get_relative_heading();
+    printf("[AVOIDANCE] Original heading saved: %.1f°\n", context.original_heading);
     
     const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
     printf("[AVOIDANCE] Starting maneuver - Direction: %s\n", dir_str);
@@ -247,7 +253,7 @@ AvoidanceState avoidance_update(void) {
             motor_drive(M1A, M1B, -SPEED_FORWARD);
             motor_drive(M2A, M2B, -SPEED_FORWARD);
             if (elapsed >= FORWARD_AVOID_DURATION_MS) {
-                printf("[AVOIDANCE] Realign complete. Searching for line...\n");
+                printf("[AVOIDANCE] Foward complete. Searching for line...\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
                 context.state = AVOIDANCE_SEARCHING_LINE;
@@ -258,27 +264,79 @@ AvoidanceState avoidance_update(void) {
         case AVOIDANCE_SEARCHING_LINE:
             printf("[AVOIDANCE] State: Searching for line (elapsed: %lu ms)...\n", elapsed);
             
-            // Move forward slowly to find line
-            motor_drive(M1A, M1B, -SPEED_FORWARD * 0.7);
-            motor_drive(M2A, M2B, -SPEED_FORWARD * 0.7);
-            
-            // TODO: Your teammate's line follower will detect line here
-            // For now, just move forward for a set duration
+            // Actively check for line using IR or line following module!
+            if (ir_line_detected()) {   // <-- Replace with your detection function
+                printf("[AVOIDANCE] ✓ Line detected! Stopping for realignment.\n");
+                motor_stop(M1A, M1B);
+                motor_stop(M2A, M2B);
+
+                // Transition to heading realignment state. If you control this in main.c, set a flag or context.
+                context.state = AVOIDANCE_CENTER_ON_LINE; // (or set a global flag if state machine in main.c)
+                context.state_start_time = current_time;
+
+                if (telemetry_is_connected()) {
+                    telemetry_publish_status("Line found - realigning to original heading");
+                }
+                break; // Stop further processing of elapsed timeout
+            }
+
+            // Timeout fallback for searching (if line not found in time)
             if (elapsed >= SEARCH_LINE_DURATION_MS) {
                 printf("[AVOIDANCE] Search complete - should be near line now\n");
                 context.state = AVOIDANCE_COMPLETE;
-                
-                // Stop motors
+
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
-                
+
                 printf("[AVOIDANCE] ✓ Maneuver complete!\n");
-                
+
                 if (telemetry_is_connected()) {
                     telemetry_publish_status("Avoidance complete - ready for line following");
                 }
             }
             break;
+        case AVOIDANCE_CENTER_ON_LINE:
+            printf("[AVOIDANCE] Centering on line (elapsed: %lu ms)...\n", elapsed);
+
+            // Move forward slowly for a short, fixed time (e.g., 400-800 ms, tune to your robot)
+            motor_drive(M1A, M1B, -SPEED_FORWARD);
+            motor_drive(M2A, M2B, -SPEED_FORWARD);
+            if (elapsed >= 2500) { // 500 ms center, tune as needed
+                printf("[AVOIDANCE] Centering complete. Ready to realign heading.\n");
+                motor_stop(M1A, M1B);
+                motor_stop(M2A, M2B);
+
+                context.state = AVOIDANCE_REALIGN_TO_HEADING;
+                context.state_start_time = current_time;
+            }
+            break;
+        case AVOIDANCE_REALIGN_TO_HEADING:
+            printf("[AVOIDANCE] Realigning to original heading...\n");
+            imu_helper_update();
+            float current_heading = imu_helper_get_relative_heading();
+
+            float target_heading = context.original_heading;
+            float error = current_heading - target_heading;
+            while (error > 180.0f) error -= 360.0f;
+            while (error < -180.0f) error += 360.0f;
+
+            // Turn until aligned
+            if (fabsf(error) <= 5.0f) {
+                printf("[AVOIDANCE] Heading aligned!\n");
+                motor_stop(M1A, M1B);
+                motor_stop(M2A, M2B);
+                context.state = AVOIDANCE_COMPLETE; // Or hand-off to line following
+            } else if (error > 0) {
+                // Turn right
+                motor_drive(M1A, M1B, -SPEED_TURN_INNER);
+                motor_drive(M2A, M2B, -SPEED_TURN_OUTER);
+            } else {
+                // Turn left
+                motor_drive(M1A, M1B, -SPEED_TURN_OUTER);
+                motor_drive(M2A, M2B, -SPEED_TURN_INNER);
+            }
+            break;
+
             
         default:
             break;
@@ -307,4 +365,8 @@ void avoidance_reset(void) {
     motor_stop(M2A, M2B);
     
     printf("[AVOIDANCE] System reset\n");
+}
+
+float avoidance_get_original_heading(void) {
+    return context.original_heading;
 }
