@@ -64,64 +64,30 @@ static SystemState previous_state = STATE_IDLE;
 // CONFIGURATION
 // ============================================================================
 
-// Line following speeds
-#define BASE_POWER 40.0f
-#define MIN_POWER 25.0f
-#define MAX_POWER 60.0f
-
 // Obstacle detection
 #define OBSTACLE_CHECK_DISTANCE_CM 20  // Check for obstacles at 20cm
 #define OBSTACLE_CHECK_INTERVAL_MS 500 // Check every 500ms
 #define CRITICAL_DISTANCE_CM 15        // Stop if obstacle within 15cm
-
-// Adaptive PID gains
-typedef struct {
-    float kp;
-    float ki;
-    float kd;
-} PIDGainSet;
-
-static const PIDGainSet SMOOTH_GAINS = {
-    .kp = 1.5f,
-    .ki = 0.0f,
-    .kd = 0.8f
-};
-
-static const PIDGainSet AGGRESSIVE_GAINS = {
-    .kp = 3.0f,
-    .ki = 0.0f,
-    .kd = 2.5f
-};
-
-#define SMOOTH_ERROR_THRESHOLD 0.2f
-#define AGGRESSIVE_ERROR_THRESHOLD 0.6f
 
 // ============================================================================
 // GLOBAL STATE
 // ============================================================================
 
 static IMU imu;
-static float L_power = 0.0f;
-static float R_power = 0.0f;
 static uint32_t last_obstacle_check = 0;
 static uint32_t state_entry_time = 0;
-
-// Line lost detection
-static uint32_t line_lost_start = 0;
-#define LINE_LOST_TIMEOUT_MS 2000
 
 // ============================================================================
 // FUNCTION PROTOTYPES
 // ============================================================================
 
 static void init_hardware(void);
-static void update_line_following(uint32_t current_time, float dt);
 static bool check_for_obstacles(void);
 static void handle_obstacle_detected(void);
+static void handle_obstacle_scanning(void);
 static void handle_obstacle_avoidance(void);
+static void handle_returning_to_line(void);
 static void handle_line_lost(void);
-static void apply_adaptive_gains(float error_magnitude);
-static int apply_deadband(float power);
 static void change_state(SystemState new_state);
 static const char* state_to_string(SystemState state);
 
@@ -222,98 +188,6 @@ static const char* state_to_string(SystemState state) {
 }
 
 // ============================================================================
-// MOTOR CONTROL
-// ============================================================================
-
-static int apply_deadband(float power) {
-    int int_power = (int)power;
-    
-    if (int_power > 0 && int_power < MIN_POWER) {
-        return MIN_POWER;
-    } else if (int_power < 0 && int_power > -MIN_POWER) {
-        return -MIN_POWER;
-    }
-    
-    if (int_power > MAX_POWER) return MAX_POWER;
-    if (int_power < -MAX_POWER) return -MAX_POWER;
-    
-    return int_power;
-}
-
-// ============================================================================
-// ADAPTIVE GAINS
-// ============================================================================
-
-static void apply_adaptive_gains(float error_magnitude) {
-    PIDGainSet gains;
-    
-    if (error_magnitude < SMOOTH_ERROR_THRESHOLD) {
-        gains = SMOOTH_GAINS;
-    } else if (error_magnitude > AGGRESSIVE_ERROR_THRESHOLD) {
-        gains = AGGRESSIVE_GAINS;
-    } else {
-        // Linear interpolation
-        float blend = (error_magnitude - SMOOTH_ERROR_THRESHOLD) / 
-                     (AGGRESSIVE_ERROR_THRESHOLD - SMOOTH_ERROR_THRESHOLD);
-        
-        gains.kp = SMOOTH_GAINS.kp + blend * (AGGRESSIVE_GAINS.kp - SMOOTH_GAINS.kp);
-        gains.ki = SMOOTH_GAINS.ki + blend * (AGGRESSIVE_GAINS.ki - SMOOTH_GAINS.ki);
-        gains.kd = SMOOTH_GAINS.kd + blend * (AGGRESSIVE_GAINS.kd - SMOOTH_GAINS.kd);
-    }
-    
-    line_following_set_kp(gains.kp);
-    line_following_set_ki(gains.ki);
-    line_following_set_kd(gains.kd);
-}
-
-// ============================================================================
-// LINE FOLLOWING UPDATE
-// ============================================================================
-
-static void update_line_following(uint32_t current_time, float dt) {
-    // Update line following PID
-    float steering = line_following_update(dt);
-    float error = line_following_get_error();
-    
-    // Apply adaptive gains
-    apply_adaptive_gains(fabsf(error));
-    
-    // Calculate motor powers
-    L_power = BASE_POWER - steering;
-    R_power = BASE_POWER + steering;
-    
-    // Apply deadband and limits
-    int left_motor = apply_deadband(L_power);
-    int right_motor = apply_deadband(R_power);
-    
-    // Drive motors
-    motor_drive(M1A, M1B, -left_motor);
-    motor_drive(M2A, M2B, -right_motor);
-    
-    // Debug output every 500ms
-    static uint32_t last_debug = 0;
-    if (current_time - last_debug >= 500) {
-        printf("[LINE] Error: %+.2f | Steering: %+.2f | L:%d R:%d | State: %s\n",
-               error, steering, left_motor, right_motor,
-               line_state_to_string(line_following_get_state()));
-        last_debug = current_time;
-    }
-    
-    // Check if line is lost
-    LineFollowState line_state = line_following_get_state();
-    if (line_state == LINE_FOLLOW_LOST) {
-        if (line_lost_start == 0) {
-            line_lost_start = current_time;
-        } else if (current_time - line_lost_start > LINE_LOST_TIMEOUT_MS) {
-            change_state(STATE_LINE_LOST);
-            line_lost_start = 0;
-        }
-    } else {
-        line_lost_start = 0;  // Reset if line is found
-    }
-}
-
-// ============================================================================
 // OBSTACLE DETECTION
 // ============================================================================
 
@@ -404,11 +278,6 @@ static void handle_returning_to_line(void) {
     // Use line following logic but with more tolerance
     
     uint32_t current_time = to_ms_since_boot(get_absolute_time());
-    static uint32_t last_update = 0;
-    
-    float dt = (current_time - last_update) / 1000.0f;
-    if (dt > 0.1f) dt = 0.02f;  // Clamp to 20ms
-    last_update = current_time;
     
     // Check if we found the line
     if (ir_line_detected()) {
@@ -528,8 +397,11 @@ int main() {
                 break;
                 
             case STATE_LINE_FOLLOWING:
-                // Update line following
-                update_line_following(current_time, dt);
+                // Use the new integrated line following update function
+                if (!line_following_control_update(current_time, dt)) {
+                    // Line was lost
+                    change_state(STATE_LINE_LOST);
+                }
                 
                 // Periodically check for obstacles
                 if (current_time - last_obstacle_check >= OBSTACLE_CHECK_INTERVAL_MS) {

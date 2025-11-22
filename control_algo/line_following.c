@@ -1,12 +1,17 @@
 /**
- * line_following_single_ir.c - Single IR Sensor Line Following
+ * line_following.c - Single IR Sensor Line Following
  * Uses ONE IR sensor and ONE PID controller
  * IR reading is used directly as error signal
+ * 
+ * Updated with complete line following control logic
  */
 
 #include "line_following.h"
 #include "ir_sensor.h"
+#include "motor.h"
 #include "config.h"
+#include "pin_definitions.h"
+#include "pico/stdlib.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -44,6 +49,90 @@ static float filtered_error = 0.0f;
 #define ERROR_FILTER_ALPHA 0.7f
 
 // ============================================================================
+// LINE FOLLOWING CONTROL STATE
+// ============================================================================
+// Motor power tracking
+static float L_power = 0.0f;
+static float R_power = 0.0f;
+
+// Line lost detection
+static uint32_t line_lost_start = 0;
+#define LINE_LOST_TIMEOUT_MS 2000
+
+// Base speeds and limits
+#define BASE_POWER 40.0f
+#define MIN_POWER 25.0f
+#define MAX_POWER 60.0f
+
+// Adaptive PID gains
+typedef struct {
+    float kp;
+    float ki;
+    float kd;
+} PIDGainSet;
+
+static const PIDGainSet SMOOTH_GAINS = {
+    .kp = 1.5f,
+    .ki = 0.0f,
+    .kd = 0.8f
+};
+
+static const PIDGainSet AGGRESSIVE_GAINS = {
+    .kp = 3.0f,
+    .ki = 0.0f,
+    .kd = 2.5f
+};
+
+#define SMOOTH_ERROR_THRESHOLD 0.2f
+#define AGGRESSIVE_ERROR_THRESHOLD 0.6f
+
+// Debug timing
+static uint32_t last_debug_time = 0;
+
+// ============================================================================
+// MOTOR CONTROL HELPERS
+// ============================================================================
+static int apply_deadband(float power) {
+    int int_power = (int)power;
+    
+    if (int_power > 0 && int_power < MIN_POWER) {
+        return MIN_POWER;
+    } else if (int_power < 0 && int_power > -MIN_POWER) {
+        return -MIN_POWER;
+    }
+    
+    if (int_power > MAX_POWER) return MAX_POWER;
+    if (int_power < -MAX_POWER) return -MAX_POWER;
+    
+    return int_power;
+}
+
+// ============================================================================
+// ADAPTIVE GAINS
+// ============================================================================
+static void apply_adaptive_gains(float error_magnitude) {
+    PIDGainSet gains;
+    
+    if (error_magnitude < SMOOTH_ERROR_THRESHOLD) {
+        gains = SMOOTH_GAINS;
+    } else if (error_magnitude > AGGRESSIVE_ERROR_THRESHOLD) {
+        gains = AGGRESSIVE_GAINS;
+    } else {
+        // Linear interpolation
+        float blend = (error_magnitude - SMOOTH_ERROR_THRESHOLD) / 
+                     (AGGRESSIVE_ERROR_THRESHOLD - SMOOTH_ERROR_THRESHOLD);
+        
+        gains.kp = SMOOTH_GAINS.kp + blend * (AGGRESSIVE_GAINS.kp - SMOOTH_GAINS.kp);
+        gains.ki = SMOOTH_GAINS.ki + blend * (AGGRESSIVE_GAINS.ki - SMOOTH_GAINS.ki);
+        gains.kd = SMOOTH_GAINS.kd + blend * (AGGRESSIVE_GAINS.kd - SMOOTH_GAINS.kd);
+    }
+    
+    pid.kp = gains.kp;
+    pid.ki = gains.ki;
+    pid.kd = gains.kd;
+}
+
+// ============================================================================
 // INITIALIZATION
 // ============================================================================
 void line_following_init(void) {
@@ -54,9 +143,14 @@ void line_following_init(void) {
     current_state = LINE_FOLLOW_CENTERED;
     normalized_error = 0.0f;
     filtered_error = 0.0f;
+    L_power = 0.0f;
+    R_power = 0.0f;
+    line_lost_start = 0;
+    last_debug_time = 0;
     
     printf("Single IR Line Following Initialized\n");
     printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
+    printf("  Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
 }
 
 // ============================================================================
@@ -169,7 +263,7 @@ float line_following_update(float dt) {
     pid.output = p_term + i_term + d_term;
     
     // Clamp output
-    const float OUTPUT_MAX = 3.0f; // was 2
+    const float OUTPUT_MAX = 3.0f;
     if (pid.output > OUTPUT_MAX) pid.output = OUTPUT_MAX;
     if (pid.output < -OUTPUT_MAX) pid.output = -OUTPUT_MAX;
     
@@ -177,6 +271,61 @@ float line_following_update(float dt) {
     pid.prev_error = normalized_error;
     
     return pid.output;
+}
+
+// ============================================================================
+// COMPLETE LINE FOLLOWING UPDATE WITH MOTOR CONTROL
+// ============================================================================
+/**
+ * Main line following update function that handles:
+ * - PID calculation
+ * - Adaptive gain adjustment
+ * - Motor power calculation and application
+ * - Line lost detection
+ * - Debug output
+ * 
+ * Returns: true if line is being followed, false if line is lost
+ */
+bool line_following_control_update(uint32_t current_time, float dt) {
+    // Update line following PID
+    float steering = line_following_update(dt);
+    float error = normalized_error;
+    
+    // Apply adaptive gains
+    apply_adaptive_gains(fabsf(error));
+    
+    // Calculate motor powers
+    L_power = BASE_POWER - steering;
+    R_power = BASE_POWER + steering;
+    
+    // Apply deadband and limits
+    int left_motor = apply_deadband(L_power);
+    int right_motor = apply_deadband(R_power);
+    
+    // Drive motors
+    motor_drive(M1A, M1B, -left_motor);
+    motor_drive(M2A, M2B, -right_motor);
+    
+    // Debug output every 500ms
+    if (current_time - last_debug_time >= 500) {
+        printf("[LINE] Error: %+.2f | Steering: %+.2f | L:%d R:%d | State: %s\n",
+               error, steering, left_motor, right_motor,
+               line_state_to_string(current_state));
+        last_debug_time = current_time;
+    }
+    
+    // Check if line is lost
+    if (current_state == LINE_FOLLOW_LOST) {
+        if (line_lost_start == 0) {
+            line_lost_start = current_time;
+        } else if (current_time - line_lost_start > LINE_LOST_TIMEOUT_MS) {
+            return false;  // Line lost timeout
+        }
+    } else {
+        line_lost_start = 0;  // Reset if line is found
+    }
+    
+    return true;  // Line following active
 }
 
 // ============================================================================
@@ -218,6 +367,14 @@ float line_following_get_error(void) {
 
 float line_following_get_output(void) {
     return pid.output;
+}
+
+float line_following_get_left_power(void) {
+    return L_power;
+}
+
+float line_following_get_right_power(void) {
+    return R_power;
 }
 
 const char* line_state_to_string(LineFollowState state) {
