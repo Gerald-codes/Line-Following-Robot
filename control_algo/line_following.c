@@ -164,7 +164,7 @@ void line_following_init(void) {
     R_power = 0.0f;
     line_lost_start = 0;
     last_debug_time = 0;
-    side_inverted = false;
+    side_inverted = false; //true is right side of the line, false is left side
     prev_swap_state = false;
     
     // Initialize GPIO 6 as input for side swap detection
@@ -386,14 +386,15 @@ bool line_following_control_update(uint32_t current_time, float dt) {
             }
         } else {  // on_black_surface
             // PHYSICALLY on black - curve away from line
+             // ⬇️ FIXED: On black - steer AWAY from line
             if (side_inverted) {
-                // Inverted mode: curve LEFT
-                L_power = BASE_POWER - steering - 10.0f;
-                R_power = BASE_POWER + steering;
+                // Right side (inverted): on black means curve RIGHT (away)
+                L_power = BASE_POWER - steering + 10.0f;  // ← FIXED: was -10
+                R_power = BASE_POWER + steering - 10.0f;  // ← FIXED: was plain
             } else {
-                // Normal mode: curve RIGHT
-                L_power = BASE_POWER - steering;
-                R_power = BASE_POWER + steering + 10.0f;
+                // Left side (normal): on black means curve LEFT (away)
+                L_power = BASE_POWER - steering - 10.0f;  // ← FIXED: was plain
+                R_power = BASE_POWER + steering + 10.0f;  // ← KEEP
             }
         }
     } else {

@@ -62,12 +62,12 @@ void calibration_run_sequence(void) {
     printf("• Place the IR sensor over a WHITE surface\n");
     printf("• Make sure the sensor is stable (5-10mm height)\n");
     printf("• Press the button when ready...\n\n");
-    gpio_put(LED_PIN, 1);  // Turn on
+    
+    gpio_put(LED_PIN, 1);  // Turn on while waiting
     while (!calibration_button_pressed()) {
         sleep_ms(10);
-        gpio_put(LED_PIN, 0);  // Turn off
-        sleep_ms(50);
     }
+    gpio_put(LED_PIN, 0);  // Turn off when pressed
     
     printf("⏳ Calibrating white surface...\n");
     uint32_t white_sum = 0;
@@ -80,18 +80,19 @@ void calibration_run_sequence(void) {
     printf("\n✓ White value: %d\n\n", white_value);
     
     sleep_ms(500);
+    
     // Step 2: Calibrate BLACK surface
     printf("STEP 2: BLACK SURFACE CALIBRATION\n");
     printf("────────────────────────────────────────\n");
     printf("• Place the IR sensor over a BLACK line/surface\n");
     printf("• Make sure the sensor is stable (same height)\n");
     printf("• Press the button when ready...\n\n");
-    gpio_put(LED_PIN, 1);  // Turn on
+    
+    gpio_put(LED_PIN, 1);  // Turn on while waiting
     while (!calibration_button_pressed()) {
         sleep_ms(10);
-        gpio_put(LED_PIN, 0);  // Turn off
-        sleep_ms(50);
     }
+    gpio_put(LED_PIN, 0);  // Turn off when pressed
     
     printf("⏳ Calibrating black surface...\n");
     uint32_t black_sum = 0;
@@ -136,19 +137,24 @@ void calibration_run_sequence(void) {
     if (sensor_range < 500) {
         printf("⚠️  WARNING: Low contrast!\n");
         printf("   Consider adjusting sensor height\n");
-        gpio_put(LED_PIN, 1); 
-        sleep_ms(50);
-        gpio_put(LED_PIN, 0);  
-        sleep_ms(50);
-        gpio_put(LED_PIN, 1); 
-        sleep_ms(50);
-        gpio_put(LED_PIN, 0);  
-        sleep_ms(50);
-      
+        // Blink a few times then turn off
+        for (int i = 0; i < 3; i++) {
+            gpio_put(LED_PIN, 1); 
+            sleep_ms(200);
+            gpio_put(LED_PIN, 0);  
+            sleep_ms(200);
+        }
+        // Leave off
     } else if (sensor_range > 1500) {
         printf("✓ Good contrast!\n");
-        gpio_put(LED_PIN, 1);  // Turn on
-   
+        // Blink a few times then leave on
+        for (int i = 0; i < 3; i++) {
+            gpio_put(LED_PIN, 1); 
+            sleep_ms(200);
+            gpio_put(LED_PIN, 0);  
+            sleep_ms(200);
+        }
+        gpio_put(LED_PIN, 1);  // Leave on
     }
     
     printf("\n");
