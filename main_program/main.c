@@ -69,6 +69,13 @@ static SystemState previous_state = STATE_IDLE;
 #define MIN_POWER 25.0f
 #define MAX_POWER 60.0f
 
+// Gentle curve detection
+#define WHITE_THRESHOLD 300
+#define WHITE_DURATION_MS 400
+static bool gentle_curve_mode = false;
+static uint32_t white_start_time = 0;
+static uint32_t gentle_mode_start_time = 0;
+
 // Obstacle detection
 #define OBSTACLE_CHECK_DISTANCE_CM 20  // Check for obstacles at 20cm
 #define OBSTACLE_CHECK_INTERVAL_MS 500 // Check every 500ms
@@ -120,7 +127,9 @@ static bool check_for_obstacles(void);
 static void handle_obstacle_detected(void);
 static void handle_obstacle_avoidance(void);
 static void handle_line_lost(void);
-static void apply_adaptive_gains(float error_magnitude);
+static void apply_adaptive_gains(float error_magnitude, bool in_gentle_curve);
+static PIDGainSet interpolate_gains(float error_magnitude);
+static void update_gentle_curve_mode(uint16_t ir_reading, uint32_t current_time);
 static int apply_deadband(float power);
 static void change_state(SystemState new_state);
 static const char* state_to_string(SystemState state);
@@ -241,29 +250,114 @@ static int apply_deadband(float power) {
 }
 
 // ============================================================================
-// ADAPTIVE GAINS
+// ADAPTIVE GAIN INTERPOLATION
 // ============================================================================
 
-static void apply_adaptive_gains(float error_magnitude) {
-    PIDGainSet gains;
+static PIDGainSet interpolate_gains(float error_magnitude) {
+    PIDGainSet result;
     
     if (error_magnitude < SMOOTH_ERROR_THRESHOLD) {
-        gains = SMOOTH_GAINS;
-    } else if (error_magnitude > AGGRESSIVE_ERROR_THRESHOLD) {
-        gains = AGGRESSIVE_GAINS;
-    } else {
+        result = SMOOTH_GAINS;
+    }
+    else if (error_magnitude > AGGRESSIVE_ERROR_THRESHOLD) {
+        result = AGGRESSIVE_GAINS;
+    }
+    else {
         // Linear interpolation
         float blend = (error_magnitude - SMOOTH_ERROR_THRESHOLD) / 
                      (AGGRESSIVE_ERROR_THRESHOLD - SMOOTH_ERROR_THRESHOLD);
         
-        gains.kp = SMOOTH_GAINS.kp + blend * (AGGRESSIVE_GAINS.kp - SMOOTH_GAINS.kp);
-        gains.ki = SMOOTH_GAINS.ki + blend * (AGGRESSIVE_GAINS.ki - SMOOTH_GAINS.ki);
-        gains.kd = SMOOTH_GAINS.kd + blend * (AGGRESSIVE_GAINS.kd - SMOOTH_GAINS.kd);
+        result.kp = SMOOTH_GAINS.kp + blend * (AGGRESSIVE_GAINS.kp - SMOOTH_GAINS.kp);
+        result.ki = SMOOTH_GAINS.ki + blend * (AGGRESSIVE_GAINS.ki - SMOOTH_GAINS.ki);
+        result.kd = SMOOTH_GAINS.kd + blend * (AGGRESSIVE_GAINS.kd - SMOOTH_GAINS.kd);
     }
     
-    line_following_set_kp(gains.kp);
-    line_following_set_ki(gains.ki);
-    line_following_set_kd(gains.kd);
+    return result;
+}
+
+// ============================================================================
+// GENTLE CURVE MODE DETECTION
+// ============================================================================
+
+static void update_gentle_curve_mode(uint16_t ir_reading, uint32_t current_time) {
+    bool on_white = (ir_reading < WHITE_THRESHOLD);
+    
+    if (on_white) {
+        if (white_start_time == 0) {
+            white_start_time = current_time;
+            printf("⏱️  White surface detected (IR=%d)\n", ir_reading);
+        }
+        
+        uint32_t white_duration = current_time - white_start_time;
+        
+        if (!gentle_curve_mode && white_duration >= WHITE_DURATION_MS) {
+            gentle_curve_mode = true;
+            gentle_mode_start_time = current_time;
+            printf("🌊 GENTLE CURVE MODE activated\n");
+        }
+        
+        // Timeout after 5 seconds
+        if (gentle_curve_mode && (current_time - gentle_mode_start_time > 5000)) {
+            gentle_curve_mode = false;
+            white_start_time = 0;
+            printf("⚠️  GENTLE CURVE MODE timeout\n");
+        }
+    } else {
+        // Back on dark surface
+        if (ir_reading > (WHITE_THRESHOLD + 150)) {
+            if (gentle_curve_mode) {
+                gentle_curve_mode = false;
+                printf("✓ GENTLE CURVE MODE exit (IR=%d)\n\n", ir_reading);
+            }
+            white_start_time = 0;
+        }
+    }
+}
+
+// ============================================================================
+// ADAPTIVE GAINS WITH TRANSITION DETECTION
+// ============================================================================
+
+static void apply_adaptive_gains(float error_magnitude, bool in_gentle_curve) {
+    // Track SIGNED error for better transition detection
+    static float prev_error = 0.0f;
+    float current_error = line_following_get_error();
+    
+    // Calculate absolute change in error
+    float error_change = fabsf(current_error - prev_error);
+    float error_change_rate = error_change / 0.035f;  // Approximate dt
+    
+    // Only print when actually triggering (not every cycle)
+    static bool was_in_transition = false;
+    bool in_transition = (error_change_rate > 15.0f);
+    
+    if (in_transition && !was_in_transition) {
+        printf("⚡ RAPID TRANSITION! rate=%.1f/s\n", error_change_rate);
+    }
+    was_in_transition = in_transition;
+    
+    if (in_gentle_curve) {
+        // Gentle curve gains - smoother response
+        line_following_set_kp(2.5f);
+        line_following_set_ki(0.0f);
+        line_following_set_kd(1.5f);
+    } 
+    else if (in_transition) {  
+        // RAPID TRANSITION: Reduce D, boost P
+        PIDGainSet gains = interpolate_gains(error_magnitude);
+        line_following_set_kp(gains.kp * 1.4f);
+        line_following_set_ki(gains.ki);
+        line_following_set_kd(gains.kd * 0.25f);
+    }
+    else {
+        // Normal adaptive gains
+        PIDGainSet gains = interpolate_gains(error_magnitude);
+        line_following_set_kp(gains.kp);
+        line_following_set_ki(gains.ki);
+        line_following_set_kd(gains.kd);
+    }
+    
+    prev_error = current_error;
 }
 
 // ============================================================================
@@ -271,16 +365,86 @@ static void apply_adaptive_gains(float error_magnitude) {
 // ============================================================================
 
 static void update_line_following(uint32_t current_time, float dt) {
+    // Read IR sensor
+    uint16_t ir_reading = ir_read_line_sensor();
+    
+    // Update gentle curve detection
+    update_gentle_curve_mode(ir_reading, current_time);
+    
     // Update line following PID
     float steering = line_following_update(dt);
     float error = line_following_get_error();
+    float error_magnitude = fabsf(error);
     
-    // Apply adaptive gains
-    apply_adaptive_gains(fabsf(error));
+    // Apply adaptive gains (with gentle curve awareness)
+    apply_adaptive_gains(error_magnitude, gentle_curve_mode);
+    
+    // Adaptive base power - slow down for large errors
+    float base = BASE_POWER - (15.0f * error_magnitude);
+    if (base < MIN_POWER) base = MIN_POWER;
+    if (base > MAX_POWER) base = MAX_POWER;
+    
+    // Scale steering based on mode
+    float steering_multiplier = 8.0f;
+    if (gentle_curve_mode) {
+        steering_multiplier = 10.0f;
+        base = 35.0f;  // Slower in gentle curve mode
+    }
+    
+    float steering_power = steering * steering_multiplier;
+    
+    // Adaptive smoothing filter for steering
+    static float filtered_steering = 0.0f;
+    static LineFollowState prev_lf_state = LINE_FOLLOW_CENTERED;
+    
+    LineFollowState current_lf_state = line_following_get_state();
+    
+    // Detect rapid state transition
+    bool rapid_transition = false;
+    if ((prev_lf_state == LINE_FOLLOW_FAR_LEFT && current_lf_state == LINE_FOLLOW_FAR_RIGHT) ||
+        (prev_lf_state == LINE_FOLLOW_FAR_RIGHT && current_lf_state == LINE_FOLLOW_FAR_LEFT)) {
+        rapid_transition = true;
+        printf("⚡ STATE FLIP! %s→%s\n", 
+               line_state_to_string(prev_lf_state),
+               line_state_to_string(current_lf_state));
+    }
+    
+    // Adaptive filter coefficient
+    float filter_alpha;
+    if (rapid_transition) {
+        // RESET filter on rapid transition
+        filtered_steering = steering_power * 0.4f;
+        filter_alpha = 0.2f;
+        line_following_reset_integral();
+    } else if (error_magnitude > 0.7f) {
+        filter_alpha = 0.4f;  // Large error - respond fast
+    } else if (gentle_curve_mode) {
+        filter_alpha = 0.3f;  // Gentle curve - moderate response
+    } else {
+        filter_alpha = 0.75f;  // Normal filtering
+    }
+    
+    filtered_steering = filter_alpha * filtered_steering + 
+                       (1.0f - filter_alpha) * steering_power;
+    steering_power = filtered_steering;
+    
+    prev_lf_state = current_lf_state;
     
     // Calculate motor powers
-    L_power = BASE_POWER - steering;
-    R_power = BASE_POWER + steering;
+    float L_target = base + steering_power;
+    float R_target = base - steering_power;
+    
+    // Smooth ramping
+    float max_step = 12.0f;
+    float dL = L_target - L_power;
+    float dR = R_target - R_power;
+    if (dL > max_step) dL = max_step;
+    else if (dL < -max_step) dL = -max_step;
+    if (dR > max_step) dR = max_step;
+    else if (dR < -max_step) dR = -max_step;
+    
+    L_power += dL;
+    R_power += dR;
     
     // Apply deadband and limits
     int left_motor = apply_deadband(L_power);
@@ -293,8 +457,9 @@ static void update_line_following(uint32_t current_time, float dt) {
     // Debug output every 500ms
     static uint32_t last_debug = 0;
     if (current_time - last_debug >= 500) {
-        printf("[LINE] Error: %+.2f | Steering: %+.2f | L:%d R:%d | State: %s\n",
-               error, steering, left_motor, right_motor,
+        const char* mode_str = gentle_curve_mode ? "GENTLE" : "NORMAL";
+        printf("[LINE] %s | Error: %+.2f | Steer: %+.2f | L:%d R:%d | IR:%d | %s\n",
+               mode_str, error, steering_power, left_motor, right_motor, ir_reading,
                line_state_to_string(line_following_get_state()));
         last_debug = current_time;
     }
