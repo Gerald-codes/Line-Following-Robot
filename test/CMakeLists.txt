@@ -74,48 +74,82 @@ target_link_libraries(robot_lib
 )
 
 # ============================================================================
-# MOTOR TESTS (MOTOR-T1 through MOTOR-T7)
+# MOTOR TESTS (MOTOR-T1 TO MOTOR-T7)
 # ============================================================================
 
-# TEST: Motor Comprehensive (T1-T5)
-# ----------------------------------------------------------------------------
-add_executable(test_motor_comprehensive
-    unit_test/MOTOR_T1-5.c
+# MOTOR-T1: GPIO Initialization
+add_executable(MOTOR_T1
+    unit_test/MOTOR_T1.c
+    ../src/hardware_drivers/motor.c
+)
+target_link_libraries(MOTOR_T1 pico_stdlib hardware_pwm hardware_gpio)
+pico_add_extra_outputs(MOTOR_T1)
+pico_enable_stdio_usb(MOTOR_T1 1)
+pico_enable_stdio_uart(MOTOR_T1 0)
+
+# MOTOR-T2: PWM Speed Levels
+add_executable(MOTOR_T2
+    unit_test/MOTOR_T2.c
+    ../src/hardware_drivers/motor.c
+)
+target_link_libraries(MOTOR_T2 pico_stdlib hardware_pwm hardware_gpio)
+pico_add_extra_outputs(MOTOR_T2)
+pico_enable_stdio_usb(MOTOR_T2 1)
+pico_enable_stdio_uart(MOTOR_T2 0)
+
+# MOTOR-T3: Encoder Synchronization
+add_executable(MOTOR_T3
+    unit_test/MOTOR_T3.c
+    ../src/hardware_drivers/motor.c
+    ../src/hardware_drivers/encoder.c
+)
+target_link_libraries(MOTOR_T3 pico_stdlib hardware_pwm hardware_gpio hardware_irq)
+pico_add_extra_outputs(MOTOR_T3)
+pico_enable_stdio_usb(MOTOR_T3 1)
+pico_enable_stdio_uart(MOTOR_T3 0)
+
+# MOTOR-T4: PID Calculation
+add_executable(MOTOR_T4
+    unit_test/MOTOR_T4.c
+    ../src/control_algo/pid.c
+)
+target_link_libraries(MOTOR_T4 pico_stdlib)
+pico_add_extra_outputs(MOTOR_T4)
+pico_enable_stdio_usb(MOTOR_T4 1)
+pico_enable_stdio_uart(MOTOR_T4 0)
+
+# MOTOR-T5: PID Output Limits
+add_executable(MOTOR_T5
+    unit_test/MOTOR_T5.c
+    ../src/control_algo/pid.c
+)
+target_link_libraries(MOTOR_T5 pico_stdlib)
+pico_add_extra_outputs(MOTOR_T5)
+pico_enable_stdio_usb(MOTOR_T5 1)
+pico_enable_stdio_uart(MOTOR_T5 0)
+
+# MOTOR-T6: RPM Stability
+add_executable(MOTOR_T6
+    unit_test/MOTOR_T6.c
     ../src/hardware_drivers/motor.c
     ../src/hardware_drivers/encoder.c
     ../src/control_algo/pid.c
 )
+target_link_libraries(MOTOR_T6 pico_stdlib hardware_pwm hardware_gpio hardware_irq)
+pico_add_extra_outputs(MOTOR_T6)
+pico_enable_stdio_usb(MOTOR_T6 1)
+pico_enable_stdio_uart(MOTOR_T6 0)
 
-target_link_libraries(test_motor_comprehensive
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-    hardware_irq
-)
-
-pico_add_extra_outputs(test_motor_comprehensive)
-pico_enable_stdio_usb(test_motor_comprehensive 1)
-pico_enable_stdio_uart(test_motor_comprehensive 0)
-
-# TEST: Motor Long Duration (T6-T7)
-# ----------------------------------------------------------------------------
-add_executable(test_motor_long
-    unit_test/MOTOR_T6-7.c
+# MOTOR-T7: Distance Calibration
+add_executable(MOTOR_T7
+    unit_test/MOTOR_T7.c
     ../src/hardware_drivers/motor.c
     ../src/hardware_drivers/encoder.c
-    ../src/control_algo/pid.c
 )
-
-target_link_libraries(test_motor_long
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-    hardware_irq
-)
-
-pico_add_extra_outputs(test_motor_long)
-pico_enable_stdio_usb(test_motor_long 1)
-pico_enable_stdio_uart(test_motor_long 0)
+target_link_libraries(MOTOR_T7 pico_stdlib hardware_pwm hardware_gpio hardware_irq)
+pico_add_extra_outputs(MOTOR_T7)
+pico_enable_stdio_usb(MOTOR_T7 1)
+pico_enable_stdio_uart(MOTOR_T7 0)
 
 # ============================================================================
 # OBSTACLE DETECTION TESTS (OBS-T1 through OBS-T9)
