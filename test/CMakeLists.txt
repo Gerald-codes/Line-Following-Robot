@@ -58,7 +58,8 @@ add_library(robot_lib
     ../src/hardware_drivers/servo.c
     ../src/hardware_drivers/motor.c
     ../src/hardware_drivers/encoder.c
-    
+    ../src/hardware_drivers/imu.c
+
     ../src/utilities/timer_manager.c
     ../src/utilities/telemetry.c
     ../src/utilities/mqtt_client.c
@@ -71,6 +72,7 @@ target_link_libraries(robot_lib
     hardware_gpio
     hardware_timer
     hardware_irq
+    hardware_i2c
     pico_cyw43_arch_lwip_threadsafe_background
     cyw43_driver
 )
@@ -242,7 +244,25 @@ pico_add_extra_outputs(integration_test_obstacle)
 pico_enable_stdio_usb(integration_test_obstacle 1)
 pico_enable_stdio_uart(integration_test_obstacle 0)
 
+# INTEG-T3: Integration Test for Obstacle Avoidance
+add_executable(INTEG_T3
+    integration_test/INTEG_T3.c
+)
 
+target_link_libraries(INTEG_T3
+    pico_stdlib
+    robot_lib
+    hardware_gpio
+    hardware_pwm
+    hardware_timer
+    hardware_i2c        # IMU I2C communication
+
+)
+
+pico_enable_stdio_usb(INTEG_T3 1)
+pico_enable_stdio_uart(INTEG_T3 0)
+
+pico_add_extra_outputs(INTEG_T3)
 
 
 # ============================================================================
