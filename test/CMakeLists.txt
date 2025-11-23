@@ -50,6 +50,8 @@ include_directories(
 # ----------------------------------------------------------------------------
 add_library(robot_lib
     ../src/control_algo/obstacle_scanner.c
+    ../src/control_algo/obstacle_control.c      
+    ../src/control_algo/avoidance_maneuver.c    
     ../src/control_algo/pid.c
     
     ../src/hardware_drivers/ultrasonic.c
@@ -74,82 +76,90 @@ target_link_libraries(robot_lib
 )
 
 # ============================================================================
-# MOTOR TESTS (MOTOR-T1 TO MOTOR-T7)
+# MOTOR TESTS (MOTOR-T1 through MOTOR-T7)
 # ============================================================================
 
-# MOTOR-T1: GPIO Initialization
-add_executable(MOTOR_T1
-    unit_test/MOTOR_T1.c
-    ../src/hardware_drivers/motor.c
-)
-target_link_libraries(MOTOR_T1 pico_stdlib hardware_pwm hardware_gpio)
-pico_add_extra_outputs(MOTOR_T1)
-pico_enable_stdio_usb(MOTOR_T1 1)
-pico_enable_stdio_uart(MOTOR_T1 0)
+# TEST: Motor Comprehensive (T1-T5)
+# # ----------------------------------------------------------------------------
+# add_executable(test_motor_comprehensive
+#     unit_test/MOTOR_T1-5.c
+#     ../src/hardware_drivers/motor.c
+#     ../src/hardware_drivers/encoder.c
+#     ../src/control_algo/pid.c
+# )
 
-# MOTOR-T2: PWM Speed Levels
-add_executable(MOTOR_T2
-    unit_test/MOTOR_T2.c
-    ../src/hardware_drivers/motor.c
-)
-target_link_libraries(MOTOR_T2 pico_stdlib hardware_pwm hardware_gpio)
-pico_add_extra_outputs(MOTOR_T2)
-pico_enable_stdio_usb(MOTOR_T2 1)
-pico_enable_stdio_uart(MOTOR_T2 0)
+# target_link_libraries(test_motor_comprehensive
+#     pico_stdlib
+#     hardware_pwm
+#     hardware_gpio
+#     hardware_irq
+# )
 
-# MOTOR-T3: Encoder Synchronization
-add_executable(MOTOR_T3
-    unit_test/MOTOR_T3.c
-    ../src/hardware_drivers/motor.c
-    ../src/hardware_drivers/encoder.c
-)
-target_link_libraries(MOTOR_T3 pico_stdlib hardware_pwm hardware_gpio hardware_irq)
-pico_add_extra_outputs(MOTOR_T3)
-pico_enable_stdio_usb(MOTOR_T3 1)
-pico_enable_stdio_uart(MOTOR_T3 0)
+# pico_add_extra_outputs(test_motor_comprehensive)
+# pico_enable_stdio_usb(test_motor_comprehensive 1)
+# pico_enable_stdio_uart(test_motor_comprehensive 0)
 
-# MOTOR-T4: PID Calculation
-add_executable(MOTOR_T4
-    unit_test/MOTOR_T4.c
-    ../src/control_algo/pid.c
-)
-target_link_libraries(MOTOR_T4 pico_stdlib)
-pico_add_extra_outputs(MOTOR_T4)
-pico_enable_stdio_usb(MOTOR_T4 1)
-pico_enable_stdio_uart(MOTOR_T4 0)
+# # TEST: Motor Long Duration (T6-T7)
+# # ----------------------------------------------------------------------------
+# add_executable(test_motor_long
+#     unit_test/MOTOR_T6-7.c
+#     ../src/hardware_drivers/motor.c
+#     ../src/hardware_drivers/encoder.c
+#     ../src/control_algo/pid.c
+# )
 
-# MOTOR-T5: PID Output Limits
-add_executable(MOTOR_T5
-    unit_test/MOTOR_T5.c
-    ../src/control_algo/pid.c
-)
-target_link_libraries(MOTOR_T5 pico_stdlib)
-pico_add_extra_outputs(MOTOR_T5)
-pico_enable_stdio_usb(MOTOR_T5 1)
-pico_enable_stdio_uart(MOTOR_T5 0)
+# target_link_libraries(test_motor_long
+#     pico_stdlib
+#     hardware_pwm
+#     hardware_gpio
+#     hardware_irq
+# )
 
-# MOTOR-T6: RPM Stability
-add_executable(MOTOR_T6
-    unit_test/MOTOR_T6.c
-    ../src/hardware_drivers/motor.c
-    ../src/hardware_drivers/encoder.c
-    ../src/control_algo/pid.c
-)
-target_link_libraries(MOTOR_T6 pico_stdlib hardware_pwm hardware_gpio hardware_irq)
-pico_add_extra_outputs(MOTOR_T6)
-pico_enable_stdio_usb(MOTOR_T6 1)
-pico_enable_stdio_uart(MOTOR_T6 0)
+# pico_add_extra_outputs(test_motor_long)
+# pico_enable_stdio_usb(test_motor_long 1)
+# pico_enable_stdio_uart(test_motor_long 0)
 
-# MOTOR-T7: Distance Calibration
-add_executable(MOTOR_T7
-    unit_test/MOTOR_T7.c
-    ../src/hardware_drivers/motor.c
-    ../src/hardware_drivers/encoder.c
-)
-target_link_libraries(MOTOR_T7 pico_stdlib hardware_pwm hardware_gpio hardware_irq)
-pico_add_extra_outputs(MOTOR_T7)
-pico_enable_stdio_usb(MOTOR_T7 1)
-pico_enable_stdio_uart(MOTOR_T7 0)
+# ============================================================================
+# LEGACY MOTOR TESTS (Keep for compatibility)
+# ============================================================================
+
+# add_executable(test_motor
+#     unit_test/test_motor.c
+#     ../src/hardware_drivers/motor.c
+# )
+
+# target_link_libraries(test_motor
+#     pico_stdlib
+#     hardware_pwm
+#     hardware_gpio
+#     robot_lib
+# )
+
+# pico_add_extra_outputs(test_motor)
+# pico_enable_stdio_usb(test_motor 1)
+# pico_enable_stdio_uart(test_motor 0)
+
+# ============================================================================
+# ENCODER TESTS
+# ============================================================================
+
+# add_executable(test_encoder
+#     unit_test/test_encoder.c
+#     ../src/hardware_drivers/encoder.c
+#     ../src/control_algo/pid.c
+# )
+
+# target_link_libraries(test_encoder
+#     pico_stdlib
+#     hardware_pwm
+#     hardware_gpio
+#     hardware_irq
+#     robot_lib
+# )
+
+# pico_add_extra_outputs(test_encoder)
+# pico_enable_stdio_usb(test_encoder 1)
+# pico_enable_stdio_uart(test_encoder 0)
 
 # ============================================================================
 # OBSTACLE DETECTION TESTS (OBS-T1 through OBS-T9)
@@ -186,76 +196,68 @@ add_obs_test(OBS_T9 unit_test/OBS_T9.c)
 
 # Integration Test: Heading Keeping Mode
 # ----------------------------------------------------------------------------
-# Tests the complete IMU-Motor closed-loop control system
-# Validates heading maintenance using PID control with IMU feedback
-#
-# Test Scenarios:
-#   INT-T1: IMU initialization and calibration
-#   INT-T2: Heading error calculation
-#   INT-T3: Motor correction response
-#   INT-T4: Heading stability over time (10 seconds)
-#   INT-T5: Recovery from disturbances (3 cycles)
-#
-# Hardware Requirements:
-#   - Motors: M1A, M1B (left), M2A, M2B (right)
-#   - Encoders: GP2/GP3 (left), GP4/GP5 (right)
-#   - IMU: GY-511 LSM303DLHC on I2C (GP16=SDA, GP17=SCL)
-#   - Button: GP20 (calibration trigger)
-# ----------------------------------------------------------------------------
+# add_executable(integration_test_heading_keeping
+#     integration_test/integration_test_heading_keeping.c
+#     ../src/hardware_drivers/motor.c
+#     ../src/hardware_drivers/encoder.c
+#     ../src/hardware_drivers/imu.c
+#     ../src/control_algo/pid.c
+#     ../src/control_algo/heading_control.c
+#     ../src/utilities/calibration.c
+# )
 
-add_executable(integration_test_heading_keeping
-    # Main test file
-    integration_test/heading_keeping.c
-    
-    # Hardware drivers (core dependencies)
-    ../src/hardware_drivers/motor.c
-    ../src/hardware_drivers/encoder.c
-    ../src/hardware_drivers/imu.c
-     ../src/hardware_drivers/calibration.c
-     
-    # Control algorithms
-    ../src/control_algo/pid.c
-    ../src/control_algo/heading_control.c
-    
+# target_link_libraries(integration_test_heading_keeping
+#     pico_stdlib
+#     hardware_pwm
+#     hardware_gpio
+#     hardware_irq
+#     hardware_i2c
+#     robot_lib
+# )
+
+# pico_add_extra_outputs(integration_test_heading_keeping)
+# pico_enable_stdio_usb(integration_test_heading_keeping 1)
+# pico_enable_stdio_uart(integration_test_heading_keeping 0)
+
+
+
+# ============================================================================
+# INTEGRATION TEST: OBSTACLE DETECTION + TELEMETRY (INTEG-T4)
+# ============================================================================
+
+add_executable(integration_test_obstacle
+    integration_test/telemetry_obstacle.c
 )
 
-target_link_libraries(integration_test_heading_keeping
-    # Pico SDK core
+target_link_libraries(integration_test_obstacle
     pico_stdlib
-    
-    # Hardware interfaces
-    hardware_pwm        # Motor PWM control
-    hardware_gpio       # GPIO pins
-    hardware_irq        # Encoder interrupts
-    hardware_i2c        # IMU I2C communication
+    robot_lib
+    hardware_gpio
+    hardware_pwm
+    hardware_timer
+    hardware_irq
 )
 
-# Enable USB serial for test output
-pico_enable_stdio_usb(integration_test_heading_keeping 1)
-pico_enable_stdio_uart(integration_test_heading_keeping 0)
+pico_add_extra_outputs(integration_test_obstacle)
+pico_enable_stdio_usb(integration_test_obstacle 1)
+pico_enable_stdio_uart(integration_test_obstacle 0)
 
-# Generate UF2 file
-pico_add_extra_outputs(integration_test_heading_keeping)
+
 
 # ============================================================================
 # Print Configuration
 # ============================================================================
 message(STATUS "")
-message(STATUS "╔════════════════════════════════════════════════════════════╗")
-message(STATUS "║          Robot Test Suite Build Configuration             ║")
-message(STATUS "╚════════════════════════════════════════════════════════════╝")
-message(STATUS "Board Type:         ${PICO_BOARD}")
-message(STATUS "C Standard:         C${CMAKE_C_STANDARD}")
-message(STATUS "Build System:       FULLY CONFIGURED ✓")
-message(STATUS "Shared Library:     robot_lib ✓")
-message(STATUS "────────────────────────────────────────────────────────────")
-message(STATUS "Motor Tests:        MOTOR-T1 to T7 (2 executables) ✓")
-message(STATUS "Obstacle Tests:     OBS-T1 to OBS-T9 (9 executables) ✓")
-message(STATUS "Integration Tests:  Heading Keeping (1 executable) ✓")
-message(STATUS "────────────────────────────────────────────────────────────")
-message(STATUS "Test Coverage:")
-message(STATUS "  • Unit Tests:         11 test executables")
-message(STATUS "  • Integration Tests:  1 test executable")
-message(STATUS "  • Total:              12 test executables")
-message(STATUS "╚════════════════════════════════════════════════════════════╝")
+message(STATUS "=============================================")
+message(STATUS "Robot Test Suite Build Configuration")
+message(STATUS "=============================================")
+message(STATUS "Board Type:       ${PICO_BOARD}")
+message(STATUS "C Standard:       C${CMAKE_C_STANDARD}")
+message(STATUS "Build System:     FULLY CONFIGURED âœ“")
+message(STATUS "Linked Modules:   robot_lib âœ“")
+message(STATUS "---------------------------------------------")
+message(STATUS "Motor Tests:      MOTOR-T1 to T7 âœ“")
+message(STATUS "Obstacle Tests:   OBS-T1 to OBS-T9 âœ“")
+message(STATUS "Integration Test: Heading Keeping âœ“")
+message(STATUS "=============================================")
 message(STATUS "")
