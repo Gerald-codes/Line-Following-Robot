@@ -24,9 +24,7 @@
 #define MEM_LIBC_MALLOC             0
 #endif
 
-/* ========================================================================== */
-/* MEMORY CONFIGURATION - INCREASED FOR MQTT TELEMETRY                        */
-/* ========================================================================== */
+/* MEMORY CONFIGURATION - INCREASED FOR MQTT TELEMETRY */
 
 #define MEM_ALIGNMENT               4
 #define MEM_SIZE                    16000
@@ -35,9 +33,7 @@
 #define MEMP_NUM_TCP_PCB            16
 #define MEMP_NUM_SYS_TIMEOUT        16
 
-/* ========================================================================== */
-/* TCP BUFFER TUNING - ORDER MATTERS!                                         */
-/* ========================================================================== */
+/* TCP BUFFER TUNING - ORDER MATTERS! */
 
 #define TCP_MSS                     1460
 #define TCP_WND                     (8 * TCP_MSS)
@@ -49,9 +45,7 @@
 /* MEMP_NUM_TCP_SEG must be >= TCP_SND_QUEUELEN */
 #define MEMP_NUM_TCP_SEG            64
 
-/* ========================================================================== */
-/* PROTOCOL ENABLES                                                           */
-/* ========================================================================== */
+/* PROTOCOL ENABLES */
 
 #define LWIP_ARP                    1
 #define LWIP_ETHERNET               1
@@ -67,34 +61,26 @@
 /* Disable SDK MQTT (using custom implementation) */
 #define LWIP_MQTT                   0
 
-/* ========================================================================== */
-/* NETIF OPTIONS                                                              */
-/* ========================================================================== */
+/* NETIF OPTIONS */
 
 #define LWIP_NETIF_STATUS_CALLBACK  1
 #define LWIP_NETIF_LINK_CALLBACK    1
 #define LWIP_NETIF_HOSTNAME         1
 #define LWIP_NETIF_TX_SINGLE_PBUF   1
 
-/* ========================================================================== */
-/* TCP OPTIONS - CRITICAL FOR KEEPALIVE                                       */
-/* ========================================================================== */
+/* TCP OPTIONS - CRITICAL FOR KEEPALIVE */
 
 #define LWIP_TCP_KEEPALIVE          1
 #define TCP_KEEPIDLE_DEFAULT        7200000UL
 #define TCP_KEEPINTVL_DEFAULT       75000UL
 #define TCP_KEEPCNT_DEFAULT         9
 
-/* ========================================================================== */
-/* DHCP OPTIONS                                                               */
-/* ========================================================================== */
+/* DHCP OPTIONS */
 
 #define DHCP_DOES_ARP_CHECK         0
 #define LWIP_DHCP_DOES_ACD_CHECK    0
 
-/* ========================================================================== */
-/* CHECKSUM AND STATS                                                         */
-/* ========================================================================== */
+/* CHECKSUM AND STATS */
 
 #define LWIP_CHKSUM_ALGORITHM       3
 #define MEM_STATS                   0
@@ -102,9 +88,7 @@
 #define MEMP_STATS                  0
 #define LINK_STATS                  0
 
-/* ========================================================================== */
-/* DEBUG OPTIONS (all off for production)                                     */
-/* ========================================================================== */
+/* DEBUG OPTIONS (all off for production) */
 
 #ifndef NDEBUG
 #define LWIP_DEBUG                  0

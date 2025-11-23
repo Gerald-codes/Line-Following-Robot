@@ -14,10 +14,7 @@
 #include "ultrasonic.h"
 #include "servo.h"
 
-/* ========================================================================== */
-/* SCANNING PARAMETERS                                                        */
-/* ========================================================================== */
-
+/* SCANNING PARAMETERS */
 #define ANGLE_CENTER                80      /* Center position of servo */
 #define MIN_ANGLE                   (ANGLE_CENTER - 30)  /* 60° left from center */
 #define MAX_ANGLE                   (ANGLE_CENTER + 30)  /* 60° right from center */
@@ -27,10 +24,7 @@
 #define MIN_OBSTACLE_SPAN           10      /* Minimum angle span to count as obstacle */
 #define DISTANCE_CHANGE_THRESHOLD   25      /* cm */
 
-/* ========================================================================== */
-/* DATA STRUCTURES                                                            */
-/* ========================================================================== */
-
+/* DATA STRUCTURES */
 typedef struct
 {
     int angle_start;
@@ -56,10 +50,6 @@ typedef enum
     AVOID_NONE
 } AvoidanceDirection;
 
-/* ========================================================================== */
-/* INITIALIZATION AND SCANNING                                                */
-/* ========================================================================== */
-
 /**
  * @brief Initialize obstacle scanner
  */
@@ -70,10 +60,6 @@ void scanner_init(void);
  * @return ScanResult containing detected obstacles
  */
 ScanResult scanner_perform_scan(void);
-
-/* ========================================================================== */
-/* ANALYSIS FUNCTIONS                                                         */
-/* ========================================================================== */
 
 /**
  * @brief Calculate obstacle width based on angle span and minimum distance
@@ -100,10 +86,6 @@ AvoidanceDirection scanner_get_best_avoidance_direction(ScanResult result);
  */
 void scanner_get_clear_space_analysis(ScanResult result, int* left_clear, int* right_clear);
 
-/* ========================================================================== */
-/* TELEMETRY FUNCTIONS                                                        */
-/* ========================================================================== */
-
 /**
  * @brief Enable telemetry publishing during scans
  * @details Call this after scanner_init() and telemetry_init() to enable
@@ -121,10 +103,6 @@ void scanner_disable_telemetry(void);
  * @return true if telemetry publishing is enabled
  */
 bool scanner_is_telemetry_enabled(void);
-
-/* ========================================================================== */
-/* UTILITY FUNCTIONS                                                          */
-/* ========================================================================== */
 
 /**
  * @brief Print scan results to console

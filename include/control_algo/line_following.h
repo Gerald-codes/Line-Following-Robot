@@ -12,9 +12,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/* ========================================================================== */
-/* LINE FOLLOWING STATES                                                      */
-/* ========================================================================== */
+/* LINE FOLLOWING STATES */
 
 typedef enum
 {
@@ -26,18 +24,14 @@ typedef enum
     LINE_FOLLOW_LOST
 } LineFollowState;
 
-/* ========================================================================== */
-/* INITIALIZATION                                                             */
-/* ========================================================================== */
+/* INITIALIZATION */
 
 /**
  * @brief Initialize the line following module state
  */
 void line_following_init(void);
 
-/* ========================================================================== */
-/* UPDATE FUNCTIONS                                                           */
-/* ========================================================================== */
+/* UPDATE FUNCTIONS */
 
 /**
  * @brief Basic PID update and returns steering correction
@@ -54,18 +48,14 @@ float line_following_update(float dt);
  */
 bool line_following_control_update(uint32_t current_time, float dt);
 
-/* ========================================================================== */
-/* CONTROL FUNCTIONS                                                          */
-/* ========================================================================== */
+/* CONTROL FUNCTIONS */
 
 /**
  * @brief Reset the integral term of the PID controller
  */
 void line_following_reset_integral(void);
 
-/* ========================================================================== */
-/* GAIN SETTERS                                                               */
-/* ========================================================================== */
+/* GAIN SETTERS */
 
 /**
  * @brief Set PID proportional gain
@@ -84,10 +74,6 @@ void line_following_set_ki(float ki);
  * @param kd New Kd value
  */
 void line_following_set_kd(float kd);
-
-/* ========================================================================== */
-/* GETTERS                                                                    */
-/* ========================================================================== */
 
 /**
  * @brief Get the current logical state for line following
@@ -124,10 +110,6 @@ float line_following_get_left_power(void);
  * @return Right power
  */
 float line_following_get_right_power(void);
-
-/* ========================================================================== */
-/* UTILITIES                                                                  */
-/* ========================================================================== */
 
 /**
  * @brief Convert state enum to a human-readable string

@@ -13,9 +13,7 @@
 #include <stdbool.h>
 #include "barcode_scanner.h"
 
-/* ========================================================================== */
-/* TYPES                                                                      */
-/* ========================================================================== */
+
 
 typedef enum
 {
@@ -26,9 +24,7 @@ typedef enum
     BARCODE_ACTION_SPEED_FAST
 } BarcodeAction;
 
-/* ========================================================================== */
-/* CONFIGURATION                                                              */
-/* ========================================================================== */
+/* CONFIGURATION */
 
 #define BARCODE_TURN_DURATION_MS    1000        /* How long to turn for barcode commands */
 #define BARCODE_TURN_SPEED          35          /* Turn speed for barcode turns */
@@ -40,9 +36,7 @@ typedef enum
 #define BARCODE_SPEED_FAST          45          /* Fast speed for line following */
 #define BARCODE_SCAN_SPEED_FACTOR   0.70f       /* Scan at 70% of current speed */
 
-/* ========================================================================== */
-/* PUBLIC FUNCTIONS                                                           */
-/* ========================================================================== */
+/* PUBLIC FUNCTIONS */
 
 /**
  * @brief Initialize barcode control system

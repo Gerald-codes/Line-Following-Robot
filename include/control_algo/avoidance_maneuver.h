@@ -12,9 +12,7 @@
 #include <stdbool.h>
 #include "obstacle_scanner.h"
 
-/* ========================================================================== */
-/* MANEUVER PARAMETERS                                                        */
-/* ========================================================================== */
+/* MANEUVER PARAMETERS */
 
 #define TURN_ANGLE_DEG              45      /* Degrees to turn when leaving line */
 #define TURN_ANGLE_RIGHT_DEG        50      /* For right avoidance */
@@ -27,9 +25,7 @@
 #define SEARCH_LINE_DURATION_MS     4000    /* Time to search for line */
 #define OBSTACLE_CLEAR_DISTANCE     35      /* cm - distance at which obstacle is cleared */
 
-/* ========================================================================== */
-/* AVOIDANCE STATES                                                           */
-/* ========================================================================== */
+/* AVOIDANCE STATES */
 
 typedef enum
 {
@@ -46,10 +42,6 @@ typedef enum
     AVOIDANCE_FAILED
 } AvoidanceState;
 
-/* ========================================================================== */
-/* MANEUVER CONTEXT                                                           */
-/* ========================================================================== */
-
 typedef struct
 {
     AvoidanceDirection direction;       /* Which way to avoid (LEFT or RIGHT) */
@@ -59,10 +51,6 @@ typedef struct
     uint32_t forward_duration_ms;
     float original_heading;             /* Heading when avoidance started */
 } AvoidanceContext;
-
-/* ========================================================================== */
-/* INITIALIZATION AND CONTROL                                                 */
-/* ========================================================================== */
 
 /**
  * @brief Initialize avoidance maneuver system
@@ -88,10 +76,6 @@ AvoidanceState avoidance_update(void);
  */
 void avoidance_reset(void);
 
-/* ========================================================================== */
-/* STATUS QUERIES                                                             */
-/* ========================================================================== */
-
 /**
  * @brief Check if avoidance maneuver is complete
  * @return true if complete (success or failure)
@@ -116,19 +100,11 @@ bool avoidance_check_obstacle_cleared(void);
  */
 float avoidance_get_original_heading(void);
 
-/* ========================================================================== */
-/* CONFIGURATION                                                              */
-/* ========================================================================== */
-
 /**
  * @brief Set forward movement duration for parallel movement phase
  * @param duration_ms Duration in milliseconds
  */
 void avoidance_set_forward_duration(uint32_t duration_ms);
-
-/* ========================================================================== */
-/* UTILITIES                                                                  */
-/* ========================================================================== */
 
 /**
  * @brief Get current avoidance state as string
