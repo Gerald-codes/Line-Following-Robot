@@ -1,24 +1,26 @@
 /**
- * telemetry.h
- * Comprehensive telemetry interface for robotic car
+ * @file    telemetry.h
+ * @brief   Robot telemetry interface
+ * @details Comprehensive telemetry system for robotic car including
+ *          line following, IMU data, obstacle detection, barcode scanning,
+ *          and state monitoring with MQTT publishing
  */
 
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
-#include <stdint.h>
 #include <stdbool.h>
-#include "line_following.h"  // This defines LineFollowState
+#include <stdint.h>
+#include "line_following.h"
 #include "imu.h"
-#include "config.h"           // This already defines RobotState and ObstacleState!
+#include "config.h"
 #include "obstacle_scanner.h"
-#include "barcode_scanner.h"  // Now correctly includes BarcodeCommand
+#include "barcode_scanner.h"
 #include "avoidance_maneuver.h"
 
 /**
- * Initialize telemetry system
- * Must be called after WiFi is connected
- * 
+ * @brief Initialize telemetry system
+ * @details Must be called after WiFi is connected
  * @param broker_ip MQTT broker IP address
  * @param broker_port MQTT broker port
  * @param client_id MQTT client ID
@@ -27,130 +29,147 @@
 bool telemetry_init(const char *broker_ip, uint16_t broker_port, const char *client_id);
 
 /**
- * Check if telemetry system is ready
+ * @brief Check if telemetry system is ready
  * @return true if connected to MQTT broker
  */
 bool telemetry_is_ready(void);
 
 /**
- * Publish all telemetry data in one call
- * This is the main function to call from your main loop
- * 
+ * @brief Publish all telemetry data
+ * @details Main function to call from control loop
  * @param ir_reading Raw IR sensor reading
  * @param line_position Current line position
  * @param line_pos_filtered Filtered line position
- * @param line_state Current line following state (LineFollowState)
+ * @param line_state Current line following state
  * @param imu Pointer to IMU structure
- * @param robot_state Current robot state (from RobotState enum)
+ * @param robot_state Current robot state
  * @param obstacle_state Current obstacle state
- * @param elapsed Time elapsed since start (ms)
+ * @param elapsed Time elapsed since start in milliseconds
  * @return true if all data published successfully
  */
-bool telemetry_publish_all(
-    int ir_reading,
-    float line_position, float line_pos_filtered,
-    LineFollowState line_state,
-    IMU *imu,
-    RobotState robot_state,
-    ObstacleState obstacle_state,
-    uint32_t elapsed
-);
+bool telemetry_publish_all(int ir_reading,
+                           float line_position,
+                           float line_pos_filtered,
+                           LineFollowState line_state,
+                           IMU *imu,
+                           RobotState robot_state,
+                           ObstacleState obstacle_state,
+                           uint32_t elapsed);
 
 /**
- * Publish encoder and speed data
+ * @brief Publish encoder and speed data
  * @param speed_mm_s Current speed in mm/s
  * @param distance_mm Total distance travelled in mm
  * @param left_count Left encoder count
  * @param right_count Right encoder count
+ * @return true if published successfully
  */
-bool telemetry_publish_encoder(float speed_mm_s, float distance_mm, 
-                                int32_t left_count, int32_t right_count);
+bool telemetry_publish_encoder(float speed_mm_s,
+                                float distance_mm,
+                                int32_t left_count,
+                                int32_t right_count);
 
 /**
- * Publish barcode detection data
- * @param command The decoded barcode command (LEFT/RIGHT/etc)
- * @param character The actual character decoded ('A', 'B', etc)
+ * @brief Publish barcode detection data
+ * @param command The decoded barcode command
+ * @param character The actual character decoded
+ * @return true if published successfully
  */
 bool telemetry_publish_barcode(BarcodeCommand command, char character);
 
 /**
- * Publish obstacle scan results
+ * @brief Publish obstacle scan results
  * @param scan_result Pointer to ScanResult structure
+ * @return true if published successfully
  */
 bool telemetry_publish_obstacle_scan(const ScanResult *scan_result);
 
 /**
- * Publish avoidance maneuver status
+ * @brief Publish avoidance maneuver status
  * @param direction Avoidance direction (LEFT/RIGHT/NONE)
  * @param state Current avoidance state
  * @param obstacle_cleared Whether obstacle has been cleared
+ * @return true if published successfully
  */
-bool telemetry_publish_avoidance(AvoidanceDirection direction, 
+bool telemetry_publish_avoidance(AvoidanceDirection direction,
                                   AvoidanceState state,
                                   bool obstacle_cleared);
 
 /**
- * Publish individual obstacle data (for real-time monitoring)
+ * @brief Publish obstacle data for real-time monitoring
  * @param distance_mm Ultrasonic distance reading
  * @param width_cm Calculated obstacle width
  * @param clearance_left_cm Left clearance
  * @param clearance_right_cm Right clearance
+ * @return true if published successfully
  */
-bool telemetry_publish_obstacle_data(uint64_t distance_mm, 
+bool telemetry_publish_obstacle_data(uint64_t distance_mm,
                                       float width_cm,
                                       float clearance_left_cm,
                                       float clearance_right_cm);
 
 /**
- * Publish state change events
+ * @brief Publish state change events
  * @param prev_state Previous robot state
  * @param new_state New robot state
  * @param duration_ms Time spent in previous state
+ * @return true if published successfully
  */
-bool telemetry_publish_state_change(RobotState prev_state, 
+bool telemetry_publish_state_change(RobotState prev_state,
                                      RobotState new_state,
                                      uint32_t duration_ms);
 
 /**
- * Publish calibration data
+ * @brief Publish calibration data
  * @param white White surface reading
  * @param black Black surface reading
  * @param threshold Calculated threshold
  * @param range Dynamic range
+ * @return true if published successfully
  */
 bool telemetry_publish_calibration(int white, int black, int threshold, int range);
 
 /**
- * Publish status/diagnostic messages
+ * @brief Publish status or diagnostic messages
  * @param message Status message string
+ * @return true if published successfully
  */
 bool telemetry_publish_status(const char *message);
 
 /**
- * Publish error messages
+ * @brief Publish error messages
  * @param error_code Error code
  * @param error_msg Error message string
+ * @return true if published successfully
  */
 bool telemetry_publish_error(int error_code, const char *error_msg);
 
 /**
- * Helper: Convert RobotState enum to string
+ * @brief Convert RobotState enum to string
+ * @param state RobotState to convert
+ * @return String representation
  */
-const char* telemetry_robot_state_to_string(RobotState state);
+const char *telemetry_robot_state_to_string(RobotState state);
 
 /**
- * Helper: Convert ObstacleState enum to string
+ * @brief Convert ObstacleState enum to string
+ * @param state ObstacleState to convert
+ * @return String representation
  */
-const char* telemetry_obstacle_state_to_string(ObstacleState state);
+const char *telemetry_obstacle_state_to_string(ObstacleState state);
 
 /**
- * Helper: Convert AvoidanceDirection to string
+ * @brief Convert AvoidanceDirection to string
+ * @param dir AvoidanceDirection to convert
+ * @return String representation
  */
-const char* telemetry_avoidance_dir_to_string(AvoidanceDirection dir);
+const char *telemetry_avoidance_dir_to_string(AvoidanceDirection dir);
 
 /**
- * Helper: Convert LineFollowState to string
+ * @brief Convert LineFollowState to string
+ * @param state LineFollowState to convert
+ * @return String representation
  */
-const char* telemetry_line_state_to_string(LineFollowState state);
+const char *telemetry_line_state_to_string(LineFollowState state);
 
-#endif // TELEMETRY_H
+#endif /* TELEMETRY_H */
