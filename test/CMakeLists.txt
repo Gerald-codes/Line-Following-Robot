@@ -118,48 +118,6 @@ pico_enable_stdio_usb(test_motor_long 1)
 pico_enable_stdio_uart(test_motor_long 0)
 
 # ============================================================================
-# LEGACY MOTOR TESTS (Keep for compatibility)
-# ============================================================================
-
-add_executable(test_motor
-    unit_test/test_motor.c
-    ../src/hardware_drivers/motor.c
-)
-
-target_link_libraries(test_motor
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-    robot_lib
-)
-
-pico_add_extra_outputs(test_motor)
-pico_enable_stdio_usb(test_motor 1)
-pico_enable_stdio_uart(test_motor 0)
-
-# ============================================================================
-# ENCODER TESTS
-# ============================================================================
-
-add_executable(test_encoder
-    unit_test/test_encoder.c
-    ../src/hardware_drivers/encoder.c
-    ../src/control_algo/pid.c
-)
-
-target_link_libraries(test_encoder
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-    hardware_irq
-    robot_lib
-)
-
-pico_add_extra_outputs(test_encoder)
-pico_enable_stdio_usb(test_encoder 1)
-pico_enable_stdio_uart(test_encoder 0)
-
-# ============================================================================
 # OBSTACLE DETECTION TESTS (OBS-T1 through OBS-T9)
 # ============================================================================
 
@@ -194,43 +152,76 @@ add_obs_test(OBS_T9 unit_test/OBS_T9.c)
 
 # Integration Test: Heading Keeping Mode
 # ----------------------------------------------------------------------------
+# Tests the complete IMU-Motor closed-loop control system
+# Validates heading maintenance using PID control with IMU feedback
+#
+# Test Scenarios:
+#   INT-T1: IMU initialization and calibration
+#   INT-T2: Heading error calculation
+#   INT-T3: Motor correction response
+#   INT-T4: Heading stability over time (10 seconds)
+#   INT-T5: Recovery from disturbances (3 cycles)
+#
+# Hardware Requirements:
+#   - Motors: M1A, M1B (left), M2A, M2B (right)
+#   - Encoders: GP2/GP3 (left), GP4/GP5 (right)
+#   - IMU: GY-511 LSM303DLHC on I2C (GP16=SDA, GP17=SCL)
+#   - Button: GP20 (calibration trigger)
+# ----------------------------------------------------------------------------
+
 add_executable(integration_test_heading_keeping
-    integration_test/integration_test_heading_keeping.c
+    # Main test file
+    integration_test/heading_keeping.c
+    
+    # Hardware drivers (core dependencies)
     ../src/hardware_drivers/motor.c
     ../src/hardware_drivers/encoder.c
     ../src/hardware_drivers/imu.c
+     ../src/hardware_drivers/calibration.c
+     
+    # Control algorithms
     ../src/control_algo/pid.c
     ../src/control_algo/heading_control.c
-    ../src/utilities/calibration.c
+    
 )
 
 target_link_libraries(integration_test_heading_keeping
+    # Pico SDK core
     pico_stdlib
-    hardware_pwm
-    hardware_gpio
-    hardware_irq
-    hardware_i2c
-    robot_lib
+    
+    # Hardware interfaces
+    hardware_pwm        # Motor PWM control
+    hardware_gpio       # GPIO pins
+    hardware_irq        # Encoder interrupts
+    hardware_i2c        # IMU I2C communication
 )
 
-pico_add_extra_outputs(integration_test_heading_keeping)
+# Enable USB serial for test output
 pico_enable_stdio_usb(integration_test_heading_keeping 1)
 pico_enable_stdio_uart(integration_test_heading_keeping 0)
+
+# Generate UF2 file
+pico_add_extra_outputs(integration_test_heading_keeping)
 
 # ============================================================================
 # Print Configuration
 # ============================================================================
 message(STATUS "")
-message(STATUS "=============================================")
-message(STATUS "Robot Test Suite Build Configuration")
-message(STATUS "=============================================")
-message(STATUS "Board Type:       ${PICO_BOARD}")
-message(STATUS "C Standard:       C${CMAKE_C_STANDARD}")
-message(STATUS "Build System:     FULLY CONFIGURED ✓")
-message(STATUS "Linked Modules:   robot_lib ✓")
-message(STATUS "---------------------------------------------")
-message(STATUS "Motor Tests:      MOTOR-T1 to T7 ✓")
-message(STATUS "Obstacle Tests:   OBS-T1 to OBS-T9 ✓")
-message(STATUS "Integration Test: Heading Keeping ✓")
-message(STATUS "=============================================")
+message(STATUS "╔════════════════════════════════════════════════════════════╗")
+message(STATUS "║          Robot Test Suite Build Configuration             ║")
+message(STATUS "╚════════════════════════════════════════════════════════════╝")
+message(STATUS "Board Type:         ${PICO_BOARD}")
+message(STATUS "C Standard:         C${CMAKE_C_STANDARD}")
+message(STATUS "Build System:       FULLY CONFIGURED ✓")
+message(STATUS "Shared Library:     robot_lib ✓")
+message(STATUS "────────────────────────────────────────────────────────────")
+message(STATUS "Motor Tests:        MOTOR-T1 to T7 (2 executables) ✓")
+message(STATUS "Obstacle Tests:     OBS-T1 to OBS-T9 (9 executables) ✓")
+message(STATUS "Integration Tests:  Heading Keeping (1 executable) ✓")
+message(STATUS "────────────────────────────────────────────────────────────")
+message(STATUS "Test Coverage:")
+message(STATUS "  • Unit Tests:         11 test executables")
+message(STATUS "  • Integration Tests:  1 test executable")
+message(STATUS "  • Total:              12 test executables")
+message(STATUS "╚════════════════════════════════════════════════════════════╝")
 message(STATUS "")
