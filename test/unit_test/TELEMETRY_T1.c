@@ -1,35 +1,29 @@
-/** @file telemetry_ut1_line_state.c
- *
- * @brief Unit tests for telemetry_line_state_to_string().
- *
- * This module verifies that the telemetry_line_state_to_string() helper
- * returns the expected strings for each known LineFollowState value and
- * "UNKNOWN" for out-of-range values.
+/**
+ * @file    telemetry_ut1_line_state.c
+ * @brief   Unit tests for telemetry_line_state_to_string()
+ * @details Verifies that the telemetry_line_state_to_string() helper
+ *          returns the expected strings for each known LineFollowState
+ *          value and "UNKNOWN" for out-of-range values
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
+#include <string.h>
 #include <stdint.h>
+#include "telemetry.h"
 
-#include "telemetry.h"   /* LineFollowState, telemetry_line_state_to_string() */
-
-/* Local counters for success rate. */
 static int g_pass_count = 0;
 static int g_fail_count = 0;
 
-/*!
- * @brief Run a single test of line-follow-state-to-string mappings.
- *
- * @return true if all checks pass, false otherwise.
+/**
+ * @brief Run a single test of line-follow-state-to-string mappings
+ * @return true if all checks pass, false otherwise
  */
-static bool
-run_single_test (void)
+static bool run_single_test(void)
 {
-    bool         all_ok = true;
-    const char * s      = NULL;
+    bool all_ok = true;
+    const char *s = NULL;
 
-    /* These enum names must exist in telemetry.h. */
     s = telemetry_line_state_to_string(LINE_FOLLOW_CENTERED);
     if (strcmp(s, "CENTERED") != 0)
     {
@@ -66,8 +60,7 @@ run_single_test (void)
         all_ok = false;
     }
 
-    /* Out-of-range value must map to "UNKNOWN". */
-    s = telemetry_line_state_to_string((LineFollowState) 99);
+    s = telemetry_line_state_to_string((LineFollowState)99);
     if (strcmp(s, "UNKNOWN") != 0)
     {
         all_ok = false;
@@ -76,15 +69,14 @@ run_single_test (void)
     return all_ok;
 }
 
-/*!
- * @brief Entry point for this unit test executable.
+/**
+ * @brief Entry point for this unit test executable
  */
-int
-main (void)
+int main(void)
 {
-    int         i          = 0;
-    const int   iterations = 100;
-    const char *test_name  = "telemetry_ut1_line_state";
+    int i = 0;
+    const int iterations = 100;
+    const char *test_name = "telemetry_ut1_line_state";
 
     printf("Running %s...\n", test_name);
 
@@ -97,7 +89,7 @@ main (void)
         else
         {
             g_fail_count++;
-            printf("  Iteration %d failed.\n", i);
+            printf(" Iteration %d failed.\n", i);
         }
     }
 
@@ -109,5 +101,3 @@ main (void)
 
     return 0;
 }
-
-/*** end of file ***/

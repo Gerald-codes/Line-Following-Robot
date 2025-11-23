@@ -1,14 +1,15 @@
-/** @file telemetry_ut9_is_ready.c
- *
- * @brief Unit test for telemetry_is_ready() dependency on MQTT status.
+/**
+ * @file    telemetry_ut9_is_ready.c
+ * @brief   Unit test for telemetry_is_ready() dependency on MQTT status
+ * @details Verifies that telemetry_is_ready() correctly reflects
+ *          initialization state and MQTT connection status
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
+#include <string.h>
 #include <stdint.h>
-
-#include "telemetry.h"   /* telemetry_init(), telemetry_is_ready() */
+#include "telemetry.h"
 
 typedef enum
 {
@@ -19,46 +20,53 @@ typedef enum
 } mqtt_status_t;
 
 static mqtt_status_t g_mock_status = MQTT_DISCONNECTED;
-static bool          g_mock_connect_ok = true;
-
+static bool g_mock_connect_ok = true;
 static int g_pass_count = 0;
 static int g_fail_count = 0;
 
-/* Minimal stubs so telemetry_init() links but does nothing real. */
-
-void
-mqtt_init (const char * broker_ip, uint16_t port, const char * client_id)
+/**
+ * @brief Stub for mqtt_init() so telemetry_init() links
+ * @param broker_ip MQTT broker IP address
+ * @param port MQTT broker port
+ * @param client_id Client identifier
+ */
+void mqtt_init(const char *broker_ip, uint16_t port, const char *client_id)
 {
-    (void) broker_ip;
-    (void) port;
-    (void) client_id;
+    (void)broker_ip;
+    (void)port;
+    (void)client_id;
 }
 
-bool
-mqtt_connect (void)
+/**
+ * @brief Stub for mqtt_connect() used by telemetry_init()
+ * @return Mock connection result
+ */
+bool mqtt_connect(void)
 {
     return g_mock_connect_ok;
 }
 
-mqtt_status_t
-mqtt_get_status (void)
+/**
+ * @brief Mock for mqtt_get_status() used by telemetry_is_ready()
+ * @return Mock MQTT status
+ */
+mqtt_status_t mqtt_get_status(void)
 {
     return g_mock_status;
 }
 
-void
-mqtt_process (void)
+/**
+ * @brief Stub for mqtt_process() (not needed for this test)
+ */
+void mqtt_process(void)
 {
-    /* Not needed for this unit test. */
 }
 
-/*!
- * @brief Run one test of telemetry_is_ready() logic.
- *
- * @return true if all checks pass, false otherwise.
+/**
+ * @brief Run one test of telemetry_is_ready() logic
+ * @return true if all checks pass, false otherwise
  */
-static bool
-run_single_test (void)
+static bool run_single_test(void)
 {
     bool ok = true;
     bool ready = false;
@@ -66,7 +74,6 @@ run_single_test (void)
     g_mock_connect_ok = true;
     g_mock_status = MQTT_CONNECTED;
 
-    /* This will set telemetry internal flag to "initialized". */
     if (!telemetry_init("127.0.0.1", 1883U, "ut9_client"))
     {
         ok = false;
@@ -78,9 +85,7 @@ run_single_test (void)
         ok = false;
     }
 
-    /* Now simulate MQTT disconnection. */
     g_mock_status = MQTT_DISCONNECTED;
-
     ready = telemetry_is_ready();
     if (ready)
     {
@@ -90,13 +95,16 @@ run_single_test (void)
     return ok;
 }
 
-int
-main (void)
+/**
+ * @brief Entry point for this unit test executable
+ */
+int main(void)
 {
     int i = 0;
     const int iterations = 50;
+    const char *test_name = "telemetry_ut9_is_ready";
 
-    printf("Running telemetry_ut9_is_ready...\n");
+    printf("Running %s...\n", test_name);
 
     for (i = 0; i < iterations; i++)
     {
@@ -107,14 +115,15 @@ main (void)
         else
         {
             g_fail_count++;
-            printf("  Iteration %d failed.\n", i);
+            printf(" Iteration %d failed.\n", i);
         }
     }
 
-    printf("Result: %d passed, %d failed (iterations=%d)\n",
-           g_pass_count, g_fail_count, iterations);
+    printf("Result (%s): %d passed, %d failed (iterations=%d)\n",
+           test_name,
+           g_pass_count,
+           g_fail_count,
+           iterations);
 
     return 0;
 }
-
-/*** end of file ***/
