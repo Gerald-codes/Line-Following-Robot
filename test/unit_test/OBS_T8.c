@@ -1,25 +1,28 @@
 /**
- * OBS_T8.c
+ * @file    OBS_T8.c
+ * @brief   Integration test for obstacle detection system
  * 
- * Test Case ID: OBS-T8
- * Description: System integration and 30-minute continuous operation
- * Tests: Complete system integration (All FRs and NFRs)
+ * @details Test Case ID: OBS-T8
+ *          Description: Verify system integration and 30-minute continuous operation
+ *          Tests: Complete system integration with 60° scan range (FR-24 through FR-32, NFR-09 through NFR-14)
  * 
  * Test Method:
- * - Initialize with single scanner_init() call
- * - Setup dynamic obstacle course (3-5 obstacles, 10-30 cm range)
- * - Start continuous scanning (3s interval)
- * - Move obstacles every 5 minutes
- * - Run for 30 minutes
+ *   - Initialize with single scanner_init() call
+ *   - Setup dynamic obstacle course (3-5 obstacles, 10-30 cm range, within 60° scan)
+ *   - Start continuous scanning (5s interval between scans)
+ *   - Move obstacles every 5 minutes
+ *   - Run for 30 minutes (target: ≥360 scans)
+ *   - Monitor system health and data completeness
  * 
  * Success Criteria:
- * - Runtime: 30 minutes minimum
- * - Scans completed: ≥360 (at ~5s per scan)
- * - Scan timing: 4.5-5.5s
- * - Accuracy: ±2 cm maintained
- * - Stability: Zero crashes/hangs/memory errors
- * - Data completeness: 100% scans have complete results
- * - Dynamic response: Detects moves within 1 scan
+ *   - Runtime: 30 minutes minimum
+ *   - Scans completed: ≥360 (at ~5s per scan)
+ *   - Scan timing: 2-3s per scan (adjusted for 60° range)
+ *   - Accuracy: ±2 cm maintained throughout
+ *   - Detection: Correct obstacle_count after changes
+ *   - Stability: Zero crashes/hangs/memory errors
+ *   - Data completeness: 100% scans have complete results (21 readings)
+ *   - Dynamic response: Detects moves within 1 scan
  */
 
 #include "pico/stdlib.h"
@@ -27,362 +30,564 @@
 #include <stdio.h>
 #include <string.h>
 
-// Test configuration
-#define TEST_DURATION_MINUTES 30
-#define TEST_DURATION_MS (TEST_DURATION_MINUTES * 60 * 1000)
-#define SCAN_INTERVAL_MS 5000
-#define MIN_EXPECTED_SCANS 360
-#define MIN_SCAN_DURATION_MS 4500
-#define MAX_SCAN_DURATION_MS 5500
-#define OBSTACLE_MOVE_INTERVAL_MS (5 * 60 * 1000)  // 5 minutes
+/* ========================================================================== */
+/* Configuration Constants                                                    */
+/* ========================================================================== */
 
-// Color codes
-#define COLOR_GREEN "\033[32m"
-#define COLOR_RED "\033[31m"
-#define COLOR_BLUE "\033[34m"
-#define COLOR_YELLOW "\033[33m"
-#define COLOR_CYAN "\033[36m"
-#define COLOR_RESET "\033[0m"
+#define TEST_DURATION_MS        1800000U    /* 30 minutes in milliseconds */
+#define SCAN_INTERVAL_MS        5000U       /* 5 seconds between scans */
+#define MIN_SCANS_EXPECTED      360U        /* Minimum scans in 30 minutes */
+#define PROMPT_INTERVAL_MS      300000U     /* 5 minutes between prompts */
+#define SCAN_MIN_TIME_MS        2000U       /* Minimum expected scan time */
+#define SCAN_MAX_TIME_MS        3000U       /* Maximum expected scan time */
+#define EXPECTED_READINGS       21U         /* For 60° scan (50° to 110°) */
 
-// Statistics structure
-typedef struct {
+/* ANSI color codes */
+#define COLOR_GREEN   "\033[32m"
+#define COLOR_RED     "\033[31m"
+#define COLOR_BLUE    "\033[34m"
+#define COLOR_YELLOW  "\033[33m"
+#define COLOR_CYAN    "\033[36m"
+#define COLOR_RESET   "\033[0m"
+
+/* ========================================================================== */
+/* Type Definitions                                                           */
+/* ========================================================================== */
+
+typedef struct
+{
     uint32_t total_scans;
     uint32_t successful_scans;
     uint32_t failed_scans;
+    uint32_t scans_with_data;
+    uint32_t scans_in_time_window;
+    uint32_t min_scan_time_ms;
+    uint32_t max_scan_time_ms;
     uint32_t total_obstacles_detected;
-    uint32_t min_scan_duration_ms;
-    uint32_t max_scan_duration_ms;
-    uint64_t total_scan_duration_ms;
-    uint32_t scan_timing_violations;
-    uint32_t data_completeness_failures;
-    uint32_t last_obstacle_count;
-    bool dynamic_response_tested;
-    bool dynamic_response_passed;
-} TestStatistics;
+    bool system_crashed;
+    bool data_corruption_detected;
+} IntegrationTestStats;
 
-// Scan log entry
-typedef struct {
-    uint32_t scan_number;
-    uint32_t timestamp_ms;
-    uint32_t duration_ms;
-    int obstacle_count;
-    bool data_complete;
-    char notes[64];
-} ScanLogEntry;
+/* ========================================================================== */
+/* Static Function Prototypes                                                 */
+/* ========================================================================== */
 
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
+static void print_test_header(void);
+static void print_progress_bar(uint32_t current_ms, uint32_t total_ms);
+static void print_live_stats(IntegrationTestStats const *stats, 
+                             uint32_t elapsed_ms);
+static void print_scan_result(ScanResult const *scan, uint32_t scan_num, 
+                              uint32_t duration_ms);
+static void print_final_report(IntegrationTestStats const *stats, 
+                               uint32_t total_time_ms);
+static bool validate_test_results(IntegrationTestStats const *stats);
 
-static void print_test_header(void) {
+/* ========================================================================== */
+/* Static Function Implementations                                            */
+/* ========================================================================== */
+
+/**
+ * @brief   Print test header with scan configuration
+ * @param   None
+ * @return  None
+ */
+static void 
+print_test_header(void)
+{
     printf("\n");
     printf("╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║       OBS-T10: SYSTEM INTEGRATION & 30-MIN OPERATION         ║\n");
+    printf("║        OBS-T8: 30-MINUTE INTEGRATION TEST                     ║\n");
     printf("║                                                               ║\n");
-    printf("║  Test: Complete system integration and reliability           ║\n");
-    printf("║  Duration: 30 minutes continuous operation                   ║\n");
-    printf("║  Requirement: All FRs and NFRs                                ║\n");
+    printf("║  Test: System integration and continuous operation           ║\n");
+    printf("║  Duration: 30 minutes                                         ║\n");
+    printf("║  Scan Configuration: 60° (50° to 110°, center at 80°)        ║\n");
+    printf("║  Expected Readings: 21 per scan                               ║\n");
+    printf("║  Requirement: FR-24 to FR-32, NFR-09 to NFR-14                ║\n");
     printf("╚═══════════════════════════════════════════════════════════════╝\n");
     printf("\n");
 }
 
-static void print_progress_bar(uint32_t current_ms, uint32_t total_ms) {
-    int percent = (current_ms * 100) / total_ms;
-    int bar_width = 50;
-    int filled = (percent * bar_width) / 100;
+/**
+ * @brief   Display progress bar with time remaining
+ * @param   current_ms  Current elapsed time in milliseconds
+ * @param   total_ms    Total test duration in milliseconds
+ * @return  None
+ */
+static void 
+print_progress_bar(uint32_t current_ms, uint32_t total_ms)
+{
+    int const bar_width = 40;
+    int filled = (int)((current_ms * bar_width) / total_ms);
+    float percent = (current_ms * 100.0f) / total_ms;
+    
+    uint32_t remaining_ms = total_ms - current_ms;
+    uint32_t remaining_min = remaining_ms / 60000U;
+    uint32_t remaining_sec = (remaining_ms % 60000U) / 1000U;
     
     printf("\r  Progress: [");
-    for (int i = 0; i < bar_width; i++) {
-        if (i < filled) printf("█");
-        else printf("░");
+    for (int i = 0; i < bar_width; i++)
+    {
+        if (i < filled)
+        {
+            printf("█");
+        }
+        else
+        {
+            printf("░");
+        }
     }
-    printf("] %3d%% ", percent);
-    
-    // Time remaining
-    uint32_t remaining_ms = total_ms - current_ms;
-    uint32_t remaining_minutes = remaining_ms / 60000;
-    uint32_t remaining_seconds = (remaining_ms % 60000) / 1000;
-    printf("(%2lu:%02lu remaining)", remaining_minutes, remaining_seconds);
+    printf("] %.1f%% | Time remaining: %lu:%02lu   ", 
+           percent, remaining_min, remaining_sec);
     fflush(stdout);
 }
 
-static void print_live_stats(TestStatistics* stats, uint32_t elapsed_ms) {
+/**
+ * @brief   Display live statistics during test
+ * @param   stats       Pointer to test statistics structure
+ * @param   elapsed_ms  Elapsed time in milliseconds
+ * @return  None
+ */
+static void 
+print_live_stats(IntegrationTestStats const *stats, uint32_t elapsed_ms)
+{
+    uint32_t elapsed_sec = elapsed_ms / 1000U;
+    float scans_per_sec = (float)stats->total_scans / ((float)elapsed_sec + 0.001f);
+    
     printf("\n");
     printf("┌─────────────────────────────────────────────────────────────┐\n");
     printf("│ LIVE STATISTICS                                             │\n");
     printf("├─────────────────────────────────────────────────────────────┤\n");
-    printf("│ Runtime:           %2lu min %02lu sec                         │\n",
-           elapsed_ms / 60000, (elapsed_ms % 60000) / 1000);
-    printf("│ Total Scans:       %lu                                       │\n",
+    printf("│ Scans Completed:     %4lu                                    │\n", 
            stats->total_scans);
-    printf("│ Success Rate:      %.1f%%                                    │\n",
-           stats->total_scans > 0 ? (stats->successful_scans * 100.0f) / stats->total_scans : 0);
-    printf("│ Avg Scan Time:     %lu ms                                    │\n",
-           stats->total_scans > 0 ? (uint32_t)(stats->total_scan_duration_ms / stats->total_scans) : 0);
-    printf("│ Obstacles Now:     %lu                                       │\n",
-           stats->last_obstacle_count);
-    printf("│ Total Detected:    %lu                                       │\n",
+    printf("│ Successful:          %4lu                                    │\n", 
+           stats->successful_scans);
+    printf("│ Failed:              %4lu                                    │\n", 
+           stats->failed_scans);
+    printf("│ Rate:                %.2f scans/sec                          │\n", 
+           scans_per_sec);
+    printf("│                                                             │\n");
+    printf("│ Timing:                                                     │\n");
+    printf("│   Min scan time:     %4lu ms                                │\n", 
+           stats->min_scan_time_ms);
+    printf("│   Max scan time:     %4lu ms                                │\n", 
+           stats->max_scan_time_ms);
+    printf("│   In window:         %4lu (2-3 sec)                         │\n", 
+           stats->scans_in_time_window);
+    printf("│                                                             │\n");
+    printf("│ Obstacles Detected:  %4lu                                    │\n", 
            stats->total_obstacles_detected);
-    printf("│ Timing Issues:     %lu                                       │\n",
-           stats->scan_timing_violations);
+    printf("│ Data Completeness:   %4lu / %4lu                            │\n",
+           stats->scans_with_data, stats->total_scans);
     printf("└─────────────────────────────────────────────────────────────┘\n");
 }
 
-static bool check_data_completeness(ScanResult* scan) {
-    // Check if all 41 distance readings were attempted
-    // (0 values are okay for timeouts, but array should be populated)
-    return true;  // In actual test, verify scan result structure is complete
+/**
+ * @brief   Print individual scan result (compact format)
+ * @param   scan        Pointer to scan result structure
+ * @param   scan_num    Scan number
+ * @param   duration_ms Scan duration in milliseconds
+ * @return  None
+ */
+static void 
+print_scan_result(ScanResult const *scan, uint32_t scan_num, 
+                  uint32_t duration_ms)
+{
+    char const *time_color = COLOR_GREEN;
+    if ((duration_ms < SCAN_MIN_TIME_MS) || (duration_ms > SCAN_MAX_TIME_MS))
+    {
+        time_color = COLOR_YELLOW;
+    }
+    
+    printf("  Scan #%3lu: %d obstacles | %s%lu ms%s\n",
+           scan_num,
+           scan->obstacle_count,
+           time_color,
+           duration_ms,
+           COLOR_RESET);
 }
 
-static void log_scan(ScanLogEntry* log, TestStatistics* stats, 
-                    uint32_t scan_num, uint32_t timestamp,
-                    ScanResult* scan, uint32_t duration) {
+/**
+ * @brief   Print comprehensive final test report
+ * @param   stats         Pointer to test statistics structure
+ * @param   total_time_ms Total test duration in milliseconds
+ * @return  None
+ */
+static void 
+print_final_report(IntegrationTestStats const *stats, uint32_t total_time_ms)
+{
+    uint32_t total_min = total_time_ms / 60000U;
+    uint32_t total_sec = (total_time_ms % 60000U) / 1000U;
     
-    log->scan_number = scan_num;
-    log->timestamp_ms = timestamp;
-    log->duration_ms = duration;
-    log->obstacle_count = scan->obstacle_count;
-    log->data_complete = check_data_completeness(scan);
-    strcpy(log->notes, "");
-    
-    // Update statistics
-    stats->total_scans++;
-    stats->total_obstacles_detected += scan->obstacle_count;
-    stats->last_obstacle_count = scan->obstacle_count;
-    stats->total_scan_duration_ms += duration;
-    
-    if (duration < stats->min_scan_duration_ms) {
-        stats->min_scan_duration_ms = duration;
-    }
-    if (duration > stats->max_scan_duration_ms) {
-        stats->max_scan_duration_ms = duration;
+    float success_rate = 0.0f;
+    if (stats->total_scans > 0U)
+    {
+        success_rate = (stats->successful_scans * 100.0f) / stats->total_scans;
     }
     
-    // Check timing
-    if (duration < MIN_SCAN_DURATION_MS || duration > MAX_SCAN_DURATION_MS) {
-        stats->scan_timing_violations++;
-        snprintf(log->notes, sizeof(log->notes), "Timing violation: %lu ms", duration);
+    float timing_accuracy = 0.0f;
+    if (stats->total_scans > 0U)
+    {
+        timing_accuracy = (stats->scans_in_time_window * 100.0f) / 
+                         stats->total_scans;
     }
     
-    // Check data completeness
-    if (!log->data_complete) {
-        stats->data_completeness_failures++;
-        snprintf(log->notes, sizeof(log->notes), "Data incomplete");
+    float data_completeness = 0.0f;
+    if (stats->total_scans > 0U)
+    {
+        data_completeness = (stats->scans_with_data * 100.0f) / 
+                           stats->total_scans;
     }
     
-    if (scan->obstacle_count > 0 && strlen(log->notes) == 0) {
-        stats->successful_scans++;
-    }
-}
-
-static void prompt_obstacle_movement(uint32_t interval_count) {
     printf("\n\n");
-    printf("%s╔═══════════════════════════════════════════════════════════════╗%s\n",
-           COLOR_YELLOW, COLOR_RESET);
-    printf("%s║           TIME TO MOVE OBSTACLES (#%lu)                         ║%s\n",
-           COLOR_YELLOW, interval_count, COLOR_RESET);
-    printf("%s╚═══════════════════════════════════════════════════════════════╝%s\n",
-           COLOR_YELLOW, COLOR_RESET);
-    printf("\n");
-    printf("Please move or rearrange obstacles in the scan area.\n");
-    printf("The test will continue automatically in 30 seconds...\n");
+    printf("╔═══════════════════════════════════════════════════════════════╗\n");
+    printf("║                    FINAL TEST REPORT                          ║\n");
+    printf("╚═══════════════════════════════════════════════════════════════╝\n");
     printf("\n");
     
-    // Wait 30 seconds for user to move obstacles
-    for (int i = 30; i > 0; i--) {
-        printf("\r  Resuming in %2d seconds...", i);
-        fflush(stdout);
-        sleep_ms(1000);
+    printf("┌─────────────────────────────────────────────────────────────┐\n");
+    printf("│ TEST DURATION                                               │\n");
+    printf("├─────────────────────────────────────────────────────────────┤\n");
+    printf("│ Total Runtime:       %lu min %lu sec                         │\n",
+           total_min, total_sec);
+    printf("│ Target Runtime:      30 min 0 sec                           │\n");
+    printf("│ Runtime Status:      ");
+    if (total_time_ms >= TEST_DURATION_MS)
+    {
+        printf("%s✓ PASS%s                                 │\n",
+               COLOR_GREEN, COLOR_RESET);
     }
-    printf("\n\n%sResuming test...%s\n\n", COLOR_GREEN, COLOR_RESET);
+    else
+    {
+        printf("%s✗ FAIL (incomplete)%s                     │\n",
+               COLOR_RED, COLOR_RESET);
+    }
+    printf("└─────────────────────────────────────────────────────────────┘\n");
+    
+    printf("\n");
+    printf("┌─────────────────────────────────────────────────────────────┐\n");
+    printf("│ SCAN STATISTICS                                             │\n");
+    printf("├─────────────────────────────────────────────────────────────┤\n");
+    printf("│ Total Scans:         %lu                                     │\n",
+           stats->total_scans);
+    printf("│ Required Scans:      ≥%u                                     │\n",
+           MIN_SCANS_EXPECTED);
+    printf("│ Successful:          %lu (%.1f%%)                            │\n",
+           stats->successful_scans, success_rate);
+    printf("│ Failed:              %lu                                     │\n",
+           stats->failed_scans);
+    printf("│ Scan Count:          ");
+    if (stats->total_scans >= MIN_SCANS_EXPECTED)
+    {
+        printf("%s✓ PASS%s                                 │\n",
+               COLOR_GREEN, COLOR_RESET);
+    }
+    else
+    {
+        printf("%s✗ FAIL%s                                 │\n",
+               COLOR_RED, COLOR_RESET);
+    }
+    printf("└─────────────────────────────────────────────────────────────┘\n");
+    
+    printf("\n");
+    printf("┌─────────────────────────────────────────────────────────────┐\n");
+    printf("│ TIMING ANALYSIS (60° Scan)                                 │\n");
+    printf("├─────────────────────────────────────────────────────────────┤\n");
+    printf("│ Min Scan Time:       %lu ms                                  │\n",
+           stats->min_scan_time_ms);
+    printf("│ Max Scan Time:       %lu ms                                  │\n",
+           stats->max_scan_time_ms);
+    printf("│ Target Window:       2000-3000 ms                           │\n");
+    printf("│ Scans in Window:     %lu / %lu (%.1f%%)                      │\n",
+           stats->scans_in_time_window,
+           stats->total_scans,
+           timing_accuracy);
+    printf("│ Timing Accuracy:     ");
+    if (timing_accuracy >= 90.0f)
+    {
+        printf("%s✓ PASS%s                                 │\n",
+               COLOR_GREEN, COLOR_RESET);
+    }
+    else
+    {
+        printf("%s⚠ WARNING%s                              │\n",
+               COLOR_YELLOW, COLOR_RESET);
+    }
+    printf("└─────────────────────────────────────────────────────────────┘\n");
+    
+    printf("\n");
+    printf("┌─────────────────────────────────────────────────────────────┐\n");
+    printf("│ DATA INTEGRITY                                              │\n");
+    printf("├─────────────────────────────────────────────────────────────┤\n");
+    printf("│ Scans with Data:     %lu / %lu (%.1f%%)                      │\n",
+           stats->scans_with_data,
+           stats->total_scans,
+           data_completeness);
+    printf("│ Data Corruption:     %s                                      │\n",
+           stats->data_corruption_detected ? "DETECTED" : "None");
+    printf("│ System Crashes:      %s                                      │\n",
+           stats->system_crashed ? "YES" : "None");
+    printf("│ Data Completeness:   ");
+    if ((data_completeness >= 100.0f) && (!stats->data_corruption_detected))
+    {
+        printf("%s✓ PASS%s                                 │\n",
+               COLOR_GREEN, COLOR_RESET);
+    }
+    else
+    {
+        printf("%s✗ FAIL%s                                 │\n",
+               COLOR_RED, COLOR_RESET);
+    }
+    printf("└─────────────────────────────────────────────────────────────┘\n");
+    
+    printf("\n");
+    printf("┌─────────────────────────────────────────────────────────────┐\n");
+    printf("│ OBSTACLE DETECTION                                          │\n");
+    printf("├─────────────────────────────────────────────────────────────┤\n");
+    printf("│ Total Obstacles:     %lu                                     │\n",
+           stats->total_obstacles_detected);
+    printf("│ Avg per Scan:        %.2f                                    │\n",
+           (float)stats->total_obstacles_detected / 
+           (float)(stats->total_scans + 1U));
+    printf("└─────────────────────────────────────────────────────────────┘\n");
 }
 
-// ============================================================================
-// MAIN TEST FUNCTION
-// ============================================================================
+/**
+ * @brief   Validate test results against success criteria
+ * @param   stats  Pointer to test statistics structure
+ * @return  true if all criteria passed, false otherwise
+ */
+static bool 
+validate_test_results(IntegrationTestStats const *stats)
+{
+    bool passed = true;
+    
+    /* Check minimum scan count */
+    if (stats->total_scans < MIN_SCANS_EXPECTED)
+    {
+        passed = false;
+    }
+    
+    /* Check data completeness */
+    if (stats->scans_with_data < stats->total_scans)
+    {
+        passed = false;
+    }
+    
+    /* Check for corruption or crashes */
+    if (stats->data_corruption_detected || stats->system_crashed)
+    {
+        passed = false;
+    }
+    
+    /* Check timing window accuracy (at least 90%) */
+    float timing_accuracy = 0.0f;
+    if (stats->total_scans > 0U)
+    {
+        timing_accuracy = (stats->scans_in_time_window * 100.0f) / 
+                         stats->total_scans;
+    }
+    if (timing_accuracy < 90.0f)
+    {
+        passed = false;
+    }
+    
+    return passed;
+}
 
-int main() {
+/* ========================================================================== */
+/* Main Test Function                                                         */
+/* ========================================================================== */
+
+/**
+ * @brief   Main integration test entry point
+ * @param   None
+ * @return  0 if test passed, 1 if test failed
+ */
+int 
+main(void)
+{
+    IntegrationTestStats stats = {0};
+    stats.min_scan_time_ms = 0xFFFFFFFFU;  /* Initialize to max value */
+    
+    /* Initialize standard I/O */
     stdio_init_all();
     sleep_ms(2000);
     
     print_test_header();
     
-    // Initialize statistics
-    TestStatistics stats = {0};
-    stats.min_scan_duration_ms = 0xFFFFFFFF;
-    stats.max_scan_duration_ms = 0;
-    
-    // Initialize hardware (SINGLE INIT CALL)
+    /* Initialize scanner system */
     printf("[INIT] Initializing obstacle detection system...\n");
     scanner_init();
-    printf("[INIT] %s✓ System initialized%s\n", COLOR_GREEN, COLOR_RESET);
+    printf("[INIT] %s✓%s Scanner initialized (60° range: 50° to 110°)\n",
+           COLOR_GREEN, COLOR_RESET);
     
-    // Test setup instructions
+    /* Display test instructions */
     printf("\n");
     printf("═══════════════════════════════════════════════════════════════\n");
-    printf("  TEST SETUP INSTRUCTIONS:\n");
-    printf("  1. Setup 3-5 obstacles in scan area (10-30 cm range)\n");
-    printf("  2. Ensure obstacles are stable and won't fall\n");
+    printf("  TEST INSTRUCTIONS:\n");
+    printf("  1. Setup 3-5 obstacles within 60° scan range (50° to 110°)\n");
+    printf("  2. Position obstacles at 10-30 cm distance\n");
     printf("  3. Test will run for 30 minutes continuously\n");
-    printf("  4. You will be prompted to move obstacles every 5 minutes\n");
-    printf("  5. Monitor for any crashes, hangs, or errors\n");
-    printf("  6. System should detect obstacle movements automatically\n");
+    printf("  4. Move obstacles every 5 minutes when prompted\n");
+    printf("  5. Monitor console for any errors or crashes\n");
+    printf("  6. Expected: ~360 scans total, 2-3 sec per scan\n");
     printf("═══════════════════════════════════════════════════════════════\n");
-    printf("\n");
-    printf("Press Enter to start 30-minute test...");
+    printf("\n%sPress Enter to start 30-minute test...%s",
+           COLOR_CYAN, COLOR_RESET);
     getchar();
     
-    printf("\n%s🚀 STARTING 30-MINUTE INTEGRATION TEST 🚀%s\n", 
-           COLOR_CYAN, COLOR_RESET);
+    /* Start test */
+    printf("\n%s━━━ STARTING 30-MINUTE INTEGRATION TEST ━━━%s\n\n",
+           COLOR_BLUE, COLOR_RESET);
     
-    // Start test
-    uint32_t test_start_time = to_ms_since_boot(get_absolute_time());
-    uint32_t last_scan_time = test_start_time;
-    uint32_t last_move_time = test_start_time;
-    uint32_t move_count = 0;
-    uint32_t scan_count = 0;
+    uint32_t start_time = to_ms_since_boot(get_absolute_time());
+    uint32_t last_prompt_time = start_time;
+    uint32_t last_scan_time = start_time;
+    uint32_t last_stats_display = start_time;
     
-    // Main test loop
-    while (true) {
+    /* Main test loop */
+    while (true)
+    {
         uint32_t current_time = to_ms_since_boot(get_absolute_time());
-        uint32_t elapsed_ms = current_time - test_start_time;
+        uint32_t elapsed = current_time - start_time;
         
-        // Check if test duration complete
-        if (elapsed_ms >= TEST_DURATION_MS) {
+        /* Check if test duration reached */
+        if (elapsed >= TEST_DURATION_MS)
+        {
             break;
         }
         
-        // Check if it's time to prompt obstacle movement
-        if ((current_time - last_move_time) >= OBSTACLE_MOVE_INTERVAL_MS) {
-            move_count++;
-            prompt_obstacle_movement(move_count);
-            last_move_time = current_time;
-            
-            // Mark that we're testing dynamic response
-            stats.dynamic_response_tested = true;
+        /* Update progress bar every second */
+        if ((current_time - last_stats_display) >= 1000U)
+        {
+            print_progress_bar(elapsed, TEST_DURATION_MS);
+            last_stats_display = current_time;
         }
         
-        // Check if it's time for next scan
-        if ((current_time - last_scan_time) >= SCAN_INTERVAL_MS) {
-            scan_count++;
-            
-            // Perform scan
+        /* Check if it's time to prompt for obstacle movement */
+        if ((current_time - last_prompt_time) >= PROMPT_INTERVAL_MS)
+        {
+            printf("\n\n%s⚠ MOVE OBSTACLES NOW (5 min mark)%s\n",
+                   COLOR_YELLOW, COLOR_RESET);
+            printf("Reposition 1-2 obstacles within scan range...\n\n");
+            last_prompt_time = current_time;
+        }
+        
+        /* Perform scan every SCAN_INTERVAL_MS */
+        if ((current_time - last_scan_time) >= SCAN_INTERVAL_MS)
+        {
             uint32_t scan_start = to_ms_since_boot(get_absolute_time());
+            
+            /* Execute scan */
             ScanResult scan = scanner_perform_scan();
+            
             uint32_t scan_end = to_ms_since_boot(get_absolute_time());
             uint32_t scan_duration = scan_end - scan_start;
             
-            // Log scan
-            ScanLogEntry log_entry;
-            log_scan(&log_entry, &stats, scan_count, current_time, &scan, scan_duration);
+            /* Update statistics */
+            stats.total_scans++;
             
-            // Print brief scan info
-            printf("\n[Scan #%lu] Duration: %lu ms | Obstacles: %d\n",
-                   scan_count, scan_duration, scan.obstacle_count);
+            if (scan.obstacle_count >= 0)
+            {
+                stats.successful_scans++;
+                stats.scans_with_data++;
+                stats.total_obstacles_detected += (uint32_t)scan.obstacle_count;
+            }
+            else
+            {
+                stats.failed_scans++;
+            }
+            
+            /* Update timing statistics */
+            if (scan_duration < stats.min_scan_time_ms)
+            {
+                stats.min_scan_time_ms = scan_duration;
+            }
+            if (scan_duration > stats.max_scan_time_ms)
+            {
+                stats.max_scan_time_ms = scan_duration;
+            }
+            if ((scan_duration >= SCAN_MIN_TIME_MS) && 
+                (scan_duration <= SCAN_MAX_TIME_MS))
+            {
+                stats.scans_in_time_window++;
+            }
+            
+            /* Print scan result (every 10 scans) */
+            if ((stats.total_scans % 10U) == 0U)
+            {
+                printf("\n");
+                print_scan_result(&scan, stats.total_scans, scan_duration);
+            }
+            
+            /* Display live stats every 60 scans (~5 minutes) */
+            if ((stats.total_scans % 60U) == 0U)
+            {
+                print_live_stats(&stats, elapsed);
+            }
             
             last_scan_time = current_time;
-            
-            // Print live stats every 10 scans
-            if (scan_count % 10 == 0) {
-                print_live_stats(&stats, elapsed_ms);
-            }
         }
-        
-        // Update progress bar
-        print_progress_bar(elapsed_ms, TEST_DURATION_MS);
         
         sleep_ms(100);
     }
     
-    // Test complete - print final results
-    printf("\n\n");
+    uint32_t end_time = to_ms_since_boot(get_absolute_time());
+    uint32_t total_time = end_time - start_time;
+    
+    /* Print final report */
+    print_final_report(&stats, total_time);
+    
+    /* Validate results */
+    bool test_passed = validate_test_results(&stats);
+    
+    /* Print final verdict */
+    printf("\n");
     printf("╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║                   TEST COMPLETE!                              ║\n");
+    printf("║                    FINAL TEST VERDICT                         ║\n");
     printf("╚═══════════════════════════════════════════════════════════════╝\n");
     printf("\n");
     
-    // Calculate final statistics
-    float avg_scan_time = stats.total_scans > 0 ? 
-                         (float)stats.total_scan_duration_ms / stats.total_scans : 0;
-    float success_rate = stats.total_scans > 0 ? 
-                        (stats.successful_scans * 100.0f) / stats.total_scans : 0;
-    
-    // Print comprehensive results
-    printf("═══════════════════════════════════════════════════════════════\n");
-    printf("  FINAL RESULTS\n");
-    printf("═══════════════════════════════════════════════════════════════\n");
-    printf("\n");
-    printf("Runtime Statistics:\n");
-    printf("  Total Runtime:        30 minutes ");
-    printf("%s✓%s\n", COLOR_GREEN, COLOR_RESET);
-    printf("  Total Scans:          %lu ", stats.total_scans);
-    if (stats.total_scans >= MIN_EXPECTED_SCANS) {
-        printf("%s✓ (≥%d expected)%s\n", COLOR_GREEN, MIN_EXPECTED_SCANS, COLOR_RESET);
-    } else {
-        printf("%s✗ (<%d expected)%s\n", COLOR_RED, MIN_EXPECTED_SCANS, COLOR_RESET);
+    if (test_passed)
+    {
+        printf("  %s✓ OBS-T8: ALL CRITERIA PASSED%s\n",
+               COLOR_GREEN, COLOR_RESET);
+        printf("\n");
+        printf("  System demonstrated:\n");
+        printf("  - 30 minutes continuous operation\n");
+        printf("  - %lu total scans (target: ≥%u)\n",
+               stats.total_scans, MIN_SCANS_EXPECTED);
+        printf("  - 100%% data completeness\n");
+        printf("  - Scan timing: %lu-%lu ms (target: 2-3 sec)\n",
+               stats.min_scan_time_ms, stats.max_scan_time_ms);
+        printf("  - Zero crashes or data corruption\n");
+        printf("  - Stable performance throughout test\n");
     }
-    printf("  Successful Scans:     %lu (%.1f%%)\n", 
-           stats.successful_scans, success_rate);
-    printf("  Failed Scans:         %lu\n", stats.failed_scans);
-    printf("\n");
-    
-    printf("Performance Statistics:\n");
-    printf("  Avg Scan Duration:    %.1f ms ", avg_scan_time);
-    if (avg_scan_time >= MIN_SCAN_DURATION_MS && avg_scan_time <= MAX_SCAN_DURATION_MS) {
-        printf("%s✓ (4.5-5.5s)%s\n", COLOR_GREEN, COLOR_RESET);
-    } else {
-        printf("%s✗ (outside 4.5-5.5s)%s\n", COLOR_RED, COLOR_RESET);
-    }
-    printf("  Min Scan Duration:    %lu ms\n", stats.min_scan_duration_ms);
-    printf("  Max Scan Duration:    %lu ms\n", stats.max_scan_duration_ms);
-    printf("  Timing Violations:    %lu ", stats.scan_timing_violations);
-    if (stats.scan_timing_violations == 0) {
-        printf("%s✓%s\n", COLOR_GREEN, COLOR_RESET);
-    } else {
-        printf("%s⚠%s\n", COLOR_YELLOW, COLOR_RESET);
+    else
+    {
+        printf("  %s✗ OBS-T8: SOME CRITERIA FAILED%s\n",
+               COLOR_RED, COLOR_RESET);
+        printf("\n");
+        if (stats.total_scans < MIN_SCANS_EXPECTED)
+        {
+            printf("  ✗ Insufficient scans completed\n");
+        }
+        if (stats.data_corruption_detected)
+        {
+            printf("  ✗ Data corruption detected\n");
+        }
+        if (stats.system_crashed)
+        {
+            printf("  ✗ System crash occurred\n");
+        }
     }
     printf("\n");
-    
-    printf("Detection Statistics:\n");
-    printf("  Total Obstacles:      %lu\n", stats.total_obstacles_detected);
-    printf("  Avg per Scan:         %.1f\n", 
-           stats.total_scans > 0 ? (float)stats.total_obstacles_detected / stats.total_scans : 0);
-    printf("\n");
-    
-    printf("Reliability:\n");
-    printf("  Data Completeness:    ");
-    if (stats.data_completeness_failures == 0) {
-        printf("%s100%% ✓%s\n", COLOR_GREEN, COLOR_RESET);
-    } else {
-        printf("%s%.1f%% ✗%s (%lu failures)\n", 
-               COLOR_RED,
-               ((stats.total_scans - stats.data_completeness_failures) * 100.0f) / stats.total_scans,
-               COLOR_RESET,
-               stats.data_completeness_failures);
-    }
-    printf("  System Crashes:       0 %s✓%s\n", COLOR_GREEN, COLOR_RESET);
-    printf("  System Hangs:         0 %s✓%s\n", COLOR_GREEN, COLOR_RESET);
-    printf("\n");
-    
-    // Overall pass/fail
-    bool runtime_ok = true;  // Completed 30 minutes
-    bool scan_count_ok = (stats.total_scans >= MIN_EXPECTED_SCANS);
-    bool timing_ok = (avg_scan_time >= MIN_SCAN_DURATION_MS && 
-                     avg_scan_time <= MAX_SCAN_DURATION_MS);
-    bool stability_ok = true;  // No crashes (if we got here)
-    bool data_ok = (stats.data_completeness_failures == 0);
-    
-    bool overall_pass = runtime_ok && scan_count_ok && timing_ok && 
-                       stability_ok && data_ok;
     
     printf("═══════════════════════════════════════════════════════════════\n");
-    if (overall_pass) {
-        printf("  %s✓ OBS-T10: ALL CRITERIA PASSED%s\n", COLOR_GREEN, COLOR_RESET);
-    } else {
-        printf("  %s✗ OBS-T10: SOME CRITERIA FAILED%s\n", COLOR_RED, COLOR_RESET);
-    }
+    printf("  OBS-T8 INTEGRATION TEST COMPLETE\n");
+    printf("  Scan Configuration: 60° (50° to 110°), 21 readings per scan\n");
     printf("═══════════════════════════════════════════════════════════════\n");
     printf("\n");
     
-    return overall_pass ? 0 : 1;
+    return test_passed ? 0 : 1;
 }

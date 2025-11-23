@@ -1,9 +1,9 @@
 /**
- * OBS_T7.c
+ * @file    OBS_T7.c
+ * @brief   Test Case OBS-T7: EMA Width Smoothing
  * 
- * Test Case ID: OBS-T7
- * Description: Verify EMA width smoothing
- * Tests: Exponential moving average width smoothing distance (FR-30, NFR-10)
+ * @details Verifies exponential moving average width smoothing effectiveness.
+ *          Tests FR-30 (width smoothing) and NFR-10 (measurement accuracy).
  * 
  * Test Method:
  * - Position 15 cm wide obstacle at 20 cm
@@ -25,105 +25,173 @@
 #include "obstacle_scanner.h"
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 
-// Test configuration
-#define NUM_SCANS 10
-#define ACTUAL_WIDTH_CM 15
-#define TEST_DISTANCE_CM 20
-#define MAX_CONVERGENCE_SCANS 4
-#define MIN_ACCEPTABLE_WIDTH_CM 14.25
-#define MAX_ACCEPTABLE_WIDTH_CM 15.75
-#define MAX_FINAL_VARIATION_CM 1.0
+/*******************************************************************************
+ * CONSTANTS AND MACROS
+ ******************************************************************************/
 
-// Color codes
-#define COLOR_GREEN "\033[32m"
-#define COLOR_RED "\033[31m"
-#define COLOR_BLUE "\033[34m"
-#define COLOR_YELLOW "\033[33m"
-#define COLOR_RESET "\033[0m"
+/* Test Configuration */
+#define NUM_SCANS                   (10)
+#define ACTUAL_WIDTH_CM             (15)
+#define TEST_DISTANCE_CM            (20)
+#define MAX_CONVERGENCE_SCANS       (4)
+#define MIN_ACCEPTABLE_WIDTH_CM     (14.25f)
+#define MAX_ACCEPTABLE_WIDTH_CM     (15.75f)
+#define MAX_FINAL_VARIATION_CM      (1.0f)
 
-// Test result structure
-typedef struct {
+/* ANSI Color Codes */
+#define COLOR_GREEN    "\033[32m"
+#define COLOR_RED      "\033[31m"
+#define COLOR_BLUE     "\033[34m"
+#define COLOR_YELLOW   "\033[33m"
+#define COLOR_RESET    "\033[0m"
+
+/*******************************************************************************
+ * TYPE DEFINITIONS
+ ******************************************************************************/
+
+/**
+ * @brief EMA test result structure
+ */
+typedef struct
+{
     float raw_widths[NUM_SCANS];
     float smoothed_widths[NUM_SCANS];
     float initial_width;
     float stabilized_width;
-    int convergence_scan;
+    int   convergence_scan;
     float final_variation;
-    bool convergence_ok;
-    bool stabilized_within_range;
-    bool variation_ok;
-    bool smoothing_visible;
-    bool passed;
-} EMATestResult;
+    bool  convergence_ok;
+    bool  stabilized_within_range;
+    bool  variation_ok;
+    bool  smoothing_visible;
+    bool  passed;
+} EMATestResult_t;
 
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
+/*******************************************************************************
+ * PRIVATE FUNCTION PROTOTYPES
+ ******************************************************************************/
 
-static void print_test_header(void) {
+static void print_test_header(void);
+static float calculate_std_dev(float const * p_values, int start_idx, int count);
+static void print_scan_table(EMATestResult_t const * p_result);
+static void print_visual_plot(EMATestResult_t const * p_result);
+static void print_test_result(EMATestResult_t const * p_result);
+
+/*******************************************************************************
+ * PRIVATE FUNCTIONS
+ ******************************************************************************/
+
+/**
+ * @brief Print test header banner
+ */
+static void
+print_test_header(void)
+{
     printf("\n");
     printf("╔═══════════════════════════════════════════════════════════════╗\n");
-    printf("║           OBS-T9: EMA WIDTH SMOOTHING                         ║\n");
+    printf("║           OBS-T7: EMA WIDTH SMOOTHING                         ║\n");
     printf("║                                                               ║\n");
     printf("║  Test: Exponential moving average width smoothing            ║\n");
     printf("║  Requirement: FR-30, NFR-10                                   ║\n");
+    printf("║  Scan Range: 60° (50° to 110°, centered at 80°)              ║\n");
     printf("╚═══════════════════════════════════════════════════════════════╝\n");
     printf("\n");
 }
 
-static float calculate_std_dev(float* values, int start_idx, int count) {
-    // Calculate mean
-    float sum = 0;
-    for (int i = start_idx; i < start_idx + count && i < NUM_SCANS; i++) {
-        sum += values[i];
-    }
-    float mean = sum / count;
+/**
+ * @brief Calculate standard deviation of values
+ * 
+ * @param[in] p_values  Pointer to array of values
+ * @param[in] start_idx Starting index
+ * @param[in] count     Number of values to process
+ * @return    Standard deviation
+ */
+static float
+calculate_std_dev(float const * p_values, int start_idx, int count)
+{
+    float sum = 0.0f;
+    float mean;
+    float variance_sum = 0.0f;
+    int i;
     
-    // Calculate variance
-    float variance_sum = 0;
-    for (int i = start_idx; i < start_idx + count && i < NUM_SCANS; i++) {
-        float diff = values[i] - mean;
-        variance_sum += diff * diff;
+    /* Calculate mean */
+    for (i = start_idx; (i < (start_idx + count)) && (i < NUM_SCANS); i++)
+    {
+        sum += p_values[i];
+    }
+    mean = sum / (float)count;
+    
+    /* Calculate variance */
+    for (i = start_idx; (i < (start_idx + count)) && (i < NUM_SCANS); i++)
+    {
+        float diff = p_values[i] - mean;
+        variance_sum += (diff * diff);
     }
     
-    return sqrtf(variance_sum / count);
+    return sqrtf(variance_sum / (float)count);
 }
 
-static void print_scan_table(EMATestResult* result) {
+/**
+ * @brief Print table of scan measurements
+ * 
+ * @param[in] p_result Pointer to test result structure
+ */
+static void
+print_scan_table(EMATestResult_t const * p_result)
+{
+    int i;
+    
     printf("\n┌─────────────────────────────────────────────────────────────┐\n");
     printf("│ SCAN MEASUREMENTS                                           │\n");
     printf("├─────────────────────────────────────────────────────────────┤\n");
     printf("│ Scan │ Raw Width │ Smoothed │ Change │ Status            │\n");
     printf("│──────┼───────────┼──────────┼────────┼───────────────────│\n");
     
-    for (int i = 0; i < NUM_SCANS; i++) {
-        float change = 0;
-        const char* status = "";
+    for (i = 0; i < NUM_SCANS; i++)
+    {
+        float change = 0.0f;
+        char const * p_status = "";
         
-        if (i > 0) {
-            change = result->smoothed_widths[i] - result->smoothed_widths[i-1];
+        if (i > 0)
+        {
+            change = p_result->smoothed_widths[i] - p_result->smoothed_widths[i-1];
         }
         
-        if (i == 0) {
-            status = "Initial";
-        } else if (i < MAX_CONVERGENCE_SCANS) {
-            status = "Converging";
-        } else {
-            status = "Stable";
+        if (0 == i)
+        {
+            p_status = "Initial";
+        }
+        else if (i < MAX_CONVERGENCE_SCANS)
+        {
+            p_status = "Converging";
+        }
+        else
+        {
+            p_status = "Stable";
         }
         
         printf("│  %2d  │  %6.2f   │  %6.2f  │ %+5.2f │ %-17s │\n",
                i + 1,
-               result->raw_widths[i],
-               result->smoothed_widths[i],
+               p_result->raw_widths[i],
+               p_result->smoothed_widths[i],
                change,
-               status);
+               p_status);
     }
     printf("└─────────────────────────────────────────────────────────────┘\n");
 }
 
-static void print_visual_plot(EMATestResult* result) {
+/**
+ * @brief Print visual plot of width convergence
+ * 
+ * @param[in] p_result Pointer to test result structure
+ */
+static void
+print_visual_plot(EMATestResult_t const * p_result)
+{
+    int i;
+    
     printf("\n┌─────────────────────────────────────────────────────────────┐\n");
     printf("│ WIDTH CONVERGENCE PLOT                                      │\n");
     printf("├─────────────────────────────────────────────────────────────┤\n");
@@ -133,9 +201,13 @@ static void print_visual_plot(EMATestResult* result) {
     printf("│   17 │                                                      │\n");
     printf("│   16 │");
     
-    // Plot smoothed values
-    for (int i = 0; i < NUM_SCANS; i++) {
-        if (i > 0) printf("      ");
+    /* Plot smoothed values */
+    for (i = 0; i < NUM_SCANS; i++)
+    {
+        if (i > 0)
+        {
+            printf("      ");
+        }
         printf("●");
     }
     printf("     │\n");
@@ -151,57 +223,76 @@ static void print_visual_plot(EMATestResult* result) {
     printf("└─────────────────────────────────────────────────────────────┘\n");
 }
 
-static void print_test_result(EMATestResult* result) {
+/**
+ * @brief Print formatted test result
+ * 
+ * @param[in] p_result Pointer to test result structure
+ */
+static void
+print_test_result(EMATestResult_t const * p_result)
+{
     printf("\n┌─────────────────────────────────────────────────────────────┐\n");
     printf("│ EMA SMOOTHING ANALYSIS                                      │\n");
     printf("├─────────────────────────────────────────────────────────────┤\n");
     printf("│ Initial Width (Scan 1):     %.2f cm                          │\n", 
-           result->initial_width);
+           p_result->initial_width);
     printf("│ Stabilized Width (7-10):    %.2f cm                          │\n", 
-           result->stabilized_width);
+           p_result->stabilized_width);
     printf("│ Target Width:               %d cm                            │\n", 
            ACTUAL_WIDTH_CM);
     printf("│ Convergence Scan:           %d (max: %d)                     │\n",
-           result->convergence_scan, MAX_CONVERGENCE_SCANS);
+           p_result->convergence_scan, MAX_CONVERGENCE_SCANS);
     printf("│ Final Variation (σ):        %.2f cm (max: %.1f cm)          │\n",
-           result->final_variation, MAX_FINAL_VARIATION_CM);
+           p_result->final_variation, MAX_FINAL_VARIATION_CM);
     printf("├─────────────────────────────────────────────────────────────┤\n");
     
     printf("│ Convergence Time:       %s%-6s%s                             │\n",
-           result->convergence_ok ? COLOR_GREEN : COLOR_RED,
-           result->convergence_ok ? "✓ PASS" : "✗ FAIL",
+           p_result->convergence_ok ? COLOR_GREEN : COLOR_RED,
+           p_result->convergence_ok ? "✓ PASS" : "✗ FAIL",
            COLOR_RESET);
     printf("│ Stabilized Value:       %s%-6s%s                             │\n",
-           result->stabilized_within_range ? COLOR_GREEN : COLOR_RED,
-           result->stabilized_within_range ? "✓ PASS" : "✗ FAIL",
+           p_result->stabilized_within_range ? COLOR_GREEN : COLOR_RED,
+           p_result->stabilized_within_range ? "✓ PASS" : "✗ FAIL",
            COLOR_RESET);
     printf("│ Final Variation:        %s%-6s%s                             │\n",
-           result->variation_ok ? COLOR_GREEN : COLOR_RED,
-           result->variation_ok ? "✓ PASS" : "✗ FAIL",
+           p_result->variation_ok ? COLOR_GREEN : COLOR_RED,
+           p_result->variation_ok ? "✓ PASS" : "✗ FAIL",
            COLOR_RESET);
     printf("│ Smoothing Visible:      %s%-6s%s                             │\n",
-           result->smoothing_visible ? COLOR_GREEN : COLOR_YELLOW,
-           result->smoothing_visible ? "✓ PASS" : "⚠ WARN",
+           p_result->smoothing_visible ? COLOR_GREEN : COLOR_YELLOW,
+           p_result->smoothing_visible ? "✓ PASS" : "⚠ WARN",
            COLOR_RESET);
     printf("└─────────────────────────────────────────────────────────────┘\n");
 }
 
-// ============================================================================
-// MAIN TEST FUNCTION
-// ============================================================================
+/*******************************************************************************
+ * PUBLIC FUNCTIONS
+ ******************************************************************************/
 
-int main() {
+/**
+ * @brief Main test function
+ * 
+ * @return 0 if all tests passed, 1 otherwise
+ */
+int
+main(void)
+{
+    EMATestResult_t result = {0};
+    float sum = 0.0f;
+    float raw_std;
+    float smoothed_std;
+    int count = 0;
+    int i;
+    
     stdio_init_all();
     sleep_ms(2000);
     
     print_test_header();
     
-    // Initialize hardware
+    /* Initialize hardware */
     printf("[INIT] Initializing scanner system...\n");
     scanner_init();
     printf("[INIT] ✓ Scanner initialized\n");
-    
-    EMATestResult result = {0};
     
     printf("\n");
     printf("═══════════════════════════════════════════════════════════════\n");
@@ -213,73 +304,82 @@ int main() {
     printf("  4. EMA formula: smoothed = (0.7 × width) + (0.3 × last)\n");
     printf("═══════════════════════════════════════════════════════════════\n");
     printf("\nPress Enter to begin test...");
-    getchar();
+    (void)getchar();
     
     printf("\n%sPerforming %d scans...%s\n\n", 
            COLOR_BLUE, NUM_SCANS, COLOR_RESET);
     
-    // Perform scans
-    for (int i = 0; i < NUM_SCANS; i++) {
+    /* Perform scans */
+    for (i = 0; i < NUM_SCANS; i++)
+    {
+        ScanResult scan;
+        
         printf("  Scan %d/%d: ", i + 1, NUM_SCANS);
         
-        ScanResult scan = scanner_perform_scan();
+        scan = scanner_perform_scan();
         
-        if (scan.obstacle_count > 0) {
+        if (scan.obstacle_count > 0)
+        {
             result.raw_widths[i] = scan.obstacles[0].width;
             result.smoothed_widths[i] = scan.obstacles[0].smoothed_width;
             
             printf("Raw=%.2f cm, Smoothed=%.2f cm\n",
                    result.raw_widths[i], result.smoothed_widths[i]);
-        } else {
+        }
+        else
+        {
             printf("%sNo obstacle detected!%s\n", COLOR_YELLOW, COLOR_RESET);
-            result.raw_widths[i] = 0;
-            result.smoothed_widths[i] = 0;
+            result.raw_widths[i] = 0.0f;
+            result.smoothed_widths[i] = 0.0f;
         }
         
         sleep_ms(500);
     }
     
-    // Calculate statistics
+    /* Calculate statistics */
     result.initial_width = result.smoothed_widths[0];
     
-    // Calculate stabilized width (mean of scans 7-10)
-    float sum = 0;
-    int count = 0;
-    for (int i = 6; i < NUM_SCANS; i++) {
-        if (result.smoothed_widths[i] > 0) {
+    /* Calculate stabilized width (mean of scans 7-10) */
+    for (i = 6; i < NUM_SCANS; i++)
+    {
+        if (result.smoothed_widths[i] > 0.0f)
+        {
             sum += result.smoothed_widths[i];
             count++;
         }
     }
-    result.stabilized_width = count > 0 ? sum / count : 0;
+    result.stabilized_width = (count > 0) ? (sum / (float)count) : 0.0f;
     
-    // Find convergence scan (when change becomes < 0.5 cm)
+    /* Find convergence scan (when change becomes < 0.5 cm) */
     result.convergence_scan = NUM_SCANS;
-    for (int i = 1; i < NUM_SCANS; i++) {
+    for (i = 1; i < NUM_SCANS; i++)
+    {
         float change = fabsf(result.smoothed_widths[i] - result.smoothed_widths[i-1]);
-        if (change < 0.5f) {
+        if (change < 0.5f)
+        {
             result.convergence_scan = i + 1;
             break;
         }
     }
     
-    // Calculate final variation (std dev of scans 7-10)
+    /* Calculate final variation (std dev of scans 7-10) */
     result.final_variation = calculate_std_dev(result.smoothed_widths, 6, 4);
     
-    // Check if smoothing is visible (smoothed has less variation than raw)
-    float raw_std = calculate_std_dev(result.raw_widths, 0, NUM_SCANS);
-    float smoothed_std = calculate_std_dev(result.smoothed_widths, 0, NUM_SCANS);
+    /* Check if smoothing is visible (smoothed has less variation than raw) */
+    raw_std = calculate_std_dev(result.raw_widths, 0, NUM_SCANS);
+    smoothed_std = calculate_std_dev(result.smoothed_widths, 0, NUM_SCANS);
     result.smoothing_visible = (smoothed_std < raw_std);
     
-    // Check criteria
+    /* Check criteria */
     result.convergence_ok = (result.convergence_scan <= MAX_CONVERGENCE_SCANS);
-    result.stabilized_within_range = (result.stabilized_width >= MIN_ACCEPTABLE_WIDTH_CM &&
-                                      result.stabilized_width <= MAX_ACCEPTABLE_WIDTH_CM);
+    result.stabilized_within_range = ((result.stabilized_width >= MIN_ACCEPTABLE_WIDTH_CM) &&
+                                      (result.stabilized_width <= MAX_ACCEPTABLE_WIDTH_CM));
     result.variation_ok = (result.final_variation <= MAX_FINAL_VARIATION_CM);
-    result.passed = result.convergence_ok && result.stabilized_within_range && 
-                    result.variation_ok;
+    result.passed = (result.convergence_ok && 
+                    result.stabilized_within_range && 
+                    result.variation_ok);
     
-    // Print results
+    /* Print results */
     printf("\n\n");
     printf("╔═══════════════════════════════════════════════════════════════╗\n");
     printf("║                      TEST RESULTS                             ║\n");
@@ -289,40 +389,46 @@ int main() {
     print_test_result(&result);
     print_visual_plot(&result);
     
-    // Final summary
+    /* Final summary */
     printf("\n");
     printf("╔═══════════════════════════════════════════════════════════════╗\n");
     printf("║                    FINAL TEST SUMMARY                         ║\n");
     printf("╚═══════════════════════════════════════════════════════════════╝\n");
     printf("\n");
     
-    if (result.passed) {
-        printf("  %s✓ OBS-T9: ALL CRITERIA PASSED%s\n", COLOR_GREEN, COLOR_RESET);
+    if (result.passed)
+    {
+        printf("  %s✓ OBS-T7: ALL CRITERIA PASSED%s\n", COLOR_GREEN, COLOR_RESET);
         printf("\n");
         printf("  EMA width smoothing is working correctly:\n");
         printf("  - Converges within %d scans\n", result.convergence_scan);
         printf("  - Stabilizes at %.2f cm (target: %d cm)\n", 
                result.stabilized_width, ACTUAL_WIDTH_CM);
         printf("  - Final variation: %.2f cm\n", result.final_variation);
-    } else {
-        printf("  %s✗ OBS-T9: SOME CRITERIA FAILED%s\n", COLOR_RED, COLOR_RESET);
+    }
+    else
+    {
+        printf("  %s✗ OBS-T7: SOME CRITERIA FAILED%s\n", COLOR_RED, COLOR_RESET);
         printf("\n");
-        if (!result.convergence_ok) {
+        if (!result.convergence_ok)
+        {
             printf("  ✗ Convergence took too long (>%d scans)\n", MAX_CONVERGENCE_SCANS);
         }
-        if (!result.stabilized_within_range) {
+        if (!result.stabilized_within_range)
+        {
             printf("  ✗ Stabilized width outside acceptable range\n");
         }
-        if (!result.variation_ok) {
+        if (!result.variation_ok)
+        {
             printf("  ✗ Final variation too high\n");
         }
     }
     printf("\n");
     
     printf("═══════════════════════════════════════════════════════════════\n");
-    printf("  OBS-T9 TEST COMPLETE\n");
+    printf("  OBS-T7 TEST COMPLETE\n");
     printf("═══════════════════════════════════════════════════════════════\n");
     printf("\n");
     
-    return result.passed ? 0 : 1;
+    return (result.passed ? 0 : 1);
 }
