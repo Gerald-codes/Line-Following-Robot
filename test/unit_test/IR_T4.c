@@ -1,7 +1,9 @@
 /**
  * @file    IR_T4.c
  * @brief   IR_T4: Test IR calibration value storage and threshold logic.
- * @details Tests storing and fetching of white, black, and threshold.
+ * @details
+ *   Tests IR sensor API behavior for setting and fetching white, black,
+ *   and threshold calibration values, including manual override logic.
  */
 
 #include <stdio.h>
@@ -10,6 +12,7 @@
 #include "ir_sensor.h"
 #include "calibration.h"
 
+/* Pico/hardware stubs for compatibility */
 void adc_init(void) {}
 void adc_gpio_init(uint gpio) { (void)gpio; }
 void adc_select_input(uint input) { (void)input; }
@@ -24,6 +27,7 @@ void calibration_init(void) {}
 bool calibration_button_pressed(void) { return false; }
 void calibration_run_sequence(void) {}
 
+/* Assert macro for equality checking */
 #define ASSERT_EQUAL(exp, act, msg) \
     do { if ((exp) != (act)) { \
             printf("  FAIL: %s (expected=%d, got=%d)\n", msg, (int)(exp), (int)(act)); \
@@ -32,21 +36,25 @@ void calibration_run_sequence(void) {}
             printf("  PASS: %s (value=%d)\n", msg, (int)(act)); \
          } } while(0)
 
+/**
+ * @brief   Main test entry point for IR_T4
+ * @return  0 if all tests pass, 1 if any fail
+ */
 int main(void) {
     printf("=== IR_T4: Calibration value logic (ir_* API) ===\n");
 
-    // Set calibration values
+    /* Set calibration values */
     ir_set_white_black_values(3000, 200);
 
-    // Check stored white/black values
+    /* Check stored white/black values */
     ASSERT_EQUAL(3000, ir_get_white_value(), "White value stored correctly");
     ASSERT_EQUAL(200,  ir_get_black_value(), "Black value stored correctly");
 
-    // Check threshold = midpoint
+    /* Check threshold = midpoint */
     uint16_t expected_thr = (3000 + 200) / 2;
     ASSERT_EQUAL(expected_thr, ir_get_threshold(), "Threshold set to midpoint after calibration");
 
-    // Check manual override of threshold
+    /* Check manual override of threshold */
     ir_set_threshold(1800);
     ASSERT_EQUAL(1800, ir_get_threshold(), "Manual threshold override works");
 
