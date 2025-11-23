@@ -3,10 +3,6 @@
  * @brief   Simulator for IMU-Motor heading keeping integration tests
  * @details Generates realistic test results without requiring hardware.
  *          Useful for documentation, CI/CD, and test validation.
- *
- * @note    Simulates all 5 integration test scenarios
- * @author  Your Name
- * @date    November 23, 2025
  */
 
 #include <stdio.h>
