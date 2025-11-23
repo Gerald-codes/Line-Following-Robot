@@ -1,5 +1,5 @@
 /**
- * @file    integration_test_simulator.c
+ * @file    INTEG_T4_sim.c
  * @brief   Simulator for IMU-Motor heading keeping integration tests
  * @details Generates realistic test results without requiring hardware.
  *          Useful for documentation, CI/CD, and test validation.
