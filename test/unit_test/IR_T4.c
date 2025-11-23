@@ -1,35 +1,29 @@
-// test_ir_calibration_logic.c
+/**
+ * @file    IR_T4.c
+ * @brief   IR_T4: Test IR calibration value storage and threshold logic.
+ * @details Tests storing and fetching of white, black, and threshold.
+ */
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
 #include "ir_sensor.h"
 #include "calibration.h"
 
-// ===== STUBS FOR HARDWARE & BUTTON =====
 void adc_init(void) {}
-void adc_gpio_init(uint gpio) {}
+void adc_gpio_init(uint gpio) { (void)gpio; }
 void adc_select_input(uint input) { (void)input; }
 uint16_t adc_read(void) { return 0; }
-
 void gpio_init(uint gpio) { (void)gpio; }
 void gpio_set_dir(uint gpio, bool out) { (void)gpio; (void)out; }
 bool gpio_get(uint gpio) { (void)gpio; return false; }
-
 uint32_t to_ms_since_boot(absolute_time_t t) { (void)t; return 0; }
 absolute_time_t get_absolute_time(void) { absolute_time_t t; return t; }
 void sleep_ms(uint32_t ms) { (void)ms; }
-
-// For this unit test, we don't actually press buttons or do interactive input,
-// so we stub calibration_run_sequence() if needed.
-// If your real calibration_run_sequence() calls ir_set_white_black_values(),
-// you could test that logic instead. Here we focus on the ir_* calibration API.
-
 void calibration_init(void) {}
 bool calibration_button_pressed(void) { return false; }
-void calibration_run_sequence(void) {}  // not used in this unit test
+void calibration_run_sequence(void) {}
 
-// ===== ASSERT MACRO =====
 #define ASSERT_EQUAL(exp, act, msg) \
     do { if ((exp) != (act)) { \
             printf("  FAIL: %s (expected=%d, got=%d)\n", msg, (int)(exp), (int)(act)); \
@@ -39,22 +33,23 @@ void calibration_run_sequence(void) {}  // not used in this unit test
          } } while(0)
 
 int main(void) {
-    printf("=== UT-IR-003: Calibration value logic (ir_* API) ===\n");
+    printf("=== IR_T4: Calibration value logic (ir_* API) ===\n");
 
-    // 1) Set white/black values and verify getters
+    // Set calibration values
     ir_set_white_black_values(3000, 200);
+
+    // Check stored white/black values
     ASSERT_EQUAL(3000, ir_get_white_value(), "White value stored correctly");
     ASSERT_EQUAL(200,  ir_get_black_value(), "Black value stored correctly");
 
-    // After ir_set_white_black_values, your code sets:
-    // line_threshold = (white + black) / 2
+    // Check threshold = midpoint
     uint16_t expected_thr = (3000 + 200) / 2;
     ASSERT_EQUAL(expected_thr, ir_get_threshold(), "Threshold set to midpoint after calibration");
 
-    // 2) Manually override threshold and confirm it changes
+    // Check manual override of threshold
     ir_set_threshold(1800);
     ASSERT_EQUAL(1800, ir_get_threshold(), "Manual threshold override works");
 
-    printf("UT-IR-003 COMPLETED\n");
+    printf("IR_T4 COMPLETED\n");
     return 0;
 }
