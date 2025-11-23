@@ -6,7 +6,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Pico SDK setup
+# ============================================================================
+# Pico SDK Setup
+# ============================================================================
 if(WIN32)
     set(USERHOME $ENV{USERPROFILE})
 else()
@@ -30,49 +32,51 @@ project(robo_pico C CXX ASM)
 pico_sdk_init()
 
 # ============================================================================
-# Include directories
+# Include Directories
 # ============================================================================
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/configuration
-    ${CMAKE_CURRENT_SOURCE_DIR}/control_algo
-    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_drivers
-    ${CMAKE_CURRENT_SOURCE_DIR}/utilities
-    ${CMAKE_CURRENT_SOURCE_DIR}/main_program
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/control_algo
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/hardware_drivers
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utilities
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/utilities
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/control_algo
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/hardware_drivers
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/configuration
+    
+
 )
 
 # ============================================================================
-# INTEGRATED SYSTEM - Main executable
+# MAIN EXECUTABLE - Integrated Robot System
 # ============================================================================
 add_executable(main
-    main_program/main.c
+    src/main.c
     
     # Hardware drivers
-    hardware_drivers/motor.c
-    hardware_drivers/encoder.c
-    hardware_drivers/imu.c
-    hardware_drivers/ir_sensor.c
-    hardware_drivers/ultrasonic.c
-    hardware_drivers/servo.c
-    hardware_drivers/calibration.c
-    hardware_drivers/barcode_scanner.c
+    src/hardware_drivers/motor.c
+    src/hardware_drivers/encoder.c
+    src/hardware_drivers/imu.c
+    src/hardware_drivers/ir_sensor.c
+    src/hardware_drivers/ultrasonic.c
+    src/hardware_drivers/servo.c
+    src/hardware_drivers/calibration.c
+    src/hardware_drivers/barcode_scanner.c
     
     # Control algorithms
-    control_algo/pid.c
-    control_algo/heading_control.c
-    control_algo/line_following.c
-    control_algo/obstacle_scanner.c
-    control_algo/avoidance_maneuver.c
-    control_algo/obstacle_control.c
-    control_algo/barcode_control.c
+    src/control_algo/pid.c
+    src/control_algo/heading_control.c
+    src/control_algo/line_following.c
+    src/control_algo/obstacle_scanner.c
+    src/control_algo/avoidance_maneuver.c
+    src/control_algo/obstacle_control.c
+    src/control_algo/barcode_control.c
     
     # Utilities
-    utilities/timer_manager.c
-    
-    # Telemetry system (NEW)
-    utilities/wifi.c
-    utilities/mqtt_client.c
-    utilities/telemetry.c
+    src/utilities/timer_manager.c
+    src/utilities/wifi.c
+    src/utilities/mqtt_client.c
+    src/utilities/telemetry.c
 )
 
 target_link_libraries(main
@@ -81,10 +85,27 @@ target_link_libraries(main
     hardware_gpio
     hardware_adc
     hardware_i2c
-    pico_cyw43_arch_lwip_threadsafe_background  # WiFi support
-
+    hardware_irq                                 
+    pico_cyw43_arch_lwip_threadsafe_background
 )
 
 pico_enable_stdio_usb(main 1)
 pico_enable_stdio_uart(main 0)
 pico_add_extra_outputs(main)
+
+# ============================================================================
+# Print Build Information
+# ============================================================================
+message(STATUS "")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "  Robot Project Build Configuration")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "Project: ${PROJECT_NAME}")
+message(STATUS "Board: ${PICO_BOARD}")
+message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "")
+message(STATUS "Executables:")
+message(STATUS "  • main.uf2 - Integrated robot system")
+message(STATUS "")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "")

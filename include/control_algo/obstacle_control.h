@@ -3,7 +3,7 @@
 
 
 #include <stdbool.h>
-#include "main_program/state_machine.h"
+#include "state_machine.h"
 
 
 bool check_for_obstacles(void);
