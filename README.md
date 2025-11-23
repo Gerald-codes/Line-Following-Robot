@@ -909,31 +909,6 @@ Examples:
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Raspberry Pi Foundation** - Pico SDK and documentation
-- **STMicroelectronics** - LSM303DLHC sensor documentation
-- **Barr Group** - Embedded C coding standards
-- **Open Source Community** - Various libraries and inspiration
-
----
-
-## 📧 Contact
-
-**Project Maintainer**: Your Name  
-**Email**: your.email@example.com  
-**GitHub**: [@yourusername](https://github.com/yourusername)
-
-**Project Link**: [https://github.com/yourusername/line-following-robot](https://github.com/yourusername/line-following-robot)
-
----
-
 ## 🗺️ Roadmap
 
 ### Current Version: v1.0.0
