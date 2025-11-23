@@ -13,11 +13,6 @@
  *          - INT-OBS-T5: Avoidance direction computation
  *          - INT-OBS-T6: Telemetry publishing reliability
  *
- * @par     COPYRIGHT NOTICE
- *          (c) 2025 Barr Group. All rights reserved.
- *
- * @author  Your Name
- * @date    November 24, 2025
  */
 
 #include <stdio.h>

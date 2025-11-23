@@ -264,6 +264,28 @@ pico_enable_stdio_uart(INTEG_T3 0)
 
 pico_add_extra_outputs(INTEG_T3)
 
+
+# ============================================================================
+# INTEGRATION TEST: OBSTACLE DETECTION + TELEMETRY (INTEG-T4)
+# ============================================================================
+
+add_executable(integration_test_obstacle
+    integration_test/telemetry_obstacle.c
+)
+
+target_link_libraries(integration_test_obstacle
+    pico_stdlib
+    robot_lib
+    hardware_gpio
+    hardware_pwm
+    hardware_timer
+    hardware_irq
+)
+
+pico_add_extra_outputs(integration_test_obstacle)
+pico_enable_stdio_usb(integration_test_obstacle 1)
+pico_enable_stdio_uart(integration_test_obstacle 0)
+
 # ============================================================================
 # Print Configuration
 # ============================================================================
