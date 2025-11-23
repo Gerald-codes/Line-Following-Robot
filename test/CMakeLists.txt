@@ -50,6 +50,8 @@ include_directories(
 # ----------------------------------------------------------------------------
 add_library(robot_lib
     ../src/control_algo/obstacle_scanner.c
+    ../src/control_algo/obstacle_control.c      
+    ../src/control_algo/avoidance_maneuver.c  
     ../src/control_algo/pid.c
     
     ../src/hardware_drivers/ultrasonic.c
@@ -236,6 +238,28 @@ pico_enable_stdio_uart(integration_test_heading_keeping 0)
 
 # Generate UF2 file
 pico_add_extra_outputs(integration_test_heading_keeping)
+
+
+# ============================================================================
+# INTEGRATION TEST: OBSTACLE DETECTION + TELEMETRY (INTEG-T4)
+# ============================================================================
+
+add_executable(integration_test_obstacle
+    integration_test/telemetry_obstacle.c
+)
+
+target_link_libraries(integration_test_obstacle
+    pico_stdlib
+    robot_lib
+    hardware_gpio
+    hardware_pwm
+    hardware_timer
+    hardware_irq
+)
+
+pico_add_extra_outputs(integration_test_obstacle)
+pico_enable_stdio_usb(integration_test_obstacle 1)
+pico_enable_stdio_uart(integration_test_obstacle 0)
 
 # ============================================================================
 # Print Configuration
