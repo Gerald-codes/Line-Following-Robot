@@ -84,6 +84,54 @@ pico_enable_stdio_usb(test_encoder 1)
 pico_enable_stdio_uart(test_encoder 0)
 
 # ============================================================================
+# TEST: Telemetry - Line State Mapping
+# ============================================================================
+add_executable(telemetry_ut_1
+    unit_test/telemetry_ut_1.c
+    ../src/utilities/telemetry.c
+)
+
+target_link_libraries(telemetry_ut_1
+    pico_stdlib
+)
+
+pico_add_extra_outputs(telemetry_ut_1)
+pico_enable_stdio_usb(telemetry_ut_1 1)
+pico_enable_stdio_uart(telemetry_ut_1 0)
+
+# ============================================================================
+# TEST: Telemetry - Encoder JSON + Publish
+# ============================================================================
+add_executable(telemetry_ut_2
+    unit_test/telemetry_ut_2.c
+    ../src/utilities/telemetry.c
+)
+
+target_link_libraries(telemetry_ut_2
+    pico_stdlib
+)
+
+pico_add_extra_outputs(telemetry_ut_2)
+pico_enable_stdio_usb(telemetry_ut_2 1)
+pico_enable_stdio_uart(telemetry_ut_2 0)
+
+# ============================================================================
+# TEST: Telemetry - Status Overflow Protection
+# ============================================================================
+add_executable(telemetry_ut_3
+    unit_test/telemetry_ut_3.c
+    ../src/utilities/telemetry.c
+)
+
+target_link_libraries(telemetry_ut_3
+    pico_stdlib
+)
+
+pico_add_extra_outputs(telemetry_ut_3)
+pico_enable_stdio_usb(telemetry_ut_3 1)
+pico_enable_stdio_uart(telemetry_ut_3 0)
+
+# ============================================================================
 # Print build information
 # ============================================================================
 message(STATUS "")
@@ -93,5 +141,8 @@ message(STATUS "===================================")
 message(STATUS "Tests to build:")
 message(STATUS "  - test_motor")
 message(STATUS "  - test_encoder")
+message(STATUS "  - test_telemetry_line_state")
+message(STATUS "  - test_telemetry_encoder")
+message(STATUS "  - test_telemetry_status_overflow")
 message(STATUS "===================================")
 message(STATUS "")
