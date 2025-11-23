@@ -18,7 +18,7 @@
 #include <stdio.h>
 
 /* Side swap control */
-#define SWAP_SENSOR_PIN         100
+#define SWAP_SENSOR_PIN         6
 
 static bool side_inverted = false;
 static bool prev_swap_state = false;
