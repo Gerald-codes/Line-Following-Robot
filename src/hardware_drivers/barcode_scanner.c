@@ -147,7 +147,7 @@ static char match_code39_pattern(const char *pattern9) {
  * @param   threshold Wide/narrow threshold
  * @return  Matched character or '?'
  */
-static char decode_character(uint32_t* times, uint32_t threshold) {
+static char decode_character(volatile uint32_t* times, uint32_t threshold) {
     char pattern[10];
     for (int i = 0; i < 9; i++) pattern[i] = (times[i] > threshold) ? 'w' : 'n';
     pattern[9] = '\0';

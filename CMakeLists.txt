@@ -6,7 +6,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-/* Pico SDK Setup */
+# ============================================================================
+# Pico SDK Setup
+# ============================================================================
 if(WIN32)
     set(USERHOME $ENV{USERPROFILE})
 else()
@@ -29,7 +31,9 @@ project(robo_pico C CXX ASM)
 
 pico_sdk_init()
 
-/* Include Directories */
+# ============================================================================
+# Include Directories
+# ============================================================================
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/control_algo
@@ -39,13 +43,17 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include/control_algo
     ${CMAKE_CURRENT_SOURCE_DIR}/include/hardware_drivers
     ${CMAKE_CURRENT_SOURCE_DIR}/include/configuration
+    
+
 )
 
-/* Main Executable - Integrated Robot System */
+# ============================================================================
+# MAIN EXECUTABLE - Integrated Robot System
+# ============================================================================
 add_executable(main
     src/main.c
-    
-    /* Hardware drivers */
+
+    # Hardware drivers
     src/hardware_drivers/motor.c
     src/hardware_drivers/encoder.c
     src/hardware_drivers/imu.c
@@ -54,8 +62,8 @@ add_executable(main
     src/hardware_drivers/servo.c
     src/hardware_drivers/calibration.c
     src/hardware_drivers/barcode_scanner.c
-    
-    /* Control algorithms */
+
+    # Control algorithms
     src/control_algo/pid.c
     src/control_algo/heading_control.c
     src/control_algo/line_following.c
@@ -63,8 +71,8 @@ add_executable(main
     src/control_algo/avoidance_maneuver.c
     src/control_algo/obstacle_control.c
     src/control_algo/barcode_control.c
-    
-    /* Utilities */
+
+    # Utilities
     src/utilities/timer_manager.c
     src/utilities/wifi.c
     src/utilities/mqtt_client.c
@@ -77,7 +85,7 @@ target_link_libraries(main
     hardware_gpio
     hardware_adc
     hardware_i2c
-    hardware_irq
+    hardware_irq                                 
     pico_cyw43_arch_lwip_threadsafe_background
 )
 
@@ -85,10 +93,13 @@ pico_enable_stdio_usb(main 1)
 pico_enable_stdio_uart(main 0)
 pico_add_extra_outputs(main)
 
-/* Print Build Information */
+# ============================================================================
+# Print Build Information
+# ============================================================================
 message(STATUS "")
-message(STATUS "Robot Project Build Configuration")
-message(STATUS "-----------------------------------------------------------")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "  Robot Project Build Configuration")
+message(STATUS "═══════════════════════════════════════════════════════════")
 message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "Board: ${PICO_BOARD}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
@@ -96,5 +107,5 @@ message(STATUS "")
 message(STATUS "Executables:")
 message(STATUS "  • main.uf2 - Integrated robot system")
 message(STATUS "")
-message(STATUS "-----------------------------------------------------------")
+message(STATUS "═══════════════════════════════════════════════════════════")
 message(STATUS "")

@@ -14,11 +14,11 @@
 #include "pin_definitions.h"
 #include "barcode_control.h"
 #include "pico/stdlib.h"
-#include <math.h>
 #include <stdio.h>
+#include <math.h>
 
 /* Side swap control */
-#define SWAP_SENSOR_PIN         6
+#define SWAP_SENSOR_PIN         100
 
 static bool side_inverted = false;
 static bool prev_swap_state = false;
@@ -46,13 +46,13 @@ static float last_steering_before_loss = 0.0f;
 /* PID controller structure */
 typedef struct
 {
-    float kp;               /* Proportional gain */
-    float ki;               /* Integral gain */
-    float kd;               /* Derivative gain */
-    float integral;         /* Accumulated error */
-    float prev_error;       /* Last error for derivative */
-    float output;           /* Control output */
-    bool initialized;       /* Initialization flag */
+    float kp;
+    float ki;
+    float kd;
+    float integral;
+    float prev_error;
+    float output;
+    bool initialized;
 } PIDController;
 
 static PIDController pid =
@@ -205,10 +205,10 @@ void line_following_init(void)
     gpio_pull_up(SWAP_SENSOR_PIN);
     
     printf("Single IR Line Following Initialized\n");
-    printf(" PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
-    printf(" Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
-    printf(" Side swap sensor: GP%d\n", SWAP_SENSOR_PIN);
-    printf(" Recovery: BIASED oscillation + RECENTERING enabled\n");
+    printf("  PID: Kp=%.3f, Ki=%.3f, Kd=%.3f\n", pid.kp, pid.ki, pid.kd);
+    printf("  Base Power: %.1f, Min: %.1f, Max: %.1f\n", BASE_POWER, MIN_POWER, MAX_POWER);
+    printf("  Side swap sensor: GP%d\n", SWAP_SENSOR_PIN);
+    printf("  Recovery: BIASED oscillation + RECENTERING enabled\n");
 }
 
 /**
@@ -515,4 +515,332 @@ static bool attempt_recentering(uint32_t current_time, float dt)
         return true;
     }
     
-    /* Phase 2: Move to center (white→black, error
+    /* Phase 2: Move to center (white→black, error ~ 0) */
+    if (centering_phase)
+    {
+        float error = normalize_ir_to_error(ir_reading);
+        
+        if (fabsf(error) < 0.3f)
+        {
+            printf("[RECENTER] ✓ Centered! Resuming normal tracking\n");
+            recovery_state = RECOVERY_NONE;
+            current_state = LINE_FOLLOW_CENTERED;
+            edge_found = false;
+            centering_phase = false;
+            return true;
+        }
+        
+        int center_speed = 25;
+        if (last_steering_before_loss > 0)
+        {
+            motor_drive(M1A, M1B, -center_speed);
+            motor_drive(M2A, M2B, -(center_speed + 10));
+        }
+        else
+        {
+            motor_drive(M1A, M1B, -(center_speed + 10));
+            motor_drive(M2A, M2B, -center_speed);
+        }
+        
+        if ((current_time - centering_start) % 300 == 0)
+        {
+            printf("[RECENTER] Centering... Error: %.2f\n", error);
+        }
+        
+        return true;
+    }
+    
+    /* Phase 1: Arc turn logic */
+    int turn_speed = 30;
+    if (last_steering_before_loss > 0)
+    {
+        motor_drive(M1A, M1B, -turn_speed);
+        motor_drive(M2A, M2B, -(turn_speed + 15));
+    }
+    else
+    {
+        motor_drive(M1A, M1B, -(turn_speed + 15));
+        motor_drive(M2A, M2B, -turn_speed);
+    }
+    
+    uint32_t elapsed = current_time - recenter_start_time;
+    if (elapsed % 300 == 0)
+    {
+        printf("[RECENTER] %.1fs | Sensor: %s | Looking for edge...\n",
+               elapsed / 1000.0f, on_black ? "BLACK" : "WHITE");
+    }
+    
+    return true;
+}
+
+/**
+ * @brief Main control loop for robot line following
+ * @param current_time Current time in milliseconds
+ * @param dt Delta time in seconds
+ * @return true if update succeeded, false if recovery failed
+ */
+bool line_following_control_update(uint32_t current_time, float dt)
+{
+    if (recovery_state == RECOVERY_RECENTERING)
+    {
+        return attempt_recentering(current_time, dt);
+    }
+    
+    if (current_state == LINE_FOLLOW_LOST)
+    {
+        if (recovery_state == RECOVERY_NONE)
+        {
+            recovery_state = RECOVERY_SEARCHING;
+            recovery_start_time = current_time;
+            last_cycle_change = 0;
+            search_cycle = 0;
+            
+            if (last_steering_before_loss > 0)
+            {
+                turning_right = false;
+                printf("\n[RECOVERY] Starting search (biased LEFT, steering was %.2f)\n",
+                       last_steering_before_loss);
+            }
+            else
+            {
+                turning_right = true;
+                printf("\n[RECOVERY] Starting search (biased RIGHT, steering was %.2f)\n",
+                       last_steering_before_loss);
+            }
+        }
+        
+        bool recovered = attempt_line_recovery(current_time);
+        if (!recovered)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    check_side_swap();
+    
+    uint16_t ir_reading = ir_read_line_sensor();
+    uint16_t threshold = ir_get_threshold();
+    bool on_white_surface = (ir_reading < threshold);
+    
+    float raw_error = normalize_ir_to_error(ir_reading);
+    float raw_error_magnitude = fabsf(raw_error);
+    
+    float steering = line_following_update(dt);
+    float error = normalized_error;
+    
+    apply_adaptive_gains(fabsf(error));
+    
+    /* Motor control logic */
+    if (raw_error_magnitude > 0.98f)
+    {
+        if (on_white_surface)
+        {
+            if (side_inverted)
+            {
+                L_power = 0;
+                R_power = MAX_POWER - 10.0f;
+            }
+            else
+            {
+                L_power = MAX_POWER - 10.0f;
+                R_power = 0;
+            }
+        }
+        else
+        {
+            if (side_inverted)
+            {
+                L_power = BASE_POWER - steering + 10.0f;
+                R_power = BASE_POWER + steering - 10.0f;
+            }
+            else
+            {
+                L_power = BASE_POWER - steering - 10.0f;
+                R_power = BASE_POWER + steering + 10.0f;
+            }
+        }
+    }
+    else
+    {
+        L_power = BASE_POWER - steering;
+        R_power = BASE_POWER + steering;
+    }
+    
+    int left_motor = apply_deadband(L_power);
+    int right_motor = apply_deadband(R_power);
+    
+    motor_drive(M1A, M1B, -left_motor);
+    motor_drive(M2A, M2B, -right_motor);
+    
+    /* Diagnostic output */
+    if (current_time - last_debug_time >= 500)
+    {
+        const char* side_str = side_inverted ? "[INV]" : "[NOR]";
+        const char* surface = on_white_surface ? "WHITE" : "BLACK";
+        
+        if (raw_error_magnitude > 0.98f)
+        {
+            printf("[PIVOT]%s %s | Raw: %.2f | Filtered: %.2f | L:%d R:%d | %s\n",
+                   side_str, surface, raw_error, error, left_motor, right_motor,
+                   line_state_to_string(current_state));
+        }
+        else
+        {
+            printf("[LINE]%s Raw: %.2f | Filtered: %.2f | Steering: %.2f | L:%d R:%d | %s\n",
+                   side_str, raw_error, error, steering, left_motor, right_motor,
+                   line_state_to_string(current_state));
+        }
+        
+        last_debug_time = current_time;
+    }
+    
+    /* Line lost detection */
+    if (current_state != LINE_FOLLOW_LOST)
+    {
+        if (raw_error_magnitude > 0.95f && on_white_surface)
+        {
+            if (line_lost_start == 0)
+            {
+                line_lost_start = current_time;
+                last_steering_before_loss = steering;
+            }
+            else if (current_time - line_lost_start > LINE_LOST_TIMEOUT_MS)
+            {
+                printf("\n[LINE] ⚠️ Line lost - starting recovery\n");
+                current_state = LINE_FOLLOW_LOST;
+            }
+        }
+        else
+        {
+            line_lost_start = 0;
+        }
+    }
+    
+    return true;
+}
+
+/**
+ * @brief Reset PID controller integral term
+ */
+void line_following_reset_integral(void)
+{
+    pid.integral = 0.0f;
+}
+
+/**
+ * @brief Set PID Kp gain
+ * @param kp New proportional gain
+ */
+void line_following_set_kp(float kp)
+{
+    pid.kp = kp;
+}
+
+/**
+ * @brief Set PID Ki gain
+ * @param ki New integral gain
+ */
+void line_following_set_ki(float ki)
+{
+    pid.ki = ki;
+}
+
+/**
+ * @brief Set PID Kd gain
+ * @param kd New derivative gain
+ */
+void line_following_set_kd(float kd)
+{
+    pid.kd = kd;
+}
+
+/**
+ * @brief Get current line follow logical state
+ * @return Current LineFollowState
+ */
+LineFollowState line_following_get_state(void)
+{
+    return current_state;
+}
+
+/**
+ * @brief Get filtered line position value
+ * @return Filtered normalized error
+ */
+float line_following_get_filtered_pos(void)
+{
+    return normalized_error;
+}
+
+/**
+ * @brief Get current error for tracking
+ * @return Normalized error
+ */
+float line_following_get_error(void)
+{
+    return normalized_error;
+}
+
+/**
+ * @brief Get latest PID controller output
+ * @return Control output
+ */
+float line_following_get_output(void)
+{
+    return pid.output;
+}
+
+/**
+ * @brief Get last computed left motor power
+ * @return Left power
+ */
+float line_following_get_left_power(void)
+{
+    return L_power;
+}
+
+/**
+ * @brief Get last computed right motor power
+ * @return Right power
+ */
+float line_following_get_right_power(void)
+{
+    return R_power;
+}
+
+/**
+ * @brief Check if tracing is inverted
+ * @return true if inverted
+ */
+bool line_following_is_side_inverted(void)
+{
+    return side_inverted;
+}
+
+/**
+ * @brief Convert enum state to human-readable string
+ * @param state Enum value
+ * @return Pointer to string
+ */
+const char* line_state_to_string(LineFollowState state)
+{
+    switch (state)
+    {
+        case LINE_FOLLOW_CENTERED:
+            return "CENTERED";
+        case LINE_FOLLOW_LEFT:
+            return "LEFT";
+        case LINE_FOLLOW_RIGHT:
+            return "RIGHT";
+        case LINE_FOLLOW_FAR_LEFT:
+            return "FAR_LEFT";
+        case LINE_FOLLOW_FAR_RIGHT:
+            return "FAR_RIGHT";
+        case LINE_FOLLOW_LOST:
+            return "LOST";
+        default:
+            return "UNKNOWN";
+    }
+}
