@@ -45,53 +45,43 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/configuration
 )
 
+# TEST: Motor Comprehensive (T1-T5)
 # ============================================================================
-# TEST: Motor Driver
-# ============================================================================
-add_executable(test_motor
-    unit_test/test_motor.c
+add_executable(test_motor_comprehensive
+    unit_test/MOTOR_T1-5.c
     ../src/hardware_drivers/motor.c
-)
-
-target_link_libraries(test_motor
-    pico_stdlib
-    hardware_pwm
-    hardware_gpio
-)
-
-pico_add_extra_outputs(test_motor)
-pico_enable_stdio_usb(test_motor 1)
-pico_enable_stdio_uart(test_motor 0)
-
-# ============================================================================
-# TEST: Encoder Driver
-# ============================================================================
-add_executable(test_encoder
-    unit_test/test_encoder.c
     ../src/hardware_drivers/encoder.c
-    ../src/hardware_drivers/motor.c
+    ../src/control_algo/pid.c
 )
 
-target_link_libraries(test_encoder
+target_link_libraries(test_motor_comprehensive
     pico_stdlib
     hardware_pwm
     hardware_gpio
     hardware_irq
 )
 
-pico_add_extra_outputs(test_encoder)
-pico_enable_stdio_usb(test_encoder 1)
-pico_enable_stdio_uart(test_encoder 0)
+pico_add_extra_outputs(test_motor_comprehensive)
+pico_enable_stdio_usb(test_motor_comprehensive 1)
+pico_enable_stdio_uart(test_motor_comprehensive 0)
 
 # ============================================================================
-# Print build information
+# TEST: Motor Long Duration (T6-T7)
 # ============================================================================
-message(STATUS "")
-message(STATUS "===================================")
-message(STATUS "Robot Test Suite Build Configuration")
-message(STATUS "===================================")
-message(STATUS "Tests to build:")
-message(STATUS "  - test_motor")
-message(STATUS "  - test_encoder")
-message(STATUS "===================================")
-message(STATUS "")
+add_executable(test_motor_long
+    unit_test/MOTOR_T6-7.c
+    ../src/hardware_drivers/motor.c
+    ../src/hardware_drivers/encoder.c
+    ../src/control_algo/pid.c
+)
+
+target_link_libraries(test_motor_long
+    pico_stdlib
+    hardware_pwm
+    hardware_gpio
+    hardware_irq
+)
+
+pico_add_extra_outputs(test_motor_long)
+pico_enable_stdio_usb(test_motor_long 1)
+pico_enable_stdio_uart(test_motor_long 0)
