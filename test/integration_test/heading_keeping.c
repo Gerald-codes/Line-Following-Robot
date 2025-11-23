@@ -4,9 +4,6 @@
  * @details Tests the robot's ability to maintain a target heading while driving
  *          using IMU feedback and motor corrections.
  *
- * @note    Barr C Coding Standard compliant
- * @author  Your Name
- * @date    November 23, 2025
  */
 
 #include "pico/stdlib.h"
@@ -21,10 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-/*******************************************************************************
- * Configuration Constants
- ******************************************************************************/
 
 /* Test parameters */
 #define TEST_DURATION_SEC       10      /* Duration for stability test */
@@ -48,10 +41,6 @@
 #define COLOR_CYAN              "\033[36m"
 #define COLOR_RESET             "\033[0m"
 
-/*******************************************************************************
- * Type Definitions
- ******************************************************************************/
-
 /**
  * @brief Heading statistics structure
  */
@@ -65,18 +54,14 @@ typedef struct
     int     total_samples;         /* Total samples collected */
 } HeadingStatistics;
 
-/*******************************************************************************
- * Global Variables
- ******************************************************************************/
+/* Global Variables */
 
 static IMU              g_imu;
 static HeadingController g_heading_ctrl;
 static PIDController    g_left_motor_pid;
 static PIDController    g_right_motor_pid;
 
-/*******************************************************************************
- * Hardware Initialization
- ******************************************************************************/
+/*  Hardware Initialization */
 
 /**
  * @brief Initialize hardware for testing
@@ -125,9 +110,8 @@ initialize_hardware(void)
     printf("[INIT] Hardware initialization complete\n\n");
 }
 
-/*******************************************************************************
- * Main Test
- ******************************************************************************/
+
+/* Main Test */
 
 /**
  * @brief Main entry point - runs heading keeping test
