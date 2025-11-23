@@ -66,12 +66,10 @@ bool avoidance_start(AvoidanceDirection direction) {
     const char* dir_str = (direction == AVOID_LEFT) ? "LEFT" : "RIGHT";
     printf("[AVOIDANCE] Starting maneuver - Direction: %s\n", dir_str);
     
-    if (telemetry_is_connected()) {
-        char msg[64];
-        snprintf(msg, sizeof(msg), "Starting avoidance: %s", dir_str);
-        telemetry_publish_status(msg);
+    if (telemetry_is_ready()) {
+        telemetry_publish_avoidance(direction, context.state, false);
     }
-    
+
     return true;
 }
 
@@ -108,6 +106,8 @@ AvoidanceState avoidance_update(void) {
     
     uint32_t current_time = to_ms_since_boot(get_absolute_time());
     uint32_t elapsed = current_time - context.state_start_time;
+
+    static AvoidanceState last_published_state = AVOIDANCE_IDLE;
     
     switch (context.state) {
         case AVOIDANCE_TURNING_OFF_LINE:
@@ -140,10 +140,12 @@ AvoidanceState avoidance_update(void) {
                 motor_stop(M2A, M2B);
                 context.state = AVOIDANCE_MOVING_PARALLEL;
                 context.state_start_time = current_time;
-                
-                if (telemetry_is_connected()) {
-                    telemetry_publish_status("Moving parallel to obstacle");
+
+                if (telemetry_is_ready() && last_published_state != context.state) {
+                    telemetry_publish_avoidance(context.direction, context.state, context.obstacle_cleared);
+                    last_published_state = context.state;
                 }
+                
             }
             
             // Fallback: timeout after max duration
@@ -184,10 +186,11 @@ AvoidanceState avoidance_update(void) {
                 printf("[AVOIDANCE] Obstacle cleared! Turning back to line...\n");
                 context.state = AVOIDANCE_TURNING_BACK;
                 context.state_start_time = current_time;
-                
-                if (telemetry_is_connected()) {
-                    telemetry_publish_status("Obstacle cleared, returning to line");
+                if (telemetry_is_ready()) {
+                    telemetry_publish_avoidance(context.direction, context.state, context.obstacle_cleared);
+                    last_published_state = context.state;
                 }
+                
             } else {
                 // Not cleared yet, continue moving forward
                 printf("[AVOIDANCE] Not cleared, continuing...\n");
@@ -233,9 +236,6 @@ AvoidanceState avoidance_update(void) {
                 context.state = AVOIDANCE_REALIGN_FORWARD;
                 context.state_start_time = current_time;
                 
-                if (telemetry_is_connected()) {
-                    telemetry_publish_status("Searching for line");
-                }
             }
             
             // Fallback: timeout
@@ -253,7 +253,7 @@ AvoidanceState avoidance_update(void) {
             motor_drive(M1A, M1B, -SPEED_FORWARD);
             motor_drive(M2A, M2B, -SPEED_FORWARD);
             if (elapsed >= FORWARD_AVOID_DURATION_MS) {
-                printf("[AVOIDANCE] Foward complete. Searching for line...\n");
+                printf("[AVOIDANCE] Forward complete. Searching for line...\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);
                 context.state = AVOIDANCE_SEARCHING_LINE;
@@ -264,6 +264,10 @@ AvoidanceState avoidance_update(void) {
         case AVOIDANCE_SEARCHING_LINE:
             printf("[AVOIDANCE] State: Searching for line (elapsed: %lu ms)...\n", elapsed);
             
+            // Move forward slowly to find the line
+            motor_drive(M1A, M1B, -SPEED_FORWARD * 0.8);
+            motor_drive(M2A, M2B, -SPEED_FORWARD * 0.7);
+
             // Actively check for line using IR or line following module!
             if (ir_line_detected()) {   // <-- Replace with your detection function
                 printf("[AVOIDANCE] ✓ Line detected! Stopping for realignment.\n");
@@ -274,9 +278,6 @@ AvoidanceState avoidance_update(void) {
                 context.state = AVOIDANCE_CENTER_ON_LINE; // (or set a global flag if state machine in main.c)
                 context.state_start_time = current_time;
 
-                if (telemetry_is_connected()) {
-                    telemetry_publish_status("Line found - realigning to original heading");
-                }
                 break; // Stop further processing of elapsed timeout
             }
 
@@ -290,9 +291,11 @@ AvoidanceState avoidance_update(void) {
 
                 printf("[AVOIDANCE] ✓ Maneuver complete!\n");
 
-                if (telemetry_is_connected()) {
-                    telemetry_publish_status("Avoidance complete - ready for line following");
+                if (telemetry_is_ready()) {
+                    telemetry_publish_avoidance(context.direction, context.state, context.obstacle_cleared);
+                    last_published_state = context.state;
                 }
+
             }
             break;
         case AVOIDANCE_CENTER_ON_LINE:
@@ -301,7 +304,7 @@ AvoidanceState avoidance_update(void) {
             // Move forward slowly for a short, fixed time (e.g., 400-800 ms, tune to your robot)
             motor_drive(M1A, M1B, -SPEED_FORWARD);
             motor_drive(M2A, M2B, -SPEED_FORWARD);
-            if (elapsed >= 2500) { // 500 ms center, tune as needed
+            if (elapsed >= 330) { // 500 ms center, tune as needed
                 printf("[AVOIDANCE] Centering complete. Ready to realign heading.\n");
                 motor_stop(M1A, M1B);
                 motor_stop(M2A, M2B);

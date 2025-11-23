@@ -1,333 +1,358 @@
+/**
+ * telemetry.c
+ * Comprehensive telemetry implementation with JSON formatting
+ */
+
 #include "telemetry.h"
-#include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
-#include "lwip/apps/mqtt.h"
-#include "lwip/apps/mqtt_priv.h"
+#include "mqtt_client.h"
+#include "config.h"
+#include "encoder.h"
+#include "encoder_utils.h"
+#include "barcode_scanner.h"
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
-// MQTT client instance
-static mqtt_client_t* mqtt_client = NULL;
-static bool is_connected = false;
-static ip_addr_t broker_ip;
+#define JSON_BUFFER_SIZE 512
+#define QOS_LEVEL 0
 
-// WiFi credentials - Update these with your network details
-#define WIFI_SSID "Javiersphone"
-#define WIFI_PASSWORD "imcool123"
+static bool telemetry_initialized = false;
+static uint8_t publish_cycle = 0;
 
-// MQTT Broker IP - Update with your broker's IP
-#define MQTT_BROKER_IP "10.193.42.160"  // Change to your broker IP
-#define MQTT_BROKER_PORT 1883
+bool telemetry_init(const char *broker_ip, uint16_t broker_port, const char *client_id) {
+    mqtt_init(broker_ip, broker_port, client_id);
+    
+    if (!mqtt_connect()) {
+        printf("Telemetry: Failed to connect to MQTT broker\n");
+        return false;
+    }
+    
+    telemetry_initialized = true;
+    printf("Telemetry initialized\n");
+    return true;
+}
 
-// Internal helper functions
-static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status);
-static void mqtt_pub_request_cb(void *arg, err_t err);
+bool telemetry_is_ready(void) {
+    return telemetry_initialized && (mqtt_get_status() == MQTT_CONNECTED);
+}
 
-/**
- * @brief MQTT connection callback
- */
-static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status) {
-    if (status == MQTT_CONNECT_ACCEPTED) {
-        printf("[TELEMETRY] Connected to MQTT broker\n");
-        is_connected = true;
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+static bool publish_json(const char *topic, const char *json_buffer) {
+    size_t len = strlen(json_buffer);
+    printf("JSON size: %zu bytes (buffer: %d)\n", len, JSON_BUFFER_SIZE);
+    
+    if (len >= JSON_BUFFER_SIZE - 1) {
+        printf("ERROR: JSON buffer overflow! %zu >= %d\n", len, JSON_BUFFER_SIZE);
+        return false;
+    }
+    
+    return mqtt_publish(topic, json_buffer, QOS_LEVEL);
+}
+
+
+const char* telemetry_line_state_to_string(LineFollowState state) {
+    switch (state) {
+        case LINE_FOLLOW_CENTERED: return "CENTERED";
+        case LINE_FOLLOW_LEFT: return "LEFT";
+        case LINE_FOLLOW_RIGHT: return "RIGHT";
+        case LINE_FOLLOW_FAR_LEFT: return "FAR_LEFT";
+        case LINE_FOLLOW_FAR_RIGHT: return "FAR_RIGHT";
+        case LINE_FOLLOW_LOST: return "LOST";
+        default: return "UNKNOWN";
+    }
+}
+
+const char* telemetry_robot_state_to_string(RobotState state) {
+    switch (state) {
+        case ROBOT_STATE_IDLE: return "IDLE";
+        case ROBOT_STATE_FOLLOWING: return "FOLLOWING";
+        case ROBOT_STATE_TURNING: return "TURNING";
+        case ROBOT_STATE_STOPPED: return "STOPPED";
+        case ROBOT_STATE_SCANNING: return "SCANNING";
+        case ROBOT_STATE_AVOIDING: return "AVOIDING";
+        case ROBOT_STATE_RETURNING: return "RETURNING";
+        case ROBOT_STATE_LOST: return "LOST";
+        case ROBOT_STATE_ERROR: return "ERROR";
+        default: return "UNKNOWN";
+    }
+}
+
+const char* telemetry_obstacle_state_to_string(ObstacleState state) {
+    switch (state) {
+        case OBSTACLE_STATE_NONE: return "NONE";
+        case OBSTACLE_STATE_DETECTED: return "DETECTED";
+        case OBSTACLE_STATE_SCANNING: return "SCANNING";
+        case OBSTACLE_STATE_AVOIDING: return "AVOIDING";
+        case OBSTACLE_STATE_RETURNING: return "RETURNING";
+        default: return "UNKNOWN";
+    }
+}
+
+const char* telemetry_avoidance_dir_to_string(AvoidanceDirection dir) {
+    switch (dir) {
+        case AVOID_LEFT: return "LEFT";
+        case AVOID_RIGHT: return "RIGHT";
+        case AVOID_NONE: return "NONE";
+        default: return "UNKNOWN";
+    }
+}
+
+// ============================================================================
+// INDIVIDUAL PUBLISH FUNCTIONS
+// ============================================================================
+
+static bool publish_motor_data(float L_power, float R_power, float base_power, float steering_power) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"L\":%.1f,\"R\":%.1f,\"base\":%.1f,\"steer\":%.1f}",
+             L_power, R_power, base_power, steering_power);
+    return publish_json(MQTT_TOPIC_MOTOR, json);
+}
+
+static bool publish_line_data(int ir_reading, float line_pos, float line_pos_filtered, LineFollowState state) {
+    char json[JSON_BUFFER_SIZE];
+    const char *state_str = telemetry_line_state_to_string(state);
+    
+    snprintf(json, sizeof(json),
+             "{\"ir\":%d,\"pos\":%.1f,\"pos_filt\":%.1f,\"state\":\"%s\"}",
+             ir_reading, line_pos, line_pos_filtered, state_str);
+    return publish_json(MQTT_TOPIC_LINE, json);
+}
+
+static bool publish_imu_data(IMU *imu) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"ax\":%.2f,\"ay\":%.2f,\"az\":%.2f,\"heading\":%.1f}",
+             imu->ax, imu->ay, imu->az, imu->yaw);  // FIXED: Use correct field names
+    return publish_json(MQTT_TOPIC_IMU, json);
+}
+
+
+static bool publish_state_data(RobotState robot_state, ObstacleState obstacle_state, uint32_t elapsed) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"robot\":\"%s\",\"obstacle\":\"%s\",\"time\":%lu}",
+             telemetry_robot_state_to_string(robot_state),
+             telemetry_obstacle_state_to_string(obstacle_state),
+             elapsed);
+    return publish_json(MQTT_TOPIC_STATE, json);
+}
+
+// ============================================================================
+// NEW: ENCODER AND SPEED TELEMETRY
+// ============================================================================
+
+bool telemetry_publish_encoder(float speed_mm_s, float distance_mm, 
+                                int32_t left_count, int32_t right_count) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"speed\":%.1f,\"distance\":%.1f,\"L_enc\":%ld,\"R_enc\":%ld}",
+             speed_mm_s, distance_mm, (long)left_count, (long)right_count);
+    return publish_json(MQTT_TOPIC_ENCODER, json);
+}
+
+// ============================================================================
+// NEW: BARCODE TELEMETRY
+// ============================================================================
+
+bool telemetry_publish_barcode(BarcodeCommand command, char character) {
+    char json[JSON_BUFFER_SIZE];
+    
+    const char *cmd_str = barcode_command_to_string(command);
+    
+    snprintf(json, sizeof(json),
+             "{\"command\":\"%s\",\"char\":\"%c\"}",
+             cmd_str, character);
+    
+    return publish_json(MQTT_TOPIC_BARCODE, json);
+}
+
+// ============================================================================
+// NEW: OBSTACLE DETECTION TELEMETRY
+// ============================================================================
+
+bool telemetry_publish_obstacle_data(uint64_t distance_mm, 
+                                      float width_cm,
+                                      float clearance_left_cm,
+                                      float clearance_right_cm) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"dist\":%llu,\"width\":%.1f,\"clear_L\":%.1f,\"clear_R\":%.1f}",
+             (unsigned long long)distance_mm, width_cm, clearance_left_cm, clearance_right_cm);
+    return publish_json(MQTT_TOPIC_OBSTACLE, json);
+}
+
+bool telemetry_publish_obstacle_scan(const ScanResult *scan_result) {
+    if (!scan_result || !scan_result->is_scanning) {
+        return false;
+    }
+    
+    char json[JSON_BUFFER_SIZE];
+    
+    if (scan_result->obstacle_count > 0) {
+        const Obstacle *obs = &scan_result->obstacles[0];
+        snprintf(json, sizeof(json),
+                 "{\"count\":%d,\"angle_start\":%d,\"angle_end\":%d,\"span\":%d,\"width\":%.1f,\"min_dist\":%llu}",
+                 scan_result->obstacle_count,
+                 obs->angle_start,
+                 obs->angle_end,
+                 obs->angle_span,
+                 obs->smoothed_width,
+                 (unsigned long long)obs->min_distance);
     } else {
-        printf("[TELEMETRY] Connection failed, status: %d\n", status);
-        is_connected = false;
-    }
-}
-
-/**
- * @brief MQTT publish callback
- */
-static void mqtt_pub_request_cb(void *arg, err_t err) {
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Publish error: %d\n", err);
-    }
-}
-
-/**
- * @brief Initialize WiFi connection
- */
-static TelemetryStatus init_wifi(void) {
-    if (cyw43_arch_init()) {
-        printf("[TELEMETRY] Failed to initialize WiFi\n");
-        return TELEMETRY_ERROR_CONNECTION;
-    }
-
-    cyw43_arch_enable_sta_mode();
-    printf("[TELEMETRY] Connecting to WiFi: %s\n", WIFI_SSID);
-
-    if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, 
-                                           CYW43_AUTH_WPA2_AES_PSK, 30000)) {
-        printf("[TELEMETRY] Failed to connect to WiFi\n");
-        return TELEMETRY_ERROR_CONNECTION;
-    }
-
-    printf("[TELEMETRY] WiFi connected successfully\n");
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_init(const char* broker_address, const char* client_id) {
-    // Initialize WiFi
-    TelemetryStatus status = init_wifi();
-    if (status != TELEMETRY_SUCCESS) {
-        return status;
-    }
-
-    // Create MQTT client
-    mqtt_client = mqtt_client_new();
-    if (mqtt_client == NULL) {
-        printf("[TELEMETRY] Failed to create MQTT client\n");
-        return TELEMETRY_ERROR_CONNECTION;
-    }
-
-    // Parse broker IP address
-    if (!ip4addr_aton(MQTT_BROKER_IP, &broker_ip)) {
-        printf("[TELEMETRY] Invalid broker IP address\n");
-        return TELEMETRY_ERROR_CONNECTION;
-    }
-
-    // MQTT client info
-    struct mqtt_connect_client_info_t ci;
-    memset(&ci, 0, sizeof(ci));
-    ci.client_id = client_id;
-    ci.keep_alive = 60;
-
-    // Connect to broker
-    printf("[TELEMETRY] Connecting to MQTT broker at %s:%d\n", 
-           MQTT_BROKER_IP, MQTT_BROKER_PORT);
-    
-    err_t err = mqtt_client_connect(mqtt_client, &broker_ip, MQTT_BROKER_PORT,
-                                   mqtt_connection_cb, NULL, &ci);
-    
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to connect to broker: %d\n", err);
-        return TELEMETRY_ERROR_CONNECTION;
-    }
-
-    // Wait for connection (with timeout)
-    int timeout = 100; // 10 seconds
-    while (!is_connected && timeout > 0) {
-        sleep_ms(100);
-        timeout--;
-    }
-
-    if (!is_connected) {
-        printf("[TELEMETRY] Connection timeout\n");
-        return TELEMETRY_ERROR_CONNECTION;
-    }
-
-    printf("[TELEMETRY] Telemetry system initialized successfully\n");
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_obstacle_width(int obstacle_id, float width, float smoothed_width) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    char payload[128];
-    snprintf(payload, sizeof(payload), 
-             "{\"id\":%d,\"width\":%.2f,\"smoothed_width\":%.2f}", 
-             obstacle_id, width, smoothed_width);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_OBSTACLE_WIDTH, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish width: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Published: %s -> %s\n", TOPIC_OBSTACLE_WIDTH, payload);
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_obstacle_count(int count) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    char payload[64];
-    snprintf(payload, sizeof(payload), "{\"count\":%d}", count);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_OBSTACLE_COUNT, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish count: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Published: %s -> %s\n", TOPIC_OBSTACLE_COUNT, payload);
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_obstacle_distance(int obstacle_id, uint64_t distance) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    char payload[128];
-    snprintf(payload, sizeof(payload), 
-             "{\"id\":%d,\"distance\":%llu}", 
-             obstacle_id, distance);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_OBSTACLE_DISTANCE, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish distance: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Published: %s -> %s\n", TOPIC_OBSTACLE_DISTANCE, payload);
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_obstacle_angles(int obstacle_id, int angle_start, 
-                                                   int angle_end, int angle_span) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    char payload[256];
-    snprintf(payload, sizeof(payload), 
-             "{\"id\":%d,\"angle_start\":%d,\"angle_end\":%d,\"angle_span\":%d}", 
-             obstacle_id, angle_start, angle_end, angle_span);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_OBSTACLE_ANGLES, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish angles: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Published: %s -> %s\n", TOPIC_OBSTACLE_ANGLES, payload);
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_obstacle(const ObstacleTelemetry* obstacle) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    if (obstacle == NULL) {
-        return TELEMETRY_ERROR_INVALID_PARAM;
-    }
-
-    char payload[512];
-    snprintf(payload, sizeof(payload), 
-             "{\"id\":%d,\"angle_start\":%d,\"angle_end\":%d,\"angle_span\":%d,"
-             "\"min_distance\":%llu,\"width\":%.2f,\"smoothed_width\":%.2f}",
-             obstacle->obstacle_id, obstacle->angle_start, obstacle->angle_end,
-             obstacle->angle_span, obstacle->min_distance, 
-             obstacle->width, obstacle->smoothed_width);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_OBSTACLE_ALL, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish obstacle: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Published: %s -> %s\n", TOPIC_OBSTACLE_ALL, payload);
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_scan_results(const ScanTelemetry* scan_data) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    if (scan_data == NULL) {
-        return TELEMETRY_ERROR_INVALID_PARAM;
-    }
-
-    // First publish the obstacle count
-    telemetry_publish_obstacle_count(scan_data->obstacle_count);
-
-    // Then publish each obstacle individually
-    for (int i = 0; i < scan_data->obstacle_count; i++) {
-        telemetry_publish_obstacle(&scan_data->obstacles[i]);
-        sleep_ms(10); // Small delay between publishes
-    }
-
-    // Publish scan complete message
-    char payload[256];
-    snprintf(payload, sizeof(payload), 
-             "{\"obstacle_count\":%d,\"timestamp\":%llu,\"status\":\"complete\"}",
-             scan_data->obstacle_count, scan_data->scan_timestamp);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_SCAN_COMPLETE, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish scan complete: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Scan results published successfully\n");
-    return TELEMETRY_SUCCESS;
-}
-
-TelemetryStatus telemetry_publish_status(const char* message) {
-    if (!is_connected) {
-        return TELEMETRY_ERROR_NOT_CONNECTED;
-    }
-
-    if (message == NULL) {
-        return TELEMETRY_ERROR_INVALID_PARAM;
-    }
-
-    char payload[512];
-    snprintf(payload, sizeof(payload), "{\"status\":\"%s\"}", message);
-
-    err_t err = mqtt_publish(mqtt_client, TOPIC_STATUS, payload, 
-                            strlen(payload), MQTT_QOS, 0, 
-                            mqtt_pub_request_cb, NULL);
-
-    if (err != ERR_OK) {
-        printf("[TELEMETRY] Failed to publish status: %d\n", err);
-        return TELEMETRY_ERROR_PUBLISH;
-    }
-
-    printf("[TELEMETRY] Published: %s -> %s\n", TOPIC_STATUS, payload);
-    return TELEMETRY_SUCCESS;
-}
-
-bool telemetry_is_connected(void) {
-    return is_connected && mqtt_client_is_connected(mqtt_client);
-}
-
-TelemetryStatus telemetry_process(void) {
-    // Process any pending network events
-    // This should be called periodically in the main loop
-    if (is_connected) {
-        cyw43_arch_poll();
-    }
-    return TELEMETRY_SUCCESS;
-}
-
-void telemetry_cleanup(void) {
-    if (mqtt_client != NULL) {
-        if (is_connected) {
-            mqtt_disconnect(mqtt_client);
-        }
-        mqtt_client_free(mqtt_client);
-        mqtt_client = NULL;
+        snprintf(json, sizeof(json), "{\"count\":0,\"clear\":true}");
     }
     
-    cyw43_arch_deinit();
-    is_connected = false;
+    return publish_json(MQTT_TOPIC_SCAN, json);
+}
+
+// ============================================================================
+// NEW: AVOIDANCE TELEMETRY
+// ============================================================================
+
+bool telemetry_publish_avoidance(AvoidanceDirection direction, 
+                                  AvoidanceState state,
+                                  bool obstacle_cleared) {
+    char json[JSON_BUFFER_SIZE];
     
-    printf("[TELEMETRY] Telemetry system cleaned up\n");
+    // Get state string - match your actual AvoidanceState enum
+    const char *state_str = "UNKNOWN";
+    switch(state) {
+        case AVOIDANCE_IDLE: state_str = "IDLE"; break;
+        case AVOIDANCE_TURNING_OFF_LINE: state_str = "TURN_OFF"; break;
+        case AVOIDANCE_REALIGN_FORWARD: state_str = "REALIGN_FWD"; break;  // FIXED
+        case AVOIDANCE_MOVING_PARALLEL: state_str = "PARALLEL"; break;      // FIXED
+        case AVOIDANCE_TURNING_BACK: state_str = "TURN_BACK"; break;
+        case AVOIDANCE_SEARCHING_LINE: state_str = "SEARCHING"; break;
+        case AVOIDANCE_COMPLETE: state_str = "COMPLETE"; break;
+        case AVOIDANCE_FAILED: state_str = "FAILED"; break;
+        default: break;
+    }
+    
+    snprintf(json, sizeof(json),
+             "{\"dir\":\"%s\",\"state\":\"%s\",\"cleared\":%s}",
+             telemetry_avoidance_dir_to_string(direction),
+             state_str,
+             obstacle_cleared ? "true" : "false");
+    return publish_json(MQTT_TOPIC_AVOIDANCE, json);
+}
+
+
+// ============================================================================
+// NEW: STATE CHANGE TELEMETRY
+// ============================================================================
+
+bool telemetry_publish_state_change(RobotState prev_state, 
+                                     RobotState new_state,
+                                     uint32_t duration_ms) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"from\":\"%s\",\"to\":\"%s\",\"duration\":%lu}",
+             telemetry_robot_state_to_string(prev_state),
+             telemetry_robot_state_to_string(new_state),
+             duration_ms);
+    return publish_json(MQTT_TOPIC_STATE, json);
+}
+
+// ============================================================================
+// EXISTING FUNCTIONS
+// ============================================================================
+
+bool telemetry_publish_calibration(int white, int black, int threshold, int range) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"white\":%d,\"black\":%d,\"thresh\":%d,\"range\":%d}",
+             white, black, threshold, range);
+    return publish_json(MQTT_TOPIC_CALIBRATION, json);
+}
+
+bool telemetry_publish_status(const char *message) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json), "{\"status\":\"%s\"}", message);
+    return publish_json(MQTT_TOPIC_STATUS, json);
+}
+
+bool telemetry_publish_error(int error_code, const char *error_msg) {
+    char json[JSON_BUFFER_SIZE];
+    snprintf(json, sizeof(json),
+             "{\"code\":%d,\"msg\":\"%s\"}",
+             error_code, error_msg);
+    return publish_json(MQTT_TOPIC_ERROR, json);
+}
+
+// ============================================================================
+// MAIN PUBLISH ALL FUNCTION
+// ============================================================================
+
+bool telemetry_publish_all(
+    int ir_reading,
+    float line_position, float line_pos_filtered,
+    LineFollowState line_state,
+    IMU *imu,
+    RobotState robot_state,
+    ObstacleState obstacle_state,
+    uint32_t elapsed
+) {
+    if (!telemetry_is_ready()) {
+        printf("Telemetry: Not ready! initialized=%d mqtt_status=%d\n", 
+               telemetry_initialized, mqtt_get_status());
+        return false;
+    }
+
+    printf("\n=== Publishing telemetry (cycle=%d) ===\n", publish_cycle);
+    
+    bool success = true;
+    
+    // PUBLISH ALL DATA EVERY TIME (no more rotation!)
+    
+    // 1. Line data
+    printf("Publishing line data...\n");
+    success &= publish_line_data(ir_reading, line_position, line_pos_filtered, line_state);
+    sleep_ms(20);
+    
+    // 2. IMU data
+    printf("Publishing IMU data...\n");
+    success &= publish_imu_data(imu);
+    sleep_ms(20);
+    
+    // 3. State data
+    printf("Publishing state data...\n");
+    success &= publish_state_data(robot_state, obstacle_state, elapsed);
+    sleep_ms(20);
+    
+    // 4. Encoder data (with speed calculation)
+    printf("Publishing encoder data...\n");
+    int32_t left_enc = get_left_encoder();
+    int32_t right_enc = get_right_encoder();
+    float distance_mm = get_average_distance_mm();
+    
+    static uint32_t last_encoder_time = 0;
+    static int32_t last_left_count = 0;
+    static int32_t last_right_count = 0;
+    
+    uint32_t current_time = elapsed;
+    float dt = (current_time - last_encoder_time) / 1000.0f;
+    float speed_mm_s = 0.0f;
+    
+    if (dt > 0.001f) {
+        int32_t delta_left = left_enc - last_left_count;
+        int32_t delta_right = right_enc - last_right_count;
+        float delta_dist = (left_pulses_to_mm(delta_left) + right_pulses_to_mm(delta_right)) / 2.0f;
+        speed_mm_s = delta_dist / dt;
+    }
+    
+    success &= telemetry_publish_encoder(speed_mm_s, distance_mm, left_enc, right_enc);
+    sleep_ms(20);
+    
+    last_encoder_time = current_time;
+    last_left_count = left_enc;
+    last_right_count = right_enc;
+    
+    printf("=== Telemetry publish complete (success=%d) ===\n\n", success);
+    
+    publish_cycle++;  // Keep for tracking, but not used for rotation anymore
+    return success;
 }

@@ -1,140 +1,156 @@
+/**
+ * telemetry.h
+ * Comprehensive telemetry interface for robotic car
+ */
+
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
 #include <stdint.h>
 #include <stdbool.h>
-
-// MQTT Configuration
-#define MQTT_BROKER_ADDRESS "tcp://10.193.42.160:1883"  // Change to your broker address
-#define MQTT_CLIENT_ID "pico_robot_car"
-#define MQTT_QOS 1
-#define MQTT_TIMEOUT 10000L
-
-// MQTT Topics
-#define TOPIC_OBSTACLE_WIDTH "robot/obstacle/width"
-#define TOPIC_OBSTACLE_COUNT "robot/obstacle/count"
-#define TOPIC_OBSTACLE_DISTANCE "robot/obstacle/distance"
-#define TOPIC_OBSTACLE_ANGLES "robot/obstacle/angles"
-#define TOPIC_OBSTACLE_ALL "robot/obstacle/all"
-#define TOPIC_STATUS "robot/status"
-#define TOPIC_SCAN_COMPLETE "robot/scan/complete"
-
-// Telemetry Status Codes
-typedef enum {
-    TELEMETRY_SUCCESS = 0,
-    TELEMETRY_ERROR_CONNECTION = -1,
-    TELEMETRY_ERROR_PUBLISH = -2,
-    TELEMETRY_ERROR_NOT_CONNECTED = -3,
-    TELEMETRY_ERROR_INVALID_PARAM = -4
-} TelemetryStatus;
-
-// Obstacle Data Structure for Telemetry
-typedef struct {
-    int obstacle_id;
-    int angle_start;
-    int angle_end;
-    int angle_span;
-    uint64_t min_distance;
-    float width;
-    float smoothed_width;
-} ObstacleTelemetry;
-
-// Complete Scan Data Structure
-typedef struct {
-    int obstacle_count;
-    ObstacleTelemetry obstacles[20];
-    uint64_t scan_timestamp;
-} ScanTelemetry;
+#include "line_following.h"  // This defines LineFollowState
+#include "imu.h"
+#include "config.h"           // This already defines RobotState and ObstacleState!
+#include "obstacle_scanner.h"
+#include "barcode_scanner.h"  // Now correctly includes BarcodeCommand
+#include "avoidance_maneuver.h"
 
 /**
- * @brief Initialize the telemetry system and connect to MQTT broker
+ * Initialize telemetry system
+ * Must be called after WiFi is connected
  * 
- * @param broker_address MQTT broker address 
- * @param client_id Unique client identifier
- * @return TelemetryStatus Success or error code
+ * @param broker_ip MQTT broker IP address
+ * @param broker_port MQTT broker port
+ * @param client_id MQTT client ID
+ * @return true if initialized successfully
  */
-TelemetryStatus telemetry_init(const char* broker_address, const char* client_id);
+bool telemetry_init(const char *broker_ip, uint16_t broker_port, const char *client_id);
 
 /**
- * @brief Publish obstacle width data
- * 
- * @param obstacle_id Obstacle identifier
- * @param width Calculated obstacle width in cm
- * @param smoothed_width Smoothed obstacle width in cm
- * @return TelemetryStatus Success or error code
+ * Check if telemetry system is ready
+ * @return true if connected to MQTT broker
  */
-TelemetryStatus telemetry_publish_obstacle_width(int obstacle_id, float width, float smoothed_width);
+bool telemetry_is_ready(void);
 
 /**
- * @brief Publish obstacle count
+ * Publish all telemetry data in one call
+ * This is the main function to call from your main loop
  * 
- * @param count Number of obstacles detected
- * @return TelemetryStatus Success or error code
+ * @param ir_reading Raw IR sensor reading
+ * @param line_position Current line position
+ * @param line_pos_filtered Filtered line position
+ * @param line_state Current line following state (LineFollowState)
+ * @param imu Pointer to IMU structure
+ * @param robot_state Current robot state (from RobotState enum)
+ * @param obstacle_state Current obstacle state
+ * @param elapsed Time elapsed since start (ms)
+ * @return true if all data published successfully
  */
-TelemetryStatus telemetry_publish_obstacle_count(int count);
+bool telemetry_publish_all(
+    int ir_reading,
+    float line_position, float line_pos_filtered,
+    LineFollowState line_state,
+    IMU *imu,
+    RobotState robot_state,
+    ObstacleState obstacle_state,
+    uint32_t elapsed
+);
 
 /**
- * @brief Publish obstacle distance
- * 
- * @param obstacle_id Obstacle identifier
- * @param distance Distance to obstacle in cm
- * @return TelemetryStatus Success or error code
+ * Publish encoder and speed data
+ * @param speed_mm_s Current speed in mm/s
+ * @param distance_mm Total distance travelled in mm
+ * @param left_count Left encoder count
+ * @param right_count Right encoder count
  */
-TelemetryStatus telemetry_publish_obstacle_distance(int obstacle_id, uint64_t distance);
+bool telemetry_publish_encoder(float speed_mm_s, float distance_mm, 
+                                int32_t left_count, int32_t right_count);
 
 /**
- * @brief Publish obstacle angle information
- * 
- * @param obstacle_id Obstacle identifier
- * @param angle_start Starting angle of obstacle
- * @param angle_end Ending angle of obstacle
- * @param angle_span Total angular span
- * @return TelemetryStatus Success or error code
+ * Publish barcode detection data
+ * @param command The decoded barcode command (LEFT/RIGHT/etc)
+ * @param character The actual character decoded ('A', 'B', etc)
  */
-TelemetryStatus telemetry_publish_obstacle_angles(int obstacle_id, int angle_start, 
-                                                   int angle_end, int angle_span);
+bool telemetry_publish_barcode(BarcodeCommand command, char character);
 
 /**
- * @brief Publish complete obstacle data
- * 
- * @param obstacle Complete obstacle telemetry data
- * @return TelemetryStatus Success or error code
+ * Publish obstacle scan results
+ * @param scan_result Pointer to ScanResult structure
  */
-TelemetryStatus telemetry_publish_obstacle(const ObstacleTelemetry* obstacle);
+bool telemetry_publish_obstacle_scan(const ScanResult *scan_result);
 
 /**
- * @brief Publish complete scan results
- * 
- * @param scan_data Complete scan telemetry data
- * @return TelemetryStatus Success or error code
+ * Publish avoidance maneuver status
+ * @param direction Avoidance direction (LEFT/RIGHT/NONE)
+ * @param state Current avoidance state
+ * @param obstacle_cleared Whether obstacle has been cleared
  */
-TelemetryStatus telemetry_publish_scan_results(const ScanTelemetry* scan_data);
+bool telemetry_publish_avoidance(AvoidanceDirection direction, 
+                                  AvoidanceState state,
+                                  bool obstacle_cleared);
 
 /**
- * @brief Publish a status message
- * 
+ * Publish individual obstacle data (for real-time monitoring)
+ * @param distance_mm Ultrasonic distance reading
+ * @param width_cm Calculated obstacle width
+ * @param clearance_left_cm Left clearance
+ * @param clearance_right_cm Right clearance
+ */
+bool telemetry_publish_obstacle_data(uint64_t distance_mm, 
+                                      float width_cm,
+                                      float clearance_left_cm,
+                                      float clearance_right_cm);
+
+/**
+ * Publish state change events
+ * @param prev_state Previous robot state
+ * @param new_state New robot state
+ * @param duration_ms Time spent in previous state
+ */
+bool telemetry_publish_state_change(RobotState prev_state, 
+                                     RobotState new_state,
+                                     uint32_t duration_ms);
+
+/**
+ * Publish calibration data
+ * @param white White surface reading
+ * @param black Black surface reading
+ * @param threshold Calculated threshold
+ * @param range Dynamic range
+ */
+bool telemetry_publish_calibration(int white, int black, int threshold, int range);
+
+/**
+ * Publish status/diagnostic messages
  * @param message Status message string
- * @return TelemetryStatus Success or error code
  */
-TelemetryStatus telemetry_publish_status(const char* message);
+bool telemetry_publish_status(const char *message);
 
 /**
- * @brief Check if telemetry system is connected
- * 
- * @return bool True if connected, false otherwise
+ * Publish error messages
+ * @param error_code Error code
+ * @param error_msg Error message string
  */
-bool telemetry_is_connected(void);
+bool telemetry_publish_error(int error_code, const char *error_msg);
 
 /**
- * @brief Disconnect from MQTT broker and cleanup
+ * Helper: Convert RobotState enum to string
  */
-void telemetry_cleanup(void);
+const char* telemetry_robot_state_to_string(RobotState state);
 
 /**
- * @brief Process any pending MQTT messages (call periodically in main loop)
- * 
- * @return TelemetryStatus Success or error code
+ * Helper: Convert ObstacleState enum to string
  */
-TelemetryStatus telemetry_process(void);
+const char* telemetry_obstacle_state_to_string(ObstacleState state);
+
+/**
+ * Helper: Convert AvoidanceDirection to string
+ */
+const char* telemetry_avoidance_dir_to_string(AvoidanceDirection dir);
+
+/**
+ * Helper: Convert LineFollowState to string
+ */
+const char* telemetry_line_state_to_string(LineFollowState state);
 
 #endif // TELEMETRY_H

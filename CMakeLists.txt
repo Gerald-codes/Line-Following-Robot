@@ -30,8 +30,7 @@ project(robo_pico C CXX ASM)
 pico_sdk_init()
 
 # ============================================================================
-# THIS IS THE CRITICAL PART YOU WERE MISSING!
-# Tell CMake where to find the header files (.h files)
+# Include directories
 # ============================================================================
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -69,6 +68,10 @@ add_executable(main
     
     # Utilities
     utilities/timer_manager.c
+    
+    # Telemetry system (NEW)
+    utilities/wifi.c
+    utilities/mqtt_client.c
     utilities/telemetry.c
 )
 
@@ -78,8 +81,8 @@ target_link_libraries(main
     hardware_gpio
     hardware_adc
     hardware_i2c
-    pico_cyw43_arch_lwip_threadsafe_background
-    pico_lwip_mqtt
+    pico_cyw43_arch_lwip_threadsafe_background  # WiFi support
+
 )
 
 pico_enable_stdio_usb(main 1)

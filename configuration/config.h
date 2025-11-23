@@ -20,7 +20,7 @@
 
 // Control loop timing
 #define PID_UPDATE_INTERVAL_MS 100
-#define TELEMETRY_INTERVAL_MS 500
+#define TELEMETRY_INTERVAL_MS 1000  // Change from 100ms to 1000ms (1 second)
 #define SENSOR_READ_INTERVAL_MS 10
 
 // ============================================================================
@@ -161,18 +161,7 @@ typedef enum {
 #define STATE_TIMEOUT_AVOIDING_MS 10000
 #define STATE_TIMEOUT_LOST_MS 3000
 
-// ============================================================================
-// TELEMETRY
-// ============================================================================
 
-#define MQTT_TOPIC_SPEED "robot/speed"
-#define MQTT_TOPIC_HEADING "robot/heading"
-#define MQTT_TOPIC_DISTANCE "robot/distance"
-#define MQTT_TOPIC_LINE "robot/line"
-#define MQTT_TOPIC_BARCODE "robot/barcode"
-#define MQTT_TOPIC_OBSTACLE "robot/obstacle"
-#define MQTT_TOPIC_STATE "robot/state"
-#define MQTT_TOPIC_ERROR "robot/error"
 
 // ============================================================================
 // SAFETY LIMITS
@@ -199,5 +188,46 @@ typedef enum {
 #define LEFT_MOTOR_OFFSET 2
 #define LEFT_MOTOR_CORRECTION 1.00f
 #define RIGHT_MOTOR_CORRECTION 1.00f
+
+// ============================================================================
+// TELEMETRY - MQTT TOPICS (Add this section to your existing config.h)
+// ============================================================================
+
+
+// WiFi credentials - CHANGE THESE TO YOUR NETWORK
+#define WIFI_SSID "Javiersphone"
+#define WIFI_PASSWORD "imcool123"
+
+// MQTT broker settings - CHANGE TO YOUR BROKER
+#define MQTT_BROKER_IP "10.170.105.160"  // Your MQTT broker IP address
+#define MQTT_BROKER_PORT 1883
+#define MQTT_CLIENT_ID "pico_robot_car"
+
+
+// Core telemetry
+#define MQTT_TOPIC_MOTOR        "robot/motor"
+#define MQTT_TOPIC_LINE         "robot/line"
+#define MQTT_TOPIC_IMU          "robot/imu"
+#define MQTT_TOPIC_STATE        "robot/state"
+#define MQTT_TOPIC_CALIBRATION  "robot/calibration"
+#define MQTT_TOPIC_STATUS       "robot/status"
+
+// NEW: Encoder-based telemetry
+#define MQTT_TOPIC_SPEED        "robot/speed"
+#define MQTT_TOPIC_DISTANCE     "robot/distance"
+#define MQTT_TOPIC_ENCODER      "robot/encoder"
+
+// NEW: Barcode telemetry
+#define MQTT_TOPIC_BARCODE      "robot/barcode"
+
+// NEW: Obstacle detection telemetry
+#define MQTT_TOPIC_OBSTACLE     "robot/obstacle"
+#define MQTT_TOPIC_SCAN         "robot/scan"
+#define MQTT_TOPIC_AVOIDANCE    "robot/avoidance"
+
+// NEW: Error and diagnostics
+#define MQTT_TOPIC_ERROR        "robot/error"
+#define MQTT_TOPIC_DIAGNOSTICS  "robot/diagnostics"
+
 
 #endif // CONFIG_H

@@ -8,12 +8,12 @@
 #define TURN_ANGLE_DEG 45           // Degrees to turn when leaving line
 #define TURN_ANGLE_RIGHT_DEG 50      // For right avoidance
 #define TURN_ANGLE_LEFT_DEG 45       // For left avoidance (try a lower value)
-#define TURN_BACK_LEFT_DEG   50   // The turn-back angle for left avoidance (tune up if too small)
+#define TURN_BACK_LEFT_DEG   60   // The turn-back angle for left avoidance (tune up if too small)
 #define TURN_BACK_RIGHT_DEG  50   // The turn-back angle for right avoidance (tune down if too large)
-#define TURN_DURATION_MS 800        // Time to turn 45 degrees
-#define FORWARD_AVOID_DURATION_MS 50  // Time to move forward past obstacle
-#define RETURN_TURN_DURATION_MS 500     // Time to turn back toward line
-#define SEARCH_LINE_DURATION_MS 2000    // Time to search for line
+#define TURN_DURATION_MS 3000        // Time to turn 45 degrees
+#define FORWARD_AVOID_DURATION_MS 100  // Time to move forward past obstacle
+#define RETURN_TURN_DURATION_MS 3000     // Time to turn back toward line
+#define SEARCH_LINE_DURATION_MS 4000    // Time to search for line
 #define OBSTACLE_CLEAR_DISTANCE 35      // cm - distance at which obstacle is "cleared"
 
 // Avoidance states
