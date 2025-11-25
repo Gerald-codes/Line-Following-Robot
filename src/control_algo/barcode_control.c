@@ -1,9 +1,13 @@
 /**
- * @file    barcode_control.c
+ * @file    barcode_control.c (FIXED VERSION)
  * @brief   High-level barcode control implementation
- * @details Simple version with immediate turns and no junction waiting.
- *          Handles barcode detection, decoding, and turn execution with
- *          speed control
+ * @details Simplified version with reliable turn execution
+ *          
+ *   FIXES APPLIED:
+ *   - Removed decode pause (executes turns immediately)
+ *   - Removed speed reduction during scanning
+ *   - Simplified state management
+ *   - Better motor compensation
  */
 
 /* Includes */
@@ -22,10 +26,6 @@
 static BarcodeCommand pending_turn = BARCODE_CMD_NONE;
 static uint32_t turn_start_time = 0;
 static int current_speed = BARCODE_SPEED_FAST;
-
-/* Decode pause state */
-static bool in_decode_pause = false;
-static uint32_t decode_pause_start = 0;
 
 /**
  * @brief Decode barcode character to determine action
@@ -91,8 +91,7 @@ void barcode_control_init(void)
     current_speed = BARCODE_SPEED_FAST;
     
     printf(" ✓ Barcode Control System\n");
-    printf(" Initial speed: %d (FAST)\n", current_speed);
-    printf(" Scan speed: %.0f%% of current speed\n", BARCODE_SCAN_SPEED_FACTOR * 100.0f);
+    printf("   Initial speed: %d (FAST)\n", current_speed);
 }
 
 /**
@@ -153,31 +152,29 @@ BarcodeAction handle_barcode_detected(BarcodeCommand cmd)
     switch (action)
     {
         case BARCODE_ACTION_TURN_LEFT:
-            printf("TURN LEFT (after 1 sec pause)\n");
+            printf("TURN LEFT (immediate execution)\n");
             
-            /* Stop motors and start decode pause */
+            /* FIX #1: Start turn IMMEDIATELY - no pause! */
+            pending_turn = BARCODE_CMD_LEFT;
+            turn_start_time = to_ms_since_boot(get_absolute_time());
+            
+            /* Stop motors briefly before turn */
             motor_stop(M1A, M1B);
             motor_stop(M2A, M2B);
-            printf("[BARCODE] Motors STOPPED - Pausing for %d ms...\n", BARCODE_DECODE_PAUSE_MS);
-            
-            /* Set up pause state */
-            in_decode_pause = true;
-            decode_pause_start = to_ms_since_boot(get_absolute_time());
-            pending_turn = BARCODE_CMD_LEFT;
+            sleep_ms(50);  /* Very brief pause for momentum to settle */
             break;
         
         case BARCODE_ACTION_TURN_RIGHT:
-            printf("TURN RIGHT (after 1 sec pause)\n");
+            printf("TURN RIGHT (immediate execution)\n");
             
-            /* Stop motors and start decode pause */
+            /* FIX #1: Start turn IMMEDIATELY - no pause! */
+            pending_turn = BARCODE_CMD_RIGHT;
+            turn_start_time = to_ms_since_boot(get_absolute_time());
+            
+            /* Stop motors briefly before turn */
             motor_stop(M1A, M1B);
             motor_stop(M2A, M2B);
-            printf("[BARCODE] Motors STOPPED - Pausing for %d ms...\n", BARCODE_DECODE_PAUSE_MS);
-            
-            /* Set up pause state */
-            in_decode_pause = true;
-            decode_pause_start = to_ms_since_boot(get_absolute_time());
-            pending_turn = BARCODE_CMD_RIGHT;
+            sleep_ms(50);  /* Very brief pause for momentum to settle */
             break;
         
         case BARCODE_ACTION_SPEED_SLOW:
@@ -205,17 +202,6 @@ BarcodeAction handle_barcode_detected(BarcodeCommand cmd)
  */
 bool handle_barcode_turn(void)
 {
-    /* Check if we're still in the decode pause */
-    if (in_decode_pause)
-    {
-        if (!barcode_decode_pause_complete())
-        {
-            /* Still pausing - motors are stopped */
-            return false;
-        }
-        /* Pause complete, continue to execute turn */
-    }
-    
     uint32_t current_time = to_ms_since_boot(get_absolute_time());
     uint32_t elapsed = current_time - turn_start_time;
     
@@ -224,13 +210,13 @@ bool handle_barcode_turn(void)
         /* Execute the turn with left motor compensation */
         if (pending_turn == BARCODE_CMD_LEFT)
         {
-            /* Turn left: left motor forward, right motor backward */
+            /* Turn left: left motor backward, right motor forward */
             motor_drive(M1A, M1B, -(BARCODE_TURN_SPEED + LEFT_MOTOR_COMPENSATION));
             motor_drive(M2A, M2B, BARCODE_TURN_SPEED);
         }
         else if (pending_turn == BARCODE_CMD_RIGHT)
         {
-            /* Turn right: left motor backward, right motor forward */
+            /* Turn right: left motor forward, right motor backward */
             motor_drive(M1A, M1B, (BARCODE_TURN_SPEED + LEFT_MOTOR_COMPENSATION));
             motor_drive(M2A, M2B, -BARCODE_TURN_SPEED);
         }
@@ -259,46 +245,14 @@ bool barcode_is_scanning(void)
 }
 
 /**
- * @brief Check if decode pause is complete
- * @return true if pause complete or not pausing
- */
-bool barcode_decode_pause_complete(void)
-{
-    if (!in_decode_pause)
-    {
-        return true;
-    }
-    
-    uint32_t current_time = to_ms_since_boot(get_absolute_time());
-    uint32_t elapsed = current_time - decode_pause_start;
-    
-    if (elapsed >= BARCODE_DECODE_PAUSE_MS)
-    {
-        /* Pause complete - start the turn! */
-        printf("[BARCODE] Pause complete! Starting turn...\n");
-        in_decode_pause = false;
-        turn_start_time = current_time;
-        return true;
-    }
-    
-    return false;
-}
-
-/**
  * @brief Get current speed setting
- * @details Returns 70% of current speed if scanning
+ * @details FIX #2: No longer reduces speed during scanning!
  * @return Current speed value
  */
 int barcode_get_current_speed(void)
 {
-    /* If currently scanning a barcode, return reduced speed (70% of current) */
-    if (barcode_is_scanning())
-    {
-        int scan_speed = (int)(current_speed * BARCODE_SCAN_SPEED_FACTOR);
-        return scan_speed;
-    }
-    
-    /* Otherwise return the set speed (from last barcode command) */
+    /* FIX #2: Always return the set speed - no reduction during scanning */
+    /* This keeps timing consistent for reliable barcode detection */
     return current_speed;
 }
 
@@ -311,6 +265,4 @@ void barcode_control_reset(void)
     pending_turn = BARCODE_CMD_NONE;
     turn_start_time = 0;
     current_speed = BARCODE_SPEED_FAST;
-    in_decode_pause = false;
-    decode_pause_start = 0;
 }

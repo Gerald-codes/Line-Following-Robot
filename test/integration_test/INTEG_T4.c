@@ -1,5 +1,5 @@
 /**
- * @file    heading_keeping.c
+ * @file    INTEG_T4.c
  * @brief   Heading Keeping Mode Test
  * @details Tests the robot's ability to maintain a target heading while driving
  *          using IMU feedback and motor corrections.

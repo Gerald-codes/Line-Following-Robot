@@ -1,5 +1,5 @@
 /*!
- * @file    integration_test_obstacle.c
+ * @file    INTEG_T5.c
  * @brief   Integration test for obstacle detection, scanning, and avoidance.
  *
  * @details Tests the integrated obstacle detection system including ultrasonic
