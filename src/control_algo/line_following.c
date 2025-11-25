@@ -78,7 +78,7 @@ static float L_power = 0.0f;
 static float R_power = 0.0f;
 static uint32_t line_lost_start = 0;
 
-#define LINE_LOST_TIMEOUT_MS    800
+#define LINE_LOST_TIMEOUT_MS    1700
 #define BASE_POWER              40.0f
 #define MIN_POWER               25.0f
 #define MAX_POWER               60.0f
